@@ -154,3 +154,12 @@ the originals: the skills are a working checklist, not a substitute.
 
 See [AUDIT.md](AUDIT.md) for the coverage matrix against all three books,
 and for what the supporting sources contributed.
+
+## Licence
+
+MIT, in [LICENSE](LICENSE). Copy `skills/` into any project, including
+commercial work; keep the copyright notice.
+
+The licence covers the wording in this repository and nothing else. The
+ideas belong to the authors of the books, who are credited per chapter
+inside each skill, and nothing here licenses their text.
