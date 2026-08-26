@@ -6,7 +6,13 @@
 #   4. relative link resolution
 #   5. description hygiene
 # Usage: ./scripts/verify.sh
+#
+# markdownlint is pinned. Its default rule set grows between releases --
+# MD060 (aligned table pipes) landed in 0.49 and would have failed this
+# pack on an unpinned run. Bump deliberately, then re-run and fix.
 set -uo pipefail
+
+MARKDOWNLINT="markdownlint-cli@0.49.1"
 
 cd "$(dirname "$0")/.." || exit 1
 FAIL=0
@@ -29,7 +35,7 @@ else
   pass 'no inline markdownlint directives'
 fi
 
-LINT=$(npx --yes markdownlint-cli@latest \
+LINT=$(npx --yes "$MARKDOWNLINT" \
   README.md AUDIT.md 'evals/*.md' 'skills/**/*.md' 2>&1)
 if [ -n "$LINT" ]; then
   fail 'markdownlint reported problems:'

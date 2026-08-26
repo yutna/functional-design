@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Node, if markdownlint is ever installed locally instead of via npx
+node_modules/
+npm-debug.log*
+.npm/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Deliberately NOT ignored: .markdownlint* config files.
+# The brief forbids overriding markdownlint's defaults, and
+# scripts/verify.sh fails the build if such a file exists. Ignoring
+# them here would hide an accidental config instead of catching it.
