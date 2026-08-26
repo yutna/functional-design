@@ -157,6 +157,7 @@ illegal combinations from the code that matters.
 - [constraining-primitive-values](../constraining-primitive-values/SKILL.md)
 - [modeling-state-machines](../modeling-state-machines/SKILL.md)
 - [folding-over-data](../folding-over-data/SKILL.md)
+- [choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md)
 
 ## Further reading
 
@@ -164,3 +165,7 @@ illegal combinations from the code that matters.
   states a type can hold turns modelling into arithmetic.
 - [static-and-dynamic.md](references/static-and-dynamic.md) carries the
   same designs into languages without a compiler to check them.
+
+This skill answers **which** type to use. For whether a shape should be
+a type at all, see
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).

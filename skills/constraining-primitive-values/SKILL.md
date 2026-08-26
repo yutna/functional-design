@@ -101,6 +101,12 @@ local intermediate inside one function.
 A practical threshold: if the value appears in an exported signature,
 wrap it. If it lives and dies inside one function, do not.
 
+There is a second case where the wrapper is the wrong move rather than
+merely a poor bargain: a value whose shape is decided by config, by a
+tenant, or by an admin has no compile-time set of cases to wrap. See
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md)
+for which side of that line a value falls on.
+
 ## Red flags
 
 - Two adjacent parameters of the same primitive type

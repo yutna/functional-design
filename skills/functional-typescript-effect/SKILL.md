@@ -136,6 +136,20 @@ booking.pipe(
 `catchTags` narrows the error channel, so the remaining type shows
 exactly which failures are still possible.
 
+## Schema covers both routes
+
+`Schema` is unusual in giving you both schools from one declaration: it
+is a value you can compose, transform, and introspect, and it also
+produces a static type. Where other stacks force a choice, here the
+schema _is_ the separated schema and the type at once.
+
+The default is still to model the shape. When a field set is decided
+outside the code — config, tenant, admin — reach for
+`Schema.Record({ key: FieldKey, value: Schema.Unknown })` behind a
+branded wrapper rather than generating a union of every field. The
+envelope stays fully modelled either way. See
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).
+
 ## Red flags
 
 - `Effect.runSync` or `runPromise` outside the composition root

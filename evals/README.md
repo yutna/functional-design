@@ -39,7 +39,7 @@ Two flags worth knowing:
 
 ## 2. Scenarios — manual, against a real agent
 
-[scenarios.md](scenarios.md) holds fifteen fuller problems, each a
+[scenarios.md](scenarios.md) holds thirty-three fuller problems, each a
 paragraph of realistic context with the response a correct answer must
 contain. Run them by hand in an agent session with the pack installed:
 
@@ -64,4 +64,11 @@ words the pack does not contain. Add a scenario when a real task needed
 more than one skill and the order mattered.
 
 Keep case wording as it was actually said. A case rewritten until it
-passes tests nothing.
+passes tests nothing. If a case fails, either the description is missing
+a trigger word or the expected skill was the wrong answer -- fix whichever
+it is, and leave the wording alone.
+
+Scenarios come in pairs where a rule has a direction. Scenario 30 must
+take the generic route and scenario 31 must refuse it; testing only the
+permissive direction would not notice a rule that had become an escape
+hatch.

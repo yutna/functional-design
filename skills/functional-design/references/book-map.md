@@ -53,18 +53,49 @@ matches a book you already know, or to check coverage.
 
 ## Beyond the books
 
-Two skills in this pack are not derived from any of the three. They are
-marked as such in their own overviews, and they exist because a
-functional design that stops at the process boundary leaves real
-problems unanswered.
-
-| Skill                       | Why it is here                         |
-| --------------------------- | -------------------------------------- |
-| `making-effects-reliable`   | Effects across a process can duplicate |
-| `designing-what-to-observe` | A running system must explain itself   |
-
-Both build on skills that are book-derived, and neither claims chapter
+Three skills in this pack are not derived from any of the three books.
+They are marked as such in their own overviews, and none claims chapter
 provenance.
+
+| Skill                          | Why it is here                         |
+| ------------------------------ | -------------------------------------- |
+| `making-effects-reliable`      | Effects across a process can duplicate |
+| `designing-what-to-observe`    | A running system must explain itself   |
+| `choosing-types-or-plain-data` | Not every shape should be modelled     |
+
+## Supporting sources
+
+Three further works fill gaps the brief's three books leave. None gets a
+skill of its own; each lands in the skill that already owns its subject,
+labelled where it appears.
+
+| Source                              | Contributes                     |
+| ----------------------------------- | ------------------------------- |
+| Refactoring, 2nd ed. (Fowler)       | Smell catalogue, tactical moves |
+| Out of the Tar Pit (Moseley, Marks) | Essential versus accidental     |
+| Data-Oriented Programming (Sharvit) | The data-first school           |
+
+Where each one lives:
+
+- **Fowler** —
+  [smell-catalogue.md](../../refactoring-toward-functional-design/references/smell-catalogue.md)
+  and
+  [fowler-moves.md](../../refactoring-toward-functional-design/references/fowler-moves.md).
+  Read the catalogue's last two sections first: four of the twenty-four
+  smells are not smells in functional code.
+- **Out of the Tar Pit** —
+  [essential-and-accidental.md](../../diagnosing-complexity/references/essential-and-accidental.md).
+  It adds a necessity question in front of Ousterhout's locality
+  question: complexity you added should be deleted, not refactored.
+- **Sharvit** — the whole of `choosing-types-or-plain-data`, which sets
+  data-oriented programming's four principles against this pack's rules
+  and marks the two that genuinely conflict. It is a tiebreaker, not a
+  fourth authority: type-first stays the default, and the data-first
+  route opens only on named observable facts.
+
+Why no fourth authority: two contradictory rules of equal standing are
+worse than one rule, because whichever was read last wins. The conflict
+is therefore resolved once, in one place, per value.
 
 ## Reading orders
 

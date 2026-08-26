@@ -168,6 +168,21 @@ can brand and constrain enough to close most of that gap; see
 [schema-libraries.md](references/schema-libraries.md) for which, and for
 how the four common choices compare.
 
+## When not to model a shape
+
+TypeScript's type system is good enough that the default is unambiguous:
+model the shape. The exception is narrow and worth knowing, because
+getting it wrong produces the worst kind of type — one with every field
+optional.
+
+When the field set comes from config, varies per tenant, or is decided by
+an admin, there is no compile-time set of cases to model. Use
+`Record<FieldKey, JsonValue>` behind a parsed wrapper, keep the envelope
+around it fully typed, and pay the costs listed in
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).
+Reach for `z.record()` rather than a generated union of every field any
+customer has ever added.
+
 ## Red flags
 
 - `any`, `as any`, `@ts-ignore`, or `@ts-expect-error` in domain code

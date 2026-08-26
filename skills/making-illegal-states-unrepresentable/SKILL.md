@@ -30,6 +30,12 @@ Not for: input that genuinely arrives malformed from outside, which is
 parsed at the boundary. See
 [crossing-io-boundaries](../crossing-io-boundaries/SKILL.md).
 
+Also not for a shape whose field set is decided outside the code, by
+config, by a tenant, or by an admin. There is no closed set of cases to
+design against, and modelling one produces a type with everything
+optional, which is the defect this skill exists to remove. See
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).
+
 ## Core rules
 
 1. **Count the states.** List what the type can hold and what the
@@ -151,6 +157,7 @@ own type instead: a `DraftOrder` is a real business concept, not a broken
 - [constraining-primitive-values](../constraining-primitive-values/SKILL.md)
 - [modeling-state-machines](../modeling-state-machines/SKILL.md)
 - [handling-errors-with-results](../handling-errors-with-results/SKILL.md)
+- [choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md)
 
 ## Further reading
 

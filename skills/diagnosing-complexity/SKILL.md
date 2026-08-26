@@ -1,6 +1,6 @@
 ---
 name: diagnosing-complexity
-description: Use when a small change touches many files, when an edit breaks a module nobody expected, or when code takes too long to understand.
+description: Use when a small change touches many files, when an edit breaks a module nobody expected, when code is slow to read, or when complexity looks self-inflicted.
 ---
 
 # Diagnosing Complexity
@@ -18,6 +18,8 @@ and shows up as exactly three symptoms. Naming the symptom and tracing it
 to its cause tells you which design rule to apply.
 
 Source: A Philosophy of Software Design, chapters 1-2 (Ousterhout).
+The necessity question below is not from the three books: it comes from
+Out of the Tar Pit (Moseley and Marks).
 
 ## When to use
 
@@ -29,6 +31,40 @@ Source: A Philosophy of Software Design, chapters 1-2 (Ousterhout).
 
 Not for: performance problems, or code that is merely unfamiliar to you
 but obvious to the people who own it.
+
+## Is this complexity necessary?
+
+Ask this before anything else. Complexity you added should be deleted,
+and refactoring does not delete it — once accidental complexity has a
+clean interface and a test suite, nobody removes it.
+
+State the requirement in the domain expert's words, using no
+implementation nouns. Then list what the code contains that the sentence
+did not mention: flags, caches, orderings, adapters, intermediate
+representations, defensive checks. Everything on that list is
+**accidental** — it is in your solution, not in the problem — and nothing
+in the domain will defend it.
+
+Almost all accidental complexity has one of three sources.
+
+| Source      | Looks like              | Skill                             |
+| ----------- | ----------------------- | --------------------------------- |
+| State       | A flag, a cache, a copy | `managing-state-immutably`        |
+| Control     | A required call order   | `separating-pure-core-from-shell` |
+| Code volume | Code carrying nothing   | `designing-deep-modules`          |
+
+State is the worst of the three, because it makes the unit of reasoning
+the whole history of the program rather than the function in front of
+you. Two booleans and an optional field are twelve states, not three
+things to remember.
+
+For each accidental item, ask what breaks if it vanishes. Nothing means
+delete it. A performance requirement means keep it, isolate it, and label
+it as accidental. A correctness rule living inside it means move the rule
+into a type, then delete it.
+
+Run the procedure below only on what survives. See
+[essential-and-accidental.md](references/essential-and-accidental.md).
 
 ## The three symptoms
 
@@ -85,17 +121,18 @@ signature. Obscurity is what turns a dependency into an unknown unknown.
 
 Once the diagnosis names a cause, this table names the skill.
 
-| Cause found              | Skill                                   |
-| ------------------------ | --------------------------------------- |
-| Fact duplicated          | `splitting-and-joining-code`            |
-| Wire shape leaks inward  | `crossing-io-boundaries`                |
-| Caller knows internals   | `hiding-information`                    |
-| Interface as big as code | `designing-deep-modules`                |
-| Implicit call ordering   | `modeling-state-machines`               |
-| Contract not in the type | `making-illegal-states-unrepresentable` |
-| Hidden effects           | `separating-pure-core-from-shell`       |
-| Vague names              | `choosing-precise-names`                |
-| Layers repeat each other | `separating-layers`                     |
+| Cause found                | Skill                                   |
+| -------------------------- | --------------------------------------- |
+| Fact duplicated            | `splitting-and-joining-code`            |
+| Wire shape leaks inward    | `crossing-io-boundaries`                |
+| Caller knows internals     | `hiding-information`                    |
+| Interface as big as code   | `designing-deep-modules`                |
+| Implicit call ordering     | `modeling-state-machines`               |
+| Contract not in the type   | `making-illegal-states-unrepresentable` |
+| Hidden effects             | `separating-pure-core-from-shell`       |
+| Vague names                | `choosing-precise-names`                |
+| Shape decided outside code | `choosing-types-or-plain-data`          |
+| Layers repeat each other   | `separating-layers`                     |
 
 ## Complexity is incremental
 
@@ -122,7 +159,9 @@ concessions, each defensible on its own. That has two consequences:
 - **Fixing the symptom you noticed instead of the cause.** Extracting a
   function reduces line count but can raise cognitive load.
 - **Blaming the domain.** Some domains are genuinely intricate. That
-  explains essential complexity, never the accidental kind.
+  explains essential complexity, never the accidental kind. The check is
+  the one above: state the requirement in the expert's words, and see how
+  much of the code it fails to account for.
 - **Refactoring before diagnosing.** A refactor that does not name the
   dependency it removes usually just moves it.
 
@@ -134,6 +173,9 @@ concessions, each defensible on its own. That has two consequences:
 
 ## Further reading
 
+- [essential-and-accidental.md](references/essential-and-accidental.md)
+  is the necessity axis in full, with the three sources worked through
+  and the architecture Out of the Tar Pit builds from them.
 - [symptoms.md](references/symptoms.md) works each symptom through a
   functional example, with the questions that expose it.
 - [dependencies-and-obscurity.md](references/dependencies-and-obscurity.md)

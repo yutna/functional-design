@@ -99,6 +99,8 @@ catalogue, with detection and repair for each, is in
 | Hidden effect           | Touches the world, and the type does not say |
 | Wide dependency         | Takes a service, uses one function           |
 | Anaemic pipeline        | Steps that do not change the type            |
+| Over-modelled value     | A wrapper only one function ever sees        |
+| Unparsed generic data   | A map with no schema reaches a rule          |
 
 ## Writing the review
 

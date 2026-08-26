@@ -1,6 +1,6 @@
 ---
 name: refactoring-toward-functional-design
-description: Use when moving imperative or object-oriented code toward a functional design, or when an existing design must absorb new requirements without decaying.
+description: Use when moving imperative or object-oriented code to functional design, when a code smell needs a move, or when a shape cannot absorb new requirements.
 ---
 
 # Refactoring Toward Functional Design
@@ -19,6 +19,8 @@ reasonable-looking patch at a time.
 
 Source: Domain Modeling Made Functional, chapter 13 (Wlaschin), and A
 Philosophy of Software Design, chapter 16 (Ousterhout).
+The tactical moves and the smell catalogue are not from the three books:
+they come from Refactoring, 2nd edition (Fowler).
 
 ## When to use
 
@@ -34,20 +36,30 @@ Not for: designing something new, which starts at
 
 ## Core rules
 
-1. **Refactor where you are already working.** Unrelated cleanup is hard
+1. **Ask whether the thing should exist before choosing a move for it.**
+   State the requirement in the domain's words. Anything in the code that
+   the sentence did not mention — a flag, a cache, a required call order,
+   an unread field — is complexity you added, and it is deleted rather
+   than moved. Refactoring it is how it becomes permanent: once it has a
+   good name and a test, nobody removes it. See
+   [essential-and-accidental.md](../diagnosing-complexity/references/essential-and-accidental.md).
+2. **Refactor where you are already working.** Unrelated cleanup is hard
    to review and hides the real change.
-2. **One move at a time, tests green between each.** A move that cannot
+3. **One move at a time, tests green between each.** A move that cannot
    be verified is a rewrite in disguise.
-3. **Start at the boundary of the module you are in**, not at the centre
+4. **Start at the boundary of the module you are in**, not at the centre
    of the system.
-4. **Make each move pay for itself.** If a step leaves the code no
+5. **Make each move pay for itself.** If a step leaves the code no
    better, it is not one of the moves below.
-5. **Move rules inward, effects outward.** Every step should shrink the
+6. **Move rules inward, effects outward.** Every step should shrink the
    impure region.
-6. **Convert types before functions.** A precise type makes the function
+7. **Convert types before functions.** A precise type makes the function
    changes obvious and often mechanical.
-7. **Never widen a type to accommodate a new requirement.** Ask first
+8. **Never widen a type to accommodate a new requirement.** Ask first
    whether the requirement is a different concept.
+9. **One move per commit, and revert any move that takes more than a
+   few minutes.** A half-applied move is the worst state the code can
+   be in.
 
 ## The ordered moves
 
@@ -68,6 +80,30 @@ Apply in this order. Each one makes the next easier.
 
 Each move, with its mechanics and its verification, is in
 [migration-moves.md](references/migration-moves.md).
+
+Move 1 has one exception. When a value's shape is decided outside the
+code — by config, by a tenant, by an admin — wrapping it is the wrong
+move. See
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).
+
+## Two tiers of move
+
+The ten moves above are **strategic**: each changes the shape of the
+design — what the types are, where effects live, what a module exposes.
+
+Underneath them sit nineteen **tactical** moves that clean up inside a
+shape that is already right: Split Phase, Replace Loop with Pipeline,
+Remove Flag Argument, and the rest, in
+[fowler-moves.md](references/fowler-moves.md).
+
+Get the tier right. Tactical moves applied to a design with the wrong
+types produce tidy code that is still wrong.
+
+To find what needs moving in the first place, the twenty-four smells in
+[smell-catalogue.md](references/smell-catalogue.md) each name a symptom
+and where to go. Read its last two sections before using the list: four
+of Fowler's smells are not smells in functional code, and treating them
+as such makes the design worse.
 
 ## Pattern
 
@@ -165,5 +201,9 @@ See
 
 - [migration-moves.md](references/migration-moves.md) is each move with
   its mechanics, its verification, and its payoff.
+- [fowler-moves.md](references/fowler-moves.md) is the nineteen tactical
+  moves, with the commit discipline they depend on.
+- [smell-catalogue.md](references/smell-catalogue.md) is the twenty-four
+  smells read functionally, including the four that stop being smells.
 - [keeping-design-clean.md](references/keeping-design-clean.md) covers
   absorbing new requirements without decay.

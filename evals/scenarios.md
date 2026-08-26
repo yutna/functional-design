@@ -1,6 +1,6 @@
 # Scenarios
 
-Fifteen problems in the form someone would actually bring them, each
+Thirty-three problems in the form someone would actually bring them, each
 with what a correct response has to contain. Paste one as the whole
 prompt into an agent session with the pack installed.
 
@@ -286,3 +286,79 @@ Must contain: schemas as boundary artefacts mapped into structs with
 enforced keys; contexts as bounded contexts that do not alias each
 other's schemas; translation at the edge. Should reach
 `functional-elixir-phoenix`.
+
+## 30. Customers define their own form fields
+
+> Customers configure their own intake forms in our admin screen: they
+> add fields, name them, pick a type and mark them required. Our
+> modelling guide says to make illegal states unrepresentable. How do we
+> type the submitted answers?
+
+Must contain: the field set is not known when the code is compiled, so
+there is no closed set of cases to model; a fully typed envelope
+(template id, version, submitter, timestamp) around a generic answers
+map; the schema stored as data, versioned, with the version recorded on
+each stored submission; the costs accepted explicitly — one boundary
+parse producing a distinct type, key constants in one module, named
+accessors, a coverage test per dispatch site.
+
+Must **not** contain: a branded type per customer field, or a record with
+every field optional. Should reach `choosing-types-or-plain-data`.
+
+## 31. Wrapper types feel like paperwork
+
+> In our TypeScript billing module we now have twelve branded id types --
+> `CustomerId`, `InvoiceId`, `LineItemId` and so on. Every exported
+> signature is three lines long. Someone suggested we drop them all and
+> use plain strings with good parameter names, since it is all the same
+> at runtime anyway. Should we?
+
+Must contain: no. These ids appear in exported signatures and cross
+module boundaries, which is exactly the case the wrapper exists for, and
+swapping two string ids is a bug the compiler currently prevents. None of
+the facts that open the generic route applies here: the set of id kinds
+is closed, developers own it, and code branches on which one it is.
+Verbosity is not one of those facts. The real fix for a three-line
+signature is a parameter object or a narrower dependency, not deleting
+the types.
+
+The scenario is a test of the tiebreaker's direction. An answer that
+takes the generic route because the caller said it feels heavy is a
+failure even if it is otherwise well argued. Should reach
+`choosing-types-or-plain-data` or
+`constraining-primitive-values`.
+
+## 32. Everyone says this needs refactoring
+
+> This module has an `isPriced` boolean, a `priceCalculatedAt` field
+> nobody reads, and a `recalculatePricing` function that returns early
+> when `isPriced` is set. Everyone agrees it needs refactoring. Where do
+> we start?
+
+Must contain: ask whether the complexity is necessary before choosing a
+refactor. State the requirement in the domain's words -- an order gets a
+price before it can be shipped -- and note that none of the three things
+above appears in it. They exist because pricing mutates in place, so
+pricing a validated order into a new priced value deletes the boolean and
+the early return rather than tidying them. The unread timestamp is
+deleted or given a reader.
+
+Must contain the explicit point that extracting the guard into a
+well-named function would preserve the complexity permanently. Should
+reach `diagnosing-complexity`.
+
+## 33. A reviewer called our records a Data Class
+
+> Our reviewer flagged our domain records as the Data Class smell -- just
+> fields, no behaviour -- and wants the behaviour moved into them. Is
+> that right?
+
+Must contain: no, not in a functional design. Data is inert by design and
+behaviour lives in functions over it, so a record of fields is the
+intended shape rather than a defect. Several of Fowler's smells do not
+survive the translation, and this is one of them.
+
+Must contain the redirection to what is worth checking instead: whether
+the record can only be built through a constructor that enforces its
+invariants, and whether any of its fields can hold a combination the
+business forbids. Should reach `refactoring-toward-functional-design`.

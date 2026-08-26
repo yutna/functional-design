@@ -145,6 +145,23 @@ A changeset accumulates every error at once, which is what a form needs.
 Past the changeset, the domain works with structs whose invariants hold.
 See [contexts-and-ecto.md](references/contexts-and-ecto.md).
 
+## Structs or plain maps
+
+Elixir idiom sits closer to plain maps than most of this pack assumes,
+and that is often right — but decide it per value, not by habit.
+
+A struct is the modelled route: it gives the value a name, makes
+`%Order{}` pattern matches fail loudly on the wrong type, and gives
+Dialyzer something to check. A bare map is the generic route, and it is
+correct when the keys come from config, from a tenant, or from an admin,
+or when the map is only stored and forwarded.
+
+The usual answer is a struct whose one field is a map: the envelope
+modelled, the varying part generic. See
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).
+Note that Ecto's `:map` column and embedded schemas are exactly this
+split expressed in the database.
+
 ## Red flags
 
 - A struct with no `@enforce_keys`

@@ -1,6 +1,6 @@
 ---
 name: managing-state-immutably
-description: Use when code mutates shared data, when a concurrent update is lost or races, or when deciding how state changes over time.
+description: Use when code mutates shared data or updates a record in place, when a concurrent update is lost or races, or when deciding how state changes over time.
 ---
 
 # Managing State Immutably
@@ -166,3 +166,10 @@ updates to the one mutable cell, and that is a small, isolated problem:
   explains structural sharing and when copying costs matter.
 - [concurrency.md](references/concurrency.md) covers atomic updates,
   retries, idempotency, and the failure modes immutability does not fix.
+
+Worth noting for confidence rather than for new content: the data-first
+school arrives independently at the same advice — one state reference,
+updated by comparing and swapping on a version, with all logic reading
+immutable snapshots. It is the one principle both schools of functional
+design state identically. See
+[two-schools.md](../choosing-types-or-plain-data/references/two-schools.md).

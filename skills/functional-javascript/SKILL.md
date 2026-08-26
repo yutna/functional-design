@@ -112,6 +112,22 @@ Thirty lines covers the whole of
 More, including async, in
 [result-and-async.md](references/result-and-async.md).
 
+## How much of this to type-shape
+
+Without a checker, a wrapper buys a name and a constructor, not an
+enforced guarantee. That makes the temptation to skip modelling stronger
+here than anywhere else in this pack, and the rule is unchanged: model
+the shape, and leave it a plain object only on the observable facts in
+[choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md).
+
+What changes in JavaScript is the enforcement, not the decision. A
+modelled shape here means a constructor function that is the only place
+its object literal appears, a frozen result, and a coverage test where a
+compiler would have checked exhaustiveness. When you do take the plain
+route, it still owes a boundary parse, key constants, and accessors — a
+bare object with none of those is not the data-first school, it is the
+absence of any design.
+
 ## Red flags
 
 - `Object.assign(target, ...)` where `target` is a parameter

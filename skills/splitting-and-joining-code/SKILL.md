@@ -1,6 +1,6 @@
 ---
 name: splitting-and-joining-code
-description: Use when deciding whether to split a function or module, when two pieces always change together, or when general and special-purpose code are mixed.
+description: Use when deciding whether to split a function or module, when a boolean parameter selects behaviour, or when two pieces always change together.
 ---
 
 # Splitting and Joining Code

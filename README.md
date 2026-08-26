@@ -8,6 +8,16 @@ design rules for codebases written in a functional style:
 - **Domain Modeling Made Functional** — Scott Wlaschin
 - **A Philosophy of Software Design, 2nd edition** — John Ousterhout
 
+Three further works fill gaps those three leave, each labelled where it
+appears rather than folded in silently:
+
+- **Refactoring, 2nd edition** — Martin Fowler, for the smell catalogue
+  and the tactical moves
+- **Out of the Tar Pit** — Ben Moseley and Peter Marks, for essential
+  versus accidental complexity
+- **Data-Oriented Programming** — Yehonathan Sharvit, for the data-first
+  school this pack otherwise argues against
+
 The skills are language-agnostic. Core skills describe designs in a
 neutral notation; separate language packs translate them into JavaScript,
 TypeScript, React and Next.js, and Elixir and Phoenix.
@@ -32,10 +42,10 @@ For user scope instead of project scope, copy into `~/.claude/skills/` or
 
 ## Pick only what the project needs
 
-Copy the 33 core skills plus the language packs that match the stack.
+Copy the 34 core skills plus the language packs that match the stack.
 Codex truncates its skill list at roughly 8,000 characters, so unused
-packs cost real discovery budget. All 39 skills together come to about
-6,700 characters, so a project with skills of its own should copy only
+packs cost real discovery budget. All 40 skills together come to about
+7,000 characters, so a project with skills of its own should copy only
 the packs it uses.
 
 | Stack            | Language pack to copy              |
@@ -126,9 +136,11 @@ and does not prove, and for the scenarios to run against a real agent.
 
 ## Attribution
 
-The rules here are restatements and syntheses of ideas from the three
-books above, credited at chapter level inside each skill. No book text is
-reproduced. Read the originals: the skills are a working checklist, not a
-substitute.
+The rules here are restatements and syntheses of ideas from the works
+above, credited at chapter level inside each skill. Material from the
+three supporting sources says so where it appears, and never claims
+chapter provenance in the primary three. No book text is reproduced. Read
+the originals: the skills are a working checklist, not a substitute.
 
-See [AUDIT.md](AUDIT.md) for the coverage matrix against all three books.
+See [AUDIT.md](AUDIT.md) for the coverage matrix against all three books,
+and for what the supporting sources contributed.

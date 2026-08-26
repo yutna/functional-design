@@ -14,6 +14,12 @@ reasoning.
    zero tolerance, applied one change at a time.
 4. The primary output of a change is the design it leaves behind.
 5. Produce two genuinely different designs before choosing one.
+6. Ask whether the complexity is in the problem or in your solution.
+   Complexity you added should be deleted, not refactored — a domain
+   expert describing the requirement would not mention a flag, a cache,
+   or a required call order. (Extends the books.)
+7. Almost all added complexity is state, then ordering, then sheer
+   volume of code, in that order of harm. (Extends the books.)
 
 Skills: `diagnosing-complexity`, `programming-strategically`.
 
@@ -58,6 +64,25 @@ Skills: `designing-deep-modules`, `hiding-information`,
 Skills: `capturing-the-domain`, `modeling-with-algebraic-types`,
 `making-illegal-states-unrepresentable`, `constraining-primitive-values`,
 `modeling-state-machines`, `enforcing-consistency-boundaries`.
+
+## Representation
+
+Extends the books. The rules above assume a shape is worth modelling.
+These say when it is not.
+
+1. Model the shape. Default, not preference; "this is verbose" is not a
+   reason to leave it.
+2. Leave it generic only on an observable fact: its fields come from
+   config or an admin, it varies per tenant, its schema is data, or
+   nothing branches on it.
+3. Decide per value, never per project. A typed envelope around a
+   generic payload is the usual answer.
+4. Generic is not cheaper. It owes a boundary schema, key constants,
+   accessor functions, coverage tests, and a schema version.
+5. Anything the system decides with gets a type. Anything it only
+   stores, forwards, or renders may stay generic.
+
+Skill: `choosing-types-or-plain-data`.
 
 ## Functions and workflows
 

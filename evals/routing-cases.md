@@ -11,6 +11,9 @@ Format: `symptom -> expected-skill`, split on the last arrow.
 a one line change forced edits in six files -> diagnosing-complexity
 a change broke a module i never opened -> diagnosing-complexity
 nobody can estimate work in this area without reading everything -> diagnosing-complexity
+is this complexity in the problem or did we add it ourselves -> diagnosing-complexity
+is this complexity self-inflicted or is it in the problem -> diagnosing-complexity
+there is a flag that only exists because we mutate the record in place -> managing-state-immutably
 we are behind, should we take the shortcut this once -> programming-strategically
 the codebase gets a little worse with every change we make -> programming-strategically
 the reviewer said it is correct but they had to read it three times -> deciding-what-matters
@@ -23,6 +26,7 @@ this wrapper just forwards every call to the one below -> separating-layers
 every caller does the same two lines after calling this -> separating-layers
 should i split this forty line function -> splitting-and-joining-code
 these two files always change together in the same commit -> splitting-and-joining-code
+a boolean parameter picks which behaviour this function performs -> splitting-and-joining-code
 adding a new payment provider means editing ten files -> applying-solid-functionally
 this function takes a whole service and uses one method -> applying-solid-functionally
 the code says UserRecord but the business says applicant -> capturing-the-domain
@@ -33,6 +37,11 @@ this record has three booleans and a nullable date -> making-illegal-states-unre
 the code defends against a state that should never happen -> making-illegal-states-unrepresentable
 customer id and order id are both plain strings -> constraining-primitive-values
 the same postcode check appears in three modules -> constraining-primitive-values
+should this be a branded type or just a plain map -> choosing-types-or-plain-data
+the admin screen lets each customer add their own form fields -> choosing-types-or-plain-data
+the field set varies per tenant so one type cannot cover it -> choosing-types-or-plain-data
+we wrap everything in types and it feels like paperwork now -> choosing-types-or-plain-data
+the report columns are whatever the user picked at request time -> choosing-types-or-plain-data
 the entity has a status column and every function branches on it -> modeling-state-machines
 an order went backwards through its lifecycle somehow -> modeling-state-machines
 should one transaction cover the order and the customer -> enforcing-consistency-boundaries
@@ -69,6 +78,10 @@ i want to check this pull request before merging -> reviewing-functional-design
 is this design any good, what should i look for -> reviewing-functional-design
 we have a legacy object oriented service to move to functional style -> refactoring-toward-functional-design
 this design cannot absorb the new requirement without a flag -> refactoring-toward-functional-design
+is a data class with no methods a smell in functional code -> refactoring-toward-functional-design
+the code smells but the types are fine, what move do i apply -> refactoring-toward-functional-design
+this function does two things in sequence, split the phases -> splitting-and-joining-code
+which fowler refactoring moves still apply without classes -> refactoring-toward-functional-design
 a timeout left us unsure whether the payment went through -> making-effects-reliable
 we saved the order but the event was never published -> making-effects-reliable
 the retry charged the customer twice -> making-effects-reliable

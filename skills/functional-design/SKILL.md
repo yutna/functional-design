@@ -100,6 +100,7 @@ Run in order. Skip a step only when the previous one proved it irrelevant.
 - Dependency direction feels wrong -> [applying-solid-functionally](../applying-solid-functionally/SKILL.md)
 - Code and business speak different words -> [capturing-the-domain](../capturing-the-domain/SKILL.md)
 - Types are records of primitives -> [modeling-with-algebraic-types](../modeling-with-algebraic-types/SKILL.md)
+- Shape comes from config or varies per tenant -> [choosing-types-or-plain-data](../choosing-types-or-plain-data/SKILL.md)
 - Booleans and nullable fields encode state -> [making-illegal-states-unrepresentable](../making-illegal-states-unrepresentable/SKILL.md)
 - Strings and numbers used raw -> [constraining-primitive-values](../constraining-primitive-values/SKILL.md)
 - Status fields and if-ladders -> [modeling-state-machines](../modeling-state-machines/SKILL.md)
@@ -137,14 +138,15 @@ matches the project and use it alongside the core skill.
 
 ## Quick reference
 
-| Question                     | Answer                             |
-| ---------------------------- | ---------------------------------- |
-| Where does validation go?    | At the boundary, into domain types |
-| Where does I/O go?           | Edges only; core stays pure        |
-| How are errors returned?     | Result values, not exceptions      |
-| How are dependencies passed? | As function parameters             |
-| What makes an interface good | It hides far more than it reveals  |
-| When is a design done?       | When the red-flag audit finds none |
+| Question                     | Answer                                  |
+| ---------------------------- | --------------------------------------- |
+| Where does validation go?    | At the boundary, into domain types      |
+| Where does I/O go?           | Edges only; core stays pure             |
+| How are errors returned?     | Result values, not exceptions           |
+| How are dependencies passed? | As function parameters                  |
+| What makes an interface good | It hides far more than it reveals       |
+| Does this shape need a type? | Yes, unless its fields come from config |
+| When is a design done?       | When the red-flag audit finds none      |
 
 ## Red flags
 
@@ -166,6 +168,9 @@ matches the project and use it alongside the core skill.
   compressed onto one page, for when there is no time to read a skill.
 - [calibration.md](references/calibration.md) is how much of the pack a
   given task actually warrants, and the cost of getting that wrong.
+- [essential-and-accidental.md](../diagnosing-complexity/references/essential-and-accidental.md)
+  is the question to ask before any refactor: did we add this
+  complexity, or is it in the problem?
 
 ## Worked examples
 

@@ -134,6 +134,35 @@ module.
 predicates. See
 [modeling-state-machines](../../modeling-state-machines/SKILL.md).
 
+### Over-modelled value
+
+**Detect.** A single-case wrapper whose constructor and only unwrap sit
+inside the same function, or a batch of wrapper types added together with
+none appearing in an exported signature.
+
+**Costs.** Paperwork with no guarantee bought. It also trains readers to
+skim wrappers, which is how the ones that matter get ignored.
+
+**Repair.** Inline it. The threshold is in
+[constraining-primitive-values](../../constraining-primitive-values/SKILL.md);
+whether the shape wanted a type at all is in
+[choosing-types-or-plain-data](../../choosing-types-or-plain-data/SKILL.md).
+
+### Unparsed generic data
+
+**Detect.** A map, record, or `Json` value reaching a function that makes
+a business decision, with no parse between it and the boundary. Key
+string literals appearing at more than two call sites is the same
+finding.
+
+**Costs.** Every reader must guess the shape, and no two guesses agree.
+This is the failure the generic route is accused of and the reason it
+needs a schema.
+
+**Repair.** One parse at the boundary returning a distinct type, key
+constants in one module, and named accessors. See
+[schema-as-data.md](../../choosing-types-or-plain-data/references/schema-as-data.md).
+
 ## Contract flags
 
 ### Hidden failure
