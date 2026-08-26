@@ -30,7 +30,7 @@ else
 fi
 
 LINT=$(npx --yes markdownlint-cli@latest \
-  README.md AUDIT.md 'skills/**/*.md' 2>&1)
+  README.md AUDIT.md 'evals/*.md' 'skills/**/*.md' 2>&1)
 if [ -n "$LINT" ]; then
   fail 'markdownlint reported problems:'
   printf '%s\n' "$LINT"
@@ -109,6 +109,15 @@ if ok:
     print('ok    frontmatter, budget, links, hygiene')
 sys.exit(0 if ok else 1)
 PY
+
+note ''
+note '== 6. routing keyword coverage =='
+if ROUTING=$(python3 scripts/eval-routing.py 2>&1); then
+  printf 'ok    %s\n' "$(printf '%s' "$ROUTING" | grep '^routing:')"
+else
+  fail 'routing keyword coverage:'
+  printf '%s\n' "$ROUTING"
+fi
 
 note ''
 if [ "$FAIL" -eq 0 ]; then

@@ -1,6 +1,6 @@
 ---
 name: managing-state-immutably
-description: Use when code mutates shared data, when concurrent access causes races, or when deciding how state changes over time in a functional system.
+description: Use when code mutates shared data, when a concurrent update is lost or races, or when deciding how state changes over time.
 ---
 
 # Managing State Immutably

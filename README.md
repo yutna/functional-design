@@ -32,10 +32,11 @@ For user scope instead of project scope, copy into `~/.claude/skills/` or
 
 ## Pick only what the project needs
 
-Copy the 31 core skills plus the language packs that match the stack.
+Copy the 33 core skills plus the language packs that match the stack.
 Codex truncates its skill list at roughly 8,000 characters, so unused
-packs cost real discovery budget. All 31 core skills plus two language
-packs sit comfortably inside that limit.
+packs cost real discovery budget. All 39 skills together come to about
+6,700 characters, so a project with skills of its own should copy only
+the packs it uses.
 
 | Stack            | Language pack to copy              |
 | ---------------- | ---------------------------------- |
@@ -59,23 +60,38 @@ Paste this into the project's `CLAUDE.md` or `AGENTS.md`:
 ```markdown
 ## Design rules
 
-This codebase follows functional design. Before designing a module,
-workflow, or type, load the `functional-design` skill and follow its
-design loop. Before finishing a change, run the checklist in
+This codebase follows functional design. Start with the
+`functional-design` skill: its calibration table says how much design a
+task warrants, which for a small change is often almost none. Follow the
+full design loop only for a new module, workflow, or bounded context.
+Before finishing a change of any size, run the checklist in
 `reviewing-functional-design`. Use the language pack that matches this
 project for concrete syntax.
 ```
 
+## Start here
+
+Read [skills/functional-design/SKILL.md](skills/functional-design/SKILL.md)
+first. It carries the calibration table — how much of this pack a given
+task actually warrants — the symptom-to-skill routing, and the notation
+the core skills use.
+
 ## Layout
 
 ```text
-skills/
-  functional-design/        index: design loop, notation, routing
+skills/                     copied into the target project
+  functional-design/        index: design loop, calibration, routing
   <core skills>/            one design rule each
   functional-<stack>/       language packs
     SKILL.md                the rule, short enough to always read
     references/*.md         depth, loaded only when needed
+
+evals/                      stays here; not copied
+scripts/                    stays here; not copied
 ```
+
+Only `skills/` is installed. `evals/` and `scripts/` maintain the pack
+and have no meaning inside a target project.
 
 Cross-references between skills are sibling-relative
 (`../other-skill/SKILL.md`), which resolves correctly under both
@@ -95,12 +111,18 @@ Cross-references between skills are sibling-relative
 ## Maintenance
 
 ```sh
-./scripts/verify.sh
+./scripts/verify.sh                    # everything
+python3 scripts/eval-routing.py        # routing coverage only
 ```
 
-The script checks markdownlint compliance, frontmatter shape, the Codex
-list budget, relative link resolution, and description hygiene. It needs
-network access on first run to fetch `markdownlint-cli`.
+`verify.sh` checks markdownlint compliance, frontmatter shape, the Codex
+list budget, relative link resolution, description hygiene, and whether
+each skill's description contains the words people use for the problem
+it solves. It needs network access on first run to fetch
+`markdownlint-cli`.
+
+See [evals/README.md](evals/README.md) for what the routing check does
+and does not prove, and for the scenarios to run against a real agent.
 
 ## Attribution
 

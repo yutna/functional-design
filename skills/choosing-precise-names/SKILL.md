@@ -1,6 +1,6 @@
 ---
 name: choosing-precise-names
-description: Use when naming a function, type, or value, when a name is vague or generic, or when a name is unusually hard to choose.
+description: Use when naming a function, type or variable, when a name is vague like data or handle, or when a name is generic or unusually hard to pick.
 ---
 
 # Choosing Precise Names

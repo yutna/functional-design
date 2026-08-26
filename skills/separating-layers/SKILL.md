@@ -1,6 +1,6 @@
 ---
 name: separating-layers
-description: Use when adjacent layers repeat the same abstraction, when a function only forwards to another, or when a module pushes work onto its callers.
+description: Use when adjacent layers repeat the same abstraction, when a function only forwards to another, or when callers repeat the same lines after it.
 ---
 
 # Separating Layers

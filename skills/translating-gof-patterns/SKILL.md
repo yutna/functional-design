@@ -1,6 +1,6 @@
 ---
 name: translating-gof-patterns
-description: Use when reaching for a class-based design pattern, when porting object-oriented code, or when a familiar pattern feels heavy written functionally.
+description: Use when reaching for a factory, strategy, visitor or other class-based pattern, when porting object-oriented code, or when a pattern feels heavy.
 ---
 
 # Translating GoF Patterns

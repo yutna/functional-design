@@ -1,6 +1,6 @@
 ---
 name: constraining-primitive-values
-description: Use when domain values are raw strings or numbers, when one primitive type means several different things, or when the same check repeats at call sites.
+description: Use when domain values are raw strings or numbers, when the same format or range check appears in more than one place, or when ids can be swapped.
 ---
 
 # Constraining Primitive Values

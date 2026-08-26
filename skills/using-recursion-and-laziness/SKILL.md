@@ -1,6 +1,6 @@
 ---
 name: using-recursion-and-laziness
-description: Use when writing recursive functions, when a stack overflows, when an expensive result is recomputed, or when a sequence is very large or unbounded.
+description: Use when a stack overflows, when data is too large to hold in memory, when an expensive result is recomputed, or when writing recursive functions.
 ---
 
 # Using Recursion and Laziness

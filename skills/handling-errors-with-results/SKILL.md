@@ -1,6 +1,6 @@
 ---
 name: handling-errors-with-results
-description: Use when designing error handling, when exceptions cross module boundaries, or when validation must report every problem instead of only the first.
+description: Use when a function throws and callers cannot tell, when exceptions cross module boundaries, or when validation must report every problem.
 ---
 
 # Handling Errors With Results

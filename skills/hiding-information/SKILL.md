@@ -1,6 +1,6 @@
 ---
 name: hiding-information
-description: Use when callers depend on a module's internals, when one data format appears in several modules, or when each step of a process became its own module.
+description: Use when callers know how a module works inside, when one data format appears in several modules, or when each step of a process became a module.
 ---
 
 # Hiding Information

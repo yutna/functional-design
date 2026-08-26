@@ -1,6 +1,6 @@
 ---
 name: applying-solid-functionally
-description: Use when structuring dependencies between functions and modules, when adding a variant forces edits everywhere, or when an interface is too wide.
+description: Use when a function takes a whole service to use one part, when adding a variant forces edits everywhere, or when structuring module dependencies.
 ---
 
 # Applying SOLID Functionally

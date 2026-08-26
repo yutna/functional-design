@@ -51,6 +51,21 @@ matches a book you already know, or to check coverage.
 | Design patterns in FP         | `translating-gof-patterns`     |
 | Test-driven development       | `testing-functional-code`      |
 
+## Beyond the books
+
+Two skills in this pack are not derived from any of the three. They are
+marked as such in their own overviews, and they exist because a
+functional design that stops at the process boundary leaves real
+problems unanswered.
+
+| Skill                       | Why it is here                         |
+| --------------------------- | -------------------------------------- |
+| `making-effects-reliable`   | Effects across a process can duplicate |
+| `designing-what-to-observe` | A running system must explain itself   |
+
+Both build on skills that are book-derived, and neither claims chapter
+provenance.
+
 ## Reading orders
 
 - **Cleaning up an existing codebase**: `diagnosing-complexity`,

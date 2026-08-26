@@ -1,6 +1,6 @@
 ---
 name: designing-deep-modules
-description: Use when designing or reviewing a module interface, when an interface is nearly as complex as what it hides, or when tiny modules multiply.
+description: Use when designing a module interface, when it exports nearly as much as it hides, or when many tiny modules or one-function files multiply.
 ---
 
 # Designing Deep Modules

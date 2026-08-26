@@ -1,6 +1,6 @@
 ---
 name: functional-design
-description: Use when starting design, review, or refactoring in a functional codebase, or when unsure which functional-design skill fits a symptom.
+description: Use when starting design or review, when deciding how much design a task warrants, from a throwaway script to a new subsystem, or when unsure which skill fits.
 ---
 
 # Functional Design
@@ -26,6 +26,43 @@ everything else behind deep interfaces.
 - Unsure which skill in this pack applies to the problem in front of you
 
 Not for: language syntax lookups, or build and tooling problems.
+
+## How much design does this need?
+
+Decide this before opening a skill. The row is chosen by something you
+can observe about the task, not by how important it feels.
+
+| The task                      | Apply               | Skip         |
+| ----------------------------- | ------------------- | ------------ |
+| Output is an answer           | nothing             | everything   |
+| One function, module exists   | names, totality     | modelling    |
+| A feature in an existing flow | the flow's idiom    | new contexts |
+| A new module or workflow      | the design loop     | nothing      |
+| A new bounded context         | loop, then contexts | nothing      |
+
+Reading the rows:
+
+- **Output is an answer.** A script run once, a probe, a migration you
+  will delete. Write it, get the answer, label it throwaway.
+- **One function, module exists.** Match what the module already does.
+  Give the function an honest signature and a precise name. Do not
+  introduce a wrapper type, an error union, or a boundary the module
+  does not already have.
+- **A feature in an existing flow.** The idiom is already decided; your
+  job is to fit it and leave the module no worse. New types only where
+  the feature genuinely introduces a new concept.
+- **A new module or workflow.** The full loop below is worth its cost,
+  because other code is about to depend on the shape you choose.
+- **A new bounded context.** The loop, plus the language and boundary
+  work in `capturing-the-domain` and
+  `enforcing-consistency-boundaries`.
+
+Applying a heavier row than the task calls for is itself a design
+failure: it adds interface, indirection, and reading cost that the
+problem did not ask for, which is the definition of complexity these
+skills exist to remove. See
+[calibration.md](references/calibration.md) for the failure modes in
+both directions.
 
 ## The design loop
 
@@ -83,6 +120,8 @@ Run in order. Skip a step only when the previous one proved it irrelevant.
 - Tests need heavy mocking -> [testing-functional-code](../testing-functional-code/SKILL.md)
 - Need to judge a design or a diff -> [reviewing-functional-design](../reviewing-functional-design/SKILL.md)
 - Imperative code to be moved forward -> [refactoring-toward-functional-design](../refactoring-toward-functional-design/SKILL.md)
+- Effects retried, duplicated, or lost -> [making-effects-reliable](../making-effects-reliable/SKILL.md)
+- An incident the records could not explain -> [designing-what-to-observe](../designing-what-to-observe/SKILL.md)
 
 ## Language packs
 
@@ -125,3 +164,21 @@ matches the project and use it alongside the core skill.
   carry its material.
 - [principles.md](references/principles.md) is every rule in the pack
   compressed onto one page, for when there is no time to read a skill.
+- [calibration.md](references/calibration.md) is how much of the pack a
+  given task actually warrants, and the cost of getting that wrong.
+
+## Worked examples
+
+Five end-to-end walkthroughs. Judgment transfers through these better
+than through rules.
+
+- [design-loop.md](references/design-loop.md) — a small feature through
+  all seven steps.
+- [a new workflow](../designing-workflow-pipelines/references/worked-example.md)
+  — booking an appointment, from event storming to composed code.
+- [a refactor](../refactoring-toward-functional-design/references/worked-refactor.md)
+  — a legacy service moved in ten commits.
+- [a read model](../crossing-io-boundaries/references/worked-read-model.md)
+  — a screen where the aggregate rules do not apply.
+- [a long-running process](../making-effects-reliable/references/worked-long-running.md)
+  — three systems, compensation, and idempotency.

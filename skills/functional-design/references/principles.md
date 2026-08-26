@@ -114,6 +114,37 @@ Skills: `separating-pure-core-from-shell`, `managing-state-immutably`,
 Skills: `folding-over-data`, `using-recursion-and-laziness`,
 `translating-gof-patterns`.
 
+## Reliability, once effects cross a process
+
+Extends the books; none of them covers this ground.
+
+1. Give every command an identity the caller controls, and carry it into
+   every effect.
+2. Make the effect idempotent, not the decision. The core already is.
+3. Assume at-least-once delivery and de-duplicate on receipt.
+4. Never write state and publish an event in two transactions.
+5. Retry at the shell, bounded in attempts and in total time.
+6. Compensate with a named business operation; do not lock across
+   systems.
+7. Model partial success explicitly; it is a report, not a `Result`.
+
+Skill: `making-effects-reliable`.
+
+## Observability, as a design decision
+
+Extends the books; the same idea as deciding what matters, applied to
+what a running system reveals.
+
+1. Write the questions the system must answer before choosing fields.
+2. The events a workflow returns are the observability primitive.
+3. Log once, at the edge; correlate with an identifier created there.
+4. Structured errors are already structured records; do not flatten
+   them.
+5. Keep identifiers out of metric labels and secrets out of everything.
+6. Alert on what a user would notice, not on a resource number.
+
+Skill: `designing-what-to-observe`.
+
 ## Communication
 
 1. A name should distinguish this thing from everything nearby. Being

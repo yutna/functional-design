@@ -143,6 +143,31 @@ export const bind =
 its failure type honestly. More in
 [result-type.md](references/result-type.md).
 
+## Parsing at the boundary
+
+Hand-written parsers are fine for a handful of types. Past that, a schema
+library is the usual answer, and the rule that matters is which type it
+produces.
+
+```ts
+// the schema's inferred type is the DTO, not the domain type
+const OrderDto = z.object({
+  id: z.string().uuid(),
+  lines: z.array(OrderLineDto).nonempty(),
+  status: z.enum(["draft", "placed", "cancelled"]),
+});
+
+// one mapping into the domain, where the guarantees live
+const toOrder = (dto: z.infer<typeof OrderDto>): Result<Order, MapError> =>
+  ...;
+```
+
+Letting the inferred type _be_ the domain model reintroduces every wire
+compromise: nullable fields, string enums, plain arrays. Some libraries
+can brand and constrain enough to close most of that gap; see
+[schema-libraries.md](references/schema-libraries.md) for which, and for
+how the four common choices compare.
+
 ## Red flags
 
 - `any`, `as any`, `@ts-ignore`, or `@ts-expect-error` in domain code
@@ -185,3 +210,5 @@ its failure type honestly. More in
   covers discriminated unions, narrowing, and state machines.
 - [result-type.md](references/result-type.md) covers the Result helpers,
   async, and boundary conversion.
+- [schema-libraries.md](references/schema-libraries.md) compares Zod,
+  Valibot, ArkType and TypeBox for boundary parsing.

@@ -1,6 +1,6 @@
 ---
 name: making-illegal-states-unrepresentable
-description: Use when a type can hold combinations the business forbids, when code defends against states that should not exist, or when flags and nulls encode meaning.
+description: Use when a type can hold combinations the business forbids, when booleans and nullable fields encode state, or when code guards impossible values.
 ---
 
 # Making Illegal States Unrepresentable

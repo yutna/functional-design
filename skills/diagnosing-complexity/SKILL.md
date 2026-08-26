@@ -1,6 +1,6 @@
 ---
 name: diagnosing-complexity
-description: Use when a small change touches many files, when code takes too long to understand, or when edits keep breaking things nobody knew existed.
+description: Use when a small change touches many files, when an edit breaks a module nobody expected, or when code takes too long to understand.
 ---
 
 # Diagnosing Complexity

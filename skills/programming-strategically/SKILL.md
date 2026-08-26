@@ -1,6 +1,6 @@
 ---
 name: programming-strategically
-description: Use when trading speed against design quality, when editing existing code, or when a codebase degrades a little with every change.
+description: Use when a deadline tempts a shortcut, when editing existing code, or when a codebase degrades a little with every change.
 ---
 
 # Programming Strategically
