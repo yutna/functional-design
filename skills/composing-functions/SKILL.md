@@ -1,6 +1,6 @@
 ---
 name: composing-functions
-description: Use when functions do not fit together, when deciding parameter order, or when a function throws, returns null, or works only for some inputs of its type.
+description: Use when two steps do not fit together, when deciding parameter order, or when a signature is partial rather than total.
 ---
 
 # Composing Functions

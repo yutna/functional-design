@@ -17,8 +17,8 @@ rules with no configuration.
 | Worked examples             | 5       |
 | Routing eval cases          | 87      |
 | Agent scenarios             | 33      |
-| Lines of markdown           | 20,031  |
-| Words                       | 112,485 |
+| Lines of markdown           | 20,128  |
+| Words                       | 113,356 |
 
 ## Verification
 
@@ -31,7 +31,7 @@ All six checks in `scripts/verify.sh` pass.
 | Name matches folder | 40 of 40, all kebab-case                       |
 | Description length  | Longest is 159 characters, cap is 160          |
 | Description opening | 40 of 40 begin with "Use when"                 |
-| Codex list budget   | 6,985 characters against a limit of 8,000      |
+| Codex list budget   | 6,951 characters against a limit of 8,000      |
 | Relative links      | 0 broken across 131 files                      |
 | Routing coverage    | 87 of 87 cases in the top 3; 69 first          |
 | Index coverage      | Every skill reachable from `functional-design` |
@@ -449,6 +449,59 @@ and the inbound link was enough. That is the intended behaviour: a
 tiebreaker or a precondition should be reachable from the skill someone
 actually opens, not only from the index.
 
+### A false-positive gate that was not needed
+
+The routing check measures false negatives only. The obvious complement
+is a false-positive gate: catch a description so general that it reaches
+the top ranks for problems it does not solve. It was built, measured, and
+withdrawn.
+
+The first measurement looked alarming — one skill in the top three for 17
+cases it did not own, against 6.5 expected by chance. Two hypotheses were
+tested and both were wrong. Halving the weight the loader gives a skill's
+name moved the figure by 1. Adding the offending word from that name to
+the stop list moved it by 1.
+
+The actual cause: a median of **33 of the 40 skills score exactly zero**
+on any given case, and `rank` breaks ties by name. Twelve of those 17
+cases had the intruder scoring 0.00 — it shared no word with the symptom
+at all and took the slot because it sorts first alphabetically. The
+measurement was reproducing directory order.
+
+Restricting noise to skills that actually matched a word fixed the
+metric, and the metric then showed there was nothing to gate. Giving a
+skill a deliberately vague description raised its noise by 2 and made it
+**fail coverage** instead: inverse document frequency gives common words
+almost no weight, so a description built from them scores near zero on
+everything, its own cases included. Over-generality is already caught,
+by the gate that exists.
+
+What shipped:
+
+| Change                        | Why                                     |
+| ----------------------------- | --------------------------------------- |
+| Noise reported, never gated   | No demonstrated detection power         |
+| `--noise` flag added          | Shows overlap when adding a skill       |
+| Tie property printed each run | Places below the first are alphabetical |
+| One description shortened     | 154 to 120 chars, same top-1            |
+| Two rewrites reverted         | Both regressed the working gate         |
+
+Two of the three descriptions this work set out to fix were reverted.
+`applying-solid-functionally` was never noisy once the metric was
+corrected — it scored 6, not 17 — and the rewrite had cost a case and a
+first place. `handling-errors-with-results` scored better on coverage
+before the rewrite than after.
+
+Checked separately, because the tie property could have inflated the
+existing gate: **zero of the 87 cases place their expected skill in the
+top three with a score of zero.** Every pass is earned on shared
+vocabulary, so the coverage gate was sound as it stood.
+
+The rule this produced, now in `evals/README.md`: before adding a check,
+give the pack the defect the check is meant to catch and confirm the
+check fires. A gate that cannot fail on a real defect is worse than no
+gate, because it reads as coverage that is not there.
+
 ## Requirements check
 
 - **Works in Claude Code and Codex.** Met. Frontmatter carries only
@@ -484,7 +537,7 @@ actually opens, not only from the index.
 
 ## Known limitations
 
-**Codex list budget.** The 40 descriptions total 6,985 characters against
+**Codex list budget.** The 40 descriptions total 6,951 characters against
 a limit of about 8,000. A project that installs all 40 plus a dozen of
 its own skills can exceed it, and Codex will truncate the list. Copy only
 the language packs the project uses. The pack's own gate is 7,200, which
@@ -495,6 +548,14 @@ overlap and has no idea what any word means. A green run means every
 description contains the vocabulary people use for that problem; it does
 not mean an agent routes correctly. The scenario run below covers that
 question, but only as a single sample.
+
+**Only the first place in a ranking is meaningful.** A median of 33 of
+the 40 skills score exactly zero on any given case, and ties break by
+name, so second and third places are often filled alphabetically. The
+gate uses the top three, which is deliberately generous; the top-1 figure
+is the one that reflects whether a description actually wins. No case
+currently reaches the top three on a zero score, but a much larger case
+file could change that, and the check does not detect it.
 
 **Effect API drift.** `functional-typescript-effect` targets Effect 3,
 and `schema-libraries.md` describes Zod, Valibot, ArkType and TypeBox as

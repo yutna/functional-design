@@ -5,15 +5,26 @@ Scores each symptom in evals/routing-cases.md against every skill's
 discovery text -- the `name` and `description` an agent sees before it
 opens anything -- and reports where the expected skill ranked.
 
-This is a keyword-coverage lint for descriptions, not an oracle for
-routing. A case that ranks badly means the expected skill's description
-is missing words people actually use; it does not prove an agent would
-route it wrongly, and a clean run does not prove one would route it
-rightly. See evals/README.md.
+Coverage is the gate. It catches false negatives: a skill that should
+have answered a symptom and did not reach the top ranks, which means its
+description is missing words people actually use.
+
+Noise is reported but does NOT gate. It counts how often a skill reaches
+the top ranks for symptoms it does not own. That was built as a
+false-positive gate and then measured: giving a skill a deliberately
+vague description raises its noise by almost nothing and instead makes it
+fail coverage, because inverse document frequency already gives common
+words almost no weight. There is no second hole to plug, so the number
+ships as a diagnostic for whoever adds the next skill, not as a check
+that can fail. See evals/README.md.
+
+Both are keyword lints for descriptions, not oracles for routing. A clean
+run does not prove an agent routes correctly.
 
 Usage:
   scripts/eval-routing.py            summary, plus every miss
   scripts/eval-routing.py --report   full ranking for every case
+  scripts/eval-routing.py --noise    per-skill noise, worst first
   scripts/eval-routing.py --profile full   also score the When-to-use text
 """
 
@@ -110,6 +121,7 @@ def rank(skills, idf, symptom):
 
 def main():
     report = "--report" in sys.argv
+    show_noise = "--noise" in sys.argv
     profile = "full" if "--profile" in sys.argv and "full" in sys.argv else "desc"
 
     skills = load_skills(profile)
@@ -128,6 +140,9 @@ def main():
 
     top1 = 0
     misses = []
+    noise = Counter()
+    owned = Counter()
+    zero_scoring = []
     for symptom, expected in cases:
         scored = rank(skills, idf, symptom)
         names = [name for _, name in scored]
@@ -136,6 +151,16 @@ def main():
             top1 += 1
         if pos > TOP_N:
             misses.append((symptom, expected, pos, names[:TOP_N]))
+        owned[expected] += 1
+        zero_scoring.append(sum(1 for score, _ in scored if score == 0.0))
+        # A skill that shares no term with the symptom scores zero. Most
+        # skills do, for most symptoms, and rank breaks those ties by
+        # name -- so counting them would rank noise alphabetically rather
+        # than by description quality. Only a skill that actually matched
+        # some of the symptom's words can mislead by keyword.
+        for score, name in scored[:TOP_N]:
+            if name != expected and score > 0.0:
+                noise[name] += 1
         if report:
             mark = "ok  " if pos == 1 else f"#{pos:<3}"
             print(f"{mark} {expected:38} {symptom[:52]}")
@@ -144,6 +169,19 @@ def main():
     passed = total - len(misses)
     print(f"\nrouting: {passed}/{total} cases place the expected skill in "
           f"the top {TOP_N}  (top-1: {top1}/{total})")
+
+    if noise:
+        loudest, count = noise.most_common(1)[0]
+        print(f"noise:   {loudest} is in the top {TOP_N} for {count} cases it "
+              f"does not own  (diagnostic, not a gate)")
+    median_zero = sorted(zero_scoring)[len(zero_scoring) // 2]
+    print(f"ties:    a median of {median_zero} of {len(skills)} skills score "
+          f"zero per case, so places below the first are often alphabetical")
+
+    if show_noise:
+        print(f"\n{'skill':38s} {'noise':>5s} {'owns':>5s}")
+        for name, count in noise.most_common():
+            print(f"{name:38s} {count:5d} {owned[name]:5d}")
 
     if misses:
         print("\nDescriptions missing the words these symptoms use:")

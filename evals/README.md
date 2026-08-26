@@ -27,15 +27,51 @@ Treat a failure as a defect in the description, not in the case. If a
 symptom is phrased the way a developer would phrase it and the skill does
 not surface, the skill is missing a trigger word.
 
-Two flags worth knowing:
+Three flags worth knowing:
 
 - `--profile full` also scores each skill's "When to use" section. It
   scores _better_ on exact matches and slightly worse on top-three
   coverage, because the extra text adds noise as well as signal. The
   gate uses descriptions only, because that is what discovery sees.
+- `--noise` lists, per skill, how many cases it reaches the top three for
+  without owning them. Useful when adding a skill, to see whose territory
+  the new description overlaps. It does not gate; the next section says
+  why.
 - The scorer stems a few suffixes so `skill` and `skills` are one term.
   Irregular forms such as `broke` and `break` are still two, so phrase
   cases in the present tense where it does not distort them.
+
+### Why noise is reported but does not gate
+
+The check measures false negatives only: a skill that should have
+answered and did not surface. The obvious complement is a false-positive
+gate — catch a description so general that it crowds the top ranks for
+problems it does not solve. That was built, then measured, and the answer
+was that there is nothing to catch.
+
+Giving a skill a deliberately vague description ("use when code is hard
+to work with, when something is wrong") raised its noise by 2 and made it
+**fail coverage** instead. Inverse document frequency already gives common
+words almost no weight, so a description made of them scores near zero on
+everything, including its own cases. Over-generality is a coverage
+failure, not a separate one.
+
+Two things came out of building it anyway, both worth knowing:
+
+- **Places below the first are often alphabetical.** A median of 33 of
+  the 40 skills score exactly zero on any given case, and `rank` breaks
+  ties by name. So the second and third places are frequently filled by
+  whichever zero-scoring skill sorts earliest. The first measurement of
+  noise reproduced alphabetical order almost exactly before it was
+  restricted to skills that actually matched a word.
+- **Coverage is not inflated by that.** Checked directly: zero of the 87
+  cases place their expected skill in the top three with a score of zero.
+  Every pass is earned on shared vocabulary. The gate is sound.
+
+The general lesson for anyone extending these evals: before adding a
+check, give the pack the defect the check is meant to catch and confirm
+the check fires. A gate that cannot fail on a real defect is worse than
+no gate, because it reads as coverage that is not there.
 
 ## 2. Scenarios — manual, against a real agent
 
