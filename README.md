@@ -121,18 +121,28 @@ Cross-references between skills are sibling-relative
 ## Maintenance
 
 ```sh
-./scripts/verify.sh                    # everything
-python3 scripts/eval-routing.py        # routing coverage only
+./scripts/verify.sh                     # all six checks
+python3 scripts/eval-routing.py         # routing coverage only
+python3 scripts/eval-routing.py --report  # rank for every case
+python3 scripts/eval-routing.py --noise   # whose territory each description overlaps
 ```
 
-`verify.sh` checks markdownlint compliance, frontmatter shape, the Codex
-list budget, relative link resolution, description hygiene, and whether
-each skill's description contains the words people use for the problem
-it solves. It needs network access on first run to fetch
-`markdownlint-cli`.
+`verify.sh` runs six checks and fails on any of them: markdownlint under
+default rules with no config file and no inline directives; frontmatter
+carrying exactly `name` and `description`; the Codex list budget;
+relative link resolution; description hygiene, meaning length, opening
+and a kebab-case name matching the folder; and routing keyword coverage.
+It needs network access on first run to fetch `markdownlint-cli`, which
+is pinned so a new default rule cannot break the build unannounced.
+
+Adding a skill means adding routing cases for it in
+[evals/routing-cases.md](evals/routing-cases.md), then running the
+scorer. `--noise` is worth a look at that point: it shows which existing
+descriptions the new one overlaps.
 
 See [evals/README.md](evals/README.md) for what the routing check does
-and does not prove, and for the scenarios to run against a real agent.
+and does not prove, why one of its two measures deliberately does not
+gate, and the scenarios to run against a real agent.
 
 ## Attribution
 

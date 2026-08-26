@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Verify the functional-design skills pack.
-#   1. markdownlint with default rules only
-#   2. frontmatter shape
+#   1. markdownlint with default rules only, and no config or directives
+#   2. frontmatter shape: exactly name and description
 #   3. Codex skill-list character budget
 #   4. relative link resolution
-#   5. description hygiene
+#   5. description hygiene: length, opening, kebab-case name
+#   6. routing keyword coverage, via scripts/eval-routing.py
 # Usage: ./scripts/verify.sh
 #
 # markdownlint is pinned. Its default rule set grows between releases --
