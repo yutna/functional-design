@@ -7,22 +7,22 @@ returns either the value or a description of what was wrong.
 ## The shape
 
 ```text
-module ProductCode
+module TreatmentCode
 
   -- the type is exported; the raw constructor is not
-  type ProductCode = ProductCode of String
+  type TreatmentCode = TreatmentCode of String
 
-  type ProductCodeError =
+  type TreatmentCodeError =
     | WrongLength of Integer
     | BadPrefix of Char
     | NotDigits of String
 
-  parse : String -> Result<ProductCode, ProductCodeError>
-  value : ProductCode -> String        -- unwrap, for the edge only
+  parse : String -> Result<TreatmentCode, TreatmentCodeError>
+  value : TreatmentCode -> String        -- unwrap, for the edge only
 ```
 
 Three exports: the type, the parser, the unwrapper. Nothing else. Callers
-cannot build one any other way, so every `ProductCode` in the system
+cannot build one any other way, so every `TreatmentCode` in the system
 satisfies the rules.
 
 ## Normalise before validating
@@ -36,7 +36,7 @@ parse raw =
   in if length s /= 5 then Error (WrongLength (length s))
      else if not (isPrefix s) then Error (BadPrefix (head s))
      else if not (allDigits (drop 1 s)) then Error (NotDigits s)
-     else Ok (ProductCode s)
+     else Ok (TreatmentCode s)
 ```
 
 The rule: any normalisation the domain considers insignificant happens
@@ -106,9 +106,9 @@ Parsers belong at the boundary, in one step, before the domain sees
 anything.
 
 ```text
-parseOrderLine : RawLine -> Result<OrderLine, LineError>
-parseOrderLine raw =
-  ProductCode.parse raw.code
+parseBookedTreatment : RawLine -> Result<BookedTreatment, LineError>
+parseBookedTreatment raw =
+  TreatmentCode.parse raw.code
     |> andThen (\code ->
        Quantity.parse raw.qty
          |> map (\qty -> { code, qty }))

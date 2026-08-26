@@ -17,8 +17,6 @@ than one module, or appears in an interface when it belongs in an
 implementation. Leakage is the single most damaging structural problem,
 because it turns one decision into many, silently.
 
-Source: A Philosophy of Software Design, chapters 5 and 7 (Ousterhout).
-
 ## When to use
 
 - Two modules both know a date format, a status code, or a field layout
@@ -36,7 +34,7 @@ Not for: judging whether a module is worth its interface, which is
    "this module is the only place that knows X". If two modules claim the
    same X, that is leakage, and one of them must stop.
 2. **Decompose by knowledge, not by time.** Modules named `parse`,
-   `enrich`, `send` follow the order things happen. Order changes;
+   `enrich`, `send` follow the booking things happen. Booking changes;
    knowledge does not. See
    [temporal-decomposition.md](references/temporal-decomposition.md).
 3. **Export the least that still serves callers.** Every exported name is
@@ -54,8 +52,8 @@ Not for: judging whether a module is worth its interface, which is
 Leaked: two modules know how a status is spelled and what it implies.
 
 ```text
--- orders module
-type Order = { ..., status: String }        -- "new" | "paid" | "void"
+-- bookings module
+type Booking = { ..., status: String }        -- "new" | "paid" | "void"
 
 -- reporting module
 isRevenue o = o.status == "paid"            -- knows the spelling
@@ -66,14 +64,14 @@ Change the spelling, or add a "refunded" status that is still revenue,
 and reporting is silently wrong. Nothing connects the two modules but a
 string literal.
 
-Hidden: the orders module owns both the spelling and the meaning.
+Hidden: the bookings module owns both the spelling and the meaning.
 
 ```text
--- orders module
-type OrderStatus = New | Paid of PaidAt | Void of Reason
-type Order = { ..., status: OrderStatus }
+-- bookings module
+type BookingStatus = New | Paid of PaidAt | Void of Reason
+type Booking = { ..., status: BookingStatus }
 
-countsAsRevenue : Order -> Boolean          -- the meaning lives here
+countsAsRevenue : Booking -> Boolean          -- the meaning lives here
 
 -- reporting module
 isRevenue = countsAsRevenue                 -- knows nothing else

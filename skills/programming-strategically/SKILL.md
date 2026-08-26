@@ -16,9 +16,6 @@ programming optimises for the system a year from now, and pays for it
 with a small, continuous investment: roughly ten to twenty per cent extra
 effort on every change, spent on design, not on ceremony.
 
-Source: A Philosophy of Software Design, chapters 3, 11, 16, 17, 19, 20
-(Ousterhout).
-
 ## When to use
 
 - Deciding whether to add a special case or restructure

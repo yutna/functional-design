@@ -1,13 +1,11 @@
 # Taking the Generic Route Without Losing the Guarantees
 
 The generic route is a discipline, not the absence of one. A map with no
-schema, no key constants, and no accessors is not data-oriented design;
-it is what the design was supposed to prevent.
+schema, no key constants, and no accessors is not the generic route; it
+is what the generic route was supposed to prevent.
 
 This file is the discipline. If a project is not going to follow it, model
 the type instead.
-
-Source: not from the three books. Data-Oriented Programming (Sharvit).
 
 ## The schema is a value
 

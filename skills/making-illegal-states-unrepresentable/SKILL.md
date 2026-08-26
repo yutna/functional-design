@@ -16,8 +16,6 @@ be built. Then the check is not skipped, forgotten, or duplicated: it does
 not exist, because there is nothing to check. This is the single highest
 leverage rule in domain modelling, and it composes with everything else.
 
-Source: Domain Modeling Made Functional, chapters 5-6 (Wlaschin).
-
 ## When to use
 
 - A record holds fields that are only meaningful together
@@ -46,8 +44,8 @@ optional, which is the defect this skill exists to remove. See
    optional fields become cases of a choice type.
 4. **Make the constructor the only door.** If a record can be built
    field by field from anywhere, its invariants are advisory.
-5. **Encode the phase in the type.** `UnvalidatedOrder`, `ValidatedOrder`
-   and `PricedOrder` are different types, so a function cannot receive
+5. **Encode the phase in the type.** `UnvalidatedBooking`, `ValidatedBooking`
+   and `PricedBooking` are different types, so a function cannot receive
    the wrong phase.
 6. **Never write a guard for a state the type forbids.** If you feel the
    need, either the type is wrong or the guard is dead code pretending to
@@ -124,8 +122,8 @@ applyUpdate : ShipmentUpdate -> Shipment -> Result<Shipment, UpdateError>
 One place converts the possible into the legal. Everything past it is
 written against types that cannot be wrong. When you find yourself
 wanting a partially filled domain type, model the partial thing as its
-own type instead: a `DraftOrder` is a real business concept, not a broken
-`Order`. See
+own type instead: a `DraftBooking` is a real business concept, not a broken
+`Booking`. See
 [when-to-validate-instead.md](references/when-to-validate-instead.md).
 
 ## Red flags

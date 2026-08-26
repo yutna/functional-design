@@ -17,10 +17,6 @@ Diagnose before you fix. Every complexity has exactly two ultimate causes
 and shows up as exactly three symptoms. Naming the symptom and tracing it
 to its cause tells you which design rule to apply.
 
-Source: A Philosophy of Software Design, chapters 1-2 (Ousterhout).
-The necessity question below is not from the three books: it comes from
-Out of the Tar Pit (Moseley and Marks).
-
 ## When to use
 
 - A one-line behaviour change requires edits in five places
@@ -92,7 +88,7 @@ modified in isolation. Dependencies are necessary; the goal is to have
 few, and to make each obvious. In functional code they hide in these
 places, in rough order of how often they bite:
 
-- Order of calls that the types do not enforce
+- Booking of calls that the types do not enforce
 - Values read from shared mutable state, module state, or globals
 - Implicit context: clock, locale, timezone, environment, current user
 - Types that overlap in shape so a caller can pass the wrong one
@@ -175,7 +171,7 @@ concessions, each defensible on its own. That has two consequences:
 
 - [essential-and-accidental.md](references/essential-and-accidental.md)
   is the necessity axis in full, with the three sources worked through
-  and the architecture Out of the Tar Pit builds from them.
+  and a worked example of deleting rather than tidying.
 - [symptoms.md](references/symptoms.md) works each symptom through a
   functional example, with the questions that expose it.
 - [dependencies-and-obscurity.md](references/dependencies-and-obscurity.md)

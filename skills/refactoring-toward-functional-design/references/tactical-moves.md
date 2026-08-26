@@ -8,10 +8,6 @@ they are mechanical, and each should take a couple of minutes.
 Use them after the strategic moves have decided the shape, or on their
 own when the shape is already right and the code is merely awkward.
 
-Source: not from the three books. Refactoring, 2nd edition (Fowler),
-restricted to the moves that keep their meaning without classes and
-mutation.
-
 ## Shaping a function's body
 
 ### Extract Function
@@ -163,12 +159,13 @@ rule rather than a refactoring.
 
 ## Shaping a conditional
 
-### Replace Conditional with Polymorphism
+### Replace a Repeated Conditional with a Sum Type
 
-**When.** A conditional branches on a kind-of-thing, repeatedly.
-**Mechanics.** Fowler's version creates a subclass per case. The
-functional version defines a sum type with one case per branch and
-replaces the conditional with an exhaustive match.
+**When.** A conditional branches on a kind-of-thing, in several places.
+**Mechanics.** Define a sum type with one case per branch and replace
+each conditional with an exhaustive match. The object-oriented form of
+this move creates a subclass per case instead; the sum type is the
+functional equivalent and keeps the dispatch total.
 **Verify.** The match is total, with no wildcard. This is the same move as
 Replace status strings with choice types in
 [migration-moves.md](migration-moves.md); this is its local form.
@@ -197,8 +194,8 @@ needs a request it can identify and replay.
 
 ## The discipline
 
-Fowler is stricter about process than about any individual move, and this
-is the part most often skipped.
+The process matters more than any individual move, and it is the part
+most often skipped.
 
 1. **Confirm the code should exist before you tidy it.** A move applied
    to complexity that should have been deleted makes the deletion harder

@@ -6,8 +6,9 @@ Write this before any step exists. It is the contract, and getting it
 right constrains everything after it.
 
 ```text
-type PlaceOrder =
-  UnvalidatedOrder -> AsyncResult<List<PlaceOrderEvent>, PlaceOrderError>
+type ConfirmBookingWorkflow =
+  UnvalidatedBooking
+    -> AsyncResult<List<ConfirmBookingEvent>, ConfirmBookingError>
 ```
 
 Four decisions are already made: what comes in, that it is untrusted,
@@ -20,8 +21,8 @@ A command is a record named as an instruction, carrying everything needed
 to decide, and nothing else.
 
 ```text
-type PlaceOrder = {
-  orderForm: UnvalidatedOrder,
+type BookingRequest = {
+  bookingForm: UnvalidatedBooking,
   timestamp: Instant,
   userId: UserId,
 }
@@ -36,18 +37,18 @@ Each completed step produces a type that did not exist before, and whose
 name says what has been established.
 
 ```text
-UnvalidatedOrder    -- straight from the edge, nothing checked
-ValidatedOrder      -- every field parsed, product codes exist
-PricedOrder         -- every line priced, total computed
-AcknowledgedOrder   -- customer acknowledgement prepared
+UnvalidatedBooking    -- straight from the edge, nothing checked
+ValidatedBooking      -- every field parsed, treatment codes exist
+PricedBooking         -- every treatment priced, total computed
+AcknowledgedBooking   -- customer acknowledgement prepared
 ```
 
 Two rules:
 
 1. **Never reuse a stage type.** Even when the fields are identical
    today, a shared type lets a later step accept unprepared data.
-2. **Name the guarantee, not the step.** `ValidatedOrder` says what is
-   true of the value. `OrderAfterStep2` says nothing.
+2. **Name the guarantee, not the step.** `ValidatedBooking` says what is
+   true of the value. `BookingAfterStep2` says nothing.
 
 ## Dependencies
 
@@ -55,8 +56,8 @@ Each step declares what it needs as a function type, named in the
 domain's words.
 
 ```text
-alias CheckProductExists = ProductCode -> Boolean
-alias GetProductPrice = ProductCode -> Price
+alias CheckTreatmentExists = TreatmentCode -> Boolean
+alias GetTreatmentPrice = TreatmentCode -> Price
 ```
 
 The workflow takes them and passes them to the steps that need them. See
@@ -68,10 +69,10 @@ Every failure the workflow can produce, as one choice type. Callers match
 on it once.
 
 ```text
-type PlaceOrderError =
+type ConfirmBookingError =
   | Validation of ValidationError
   | Pricing of PricingError
-  | RemoteService of ServiceError
+  | RemoteService of TreatmentError
 ```
 
 Each step keeps its own narrow error type, and the composition lifts each
@@ -84,9 +85,9 @@ the caller one thing to handle. See
 The workflow returns what happened. It does not send the email.
 
 ```text
-type PlaceOrderEvent =
-  | OrderPlaced of Order
-  | BillableOrderPlaced of { order: OrderId, amount: Money }
+type ConfirmBookingEvent =
+  | BookingConfirmed of Booking
+  | BillableBookingConfirmed of { booking: BookingId, amount: Money }
   | AcknowledgementSent of EmailAddress
 ```
 
@@ -114,10 +115,10 @@ A step may itself be a pipeline. That is normal, and it is how a large
 workflow stays readable.
 
 ```text
-validateOrder checkProduct order =
-  checkCustomer order
+validateBooking checkTreatment booking =
+  checkCustomer booking
     >=> checkAddress
-    >=> traverse (checkLine checkProduct)
+    >=> traverse (checkTreatment catalogue)
     >=> assembleValidated
 ```
 
@@ -126,6 +127,6 @@ not appear in the workflow's signature, and no other workflow reaches in.
 
 ## Reading the pipeline back
 
-Once composed, read it aloud. "Place an order by validating it, pricing
+Once composed, read it aloud. "Place a booking by validating it, pricing
 it, acknowledging it, and creating events." If that sentence is not the
 business process, the steps are wrong, however clean the code is.

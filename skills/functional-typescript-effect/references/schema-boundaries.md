@@ -10,29 +10,29 @@ the mapping generated rather than hand-written.
 ```ts
 import { Schema } from "effect";
 
-const ProductCode = Schema.String.pipe(
+const TreatmentCode = Schema.String.pipe(
   Schema.trimmed(),
   Schema.pattern(/^[WG]\d{4}$/),
-  Schema.brand("ProductCode"),
+  Schema.brand("TreatmentCode"),
 );
-type ProductCode = Schema.Schema.Type<typeof ProductCode>;
+type TreatmentCode = Schema.Schema.Type<typeof TreatmentCode>;
 
 const Quantity = Schema.Int.pipe(
   Schema.between(1, 1000),
   Schema.brand("Quantity"),
 );
 
-const OrderLine = Schema.Struct({
-  code: ProductCode,
+const BookedTreatment = Schema.Struct({
+  code: TreatmentCode,
   quantity: Quantity,
 });
 
-const Order = Schema.Struct({
-  id: OrderId,
-  lines: Schema.NonEmptyArray(OrderLine),
+const Booking = Schema.Struct({
+  id: BookingId,
+  treatments: Schema.NonEmptyArray(BookedTreatment),
 });
-type Order = Schema.Schema.Type<typeof Order>;
-type OrderEncoded = Schema.Schema.Encoded<typeof Order>;
+type Booking = Schema.Schema.Type<typeof Booking>;
+type BookingEncoded = Schema.Schema.Encoded<typeof Booking>;
 ```
 
 `Schema.Schema.Type` is the domain type: branded, non-empty, constrained.
@@ -42,8 +42,8 @@ entirely.
 ## Decoding
 
 ```ts
-const parseOrder = Schema.decodeUnknown(Order);
-// (u: unknown) => Effect<Order, ParseError>
+const parseBooking = Schema.decodeUnknown(Booking);
+// (u: unknown) => Effect<Booking, ParseError>
 ```
 
 One call parses, validates, and brands, producing a value the rest of the
@@ -54,7 +54,7 @@ be wrong. See
 To report every problem at once rather than the first:
 
 ```ts
-Schema.decodeUnknown(Order)(input, { errors: "all" });
+Schema.decodeUnknown(Booking)(input, { errors: "all" });
 ```
 
 Use that for forms and batch imports. See
@@ -63,7 +63,7 @@ Use that for forms and batch imports. See
 ## Encoding
 
 ```ts
-const toWire = Schema.encode(Order);
+const toWire = Schema.encode(Booking);
 ```
 
 Encoding a valid domain value should not fail. If it can, the schema is
@@ -117,7 +117,7 @@ The schema is the versioned artefact; the domain type is not.
 const OrderV1 = Schema.Struct({ ... });
 const OrderV2 = Schema.Struct({ ... });
 
-const fromV1 = (dto: Schema.Schema.Encoded<typeof OrderV1>): Order => ...;
+const fromV1 = (dto: Schema.Schema.Encoded<typeof OrderV1>): Booking => ...;
 ```
 
 Add a schema and a mapping per wire version; keep the domain type stable.
@@ -142,11 +142,11 @@ See
 ```ts
 it("round-trips", () =>
   fc.assert(
-    fc.property(arbitraryOrder, (order) =>
+    fc.property(arbitraryBooking, (booking) =>
       Effect.runSync(
-        Schema.encode(Order)(order).pipe(
-          Effect.flatMap(Schema.decodeUnknown(Order)),
-          Effect.map((back) => expect(back).toEqual(order)),
+        Schema.encode(Booking)(booking).pipe(
+          Effect.flatMap(Schema.decodeUnknown(Booking)),
+          Effect.map((back) => expect(back).toEqual(booking)),
         ),
       ),
     ),

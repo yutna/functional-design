@@ -3,7 +3,7 @@
 ## Procedure
 
 1. **Write the invariants as sentences.** Each one names the data it
-   touches. "An order's total equals the sum of its lines." "A room is
+   touches. "A booking's total equals the sum of its treatments." "A room is
    never booked twice for the same night."
 2. **Mark which must hold at every instant.** Ask the business, not the
    database. Many rules people assume are instantaneous are not: an
@@ -90,12 +90,12 @@ An aggregate needs no framework. It is:
 - a module that exports those and nothing that lets a caller reach inside
 
 ```text
-module Order
-  type Order                              -- opaque
-  create : CustomerId -> NonEmptyList<OrderLine> -> Result<Order, Error>
-  addLine : OrderLine -> Order -> Result<Order, Error>
-  removeLine : LineId -> Order -> Result<Order, Error>
-  total : Order -> Money
+module Booking
+  type Booking                              -- opaque
+  create : CustomerId -> NonEmptyList<BookedTreatment> -> Result<Booking, Error>
+  addTreatment : BookedTreatment -> Booking -> Result<Booking, Error>
+  removeTreatment : TreatmentId -> Booking -> Result<Booking, Error>
+  total : Booking -> Money
 ```
 
 Loading and saving live outside, in the shell, which reads the stored

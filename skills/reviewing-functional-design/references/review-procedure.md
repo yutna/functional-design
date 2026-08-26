@@ -110,7 +110,7 @@ Fixes:
 Group findings by rank, not by file. For each:
 
 ```text
-Rank 2  skills/orders/pricing: the discount threshold 5000 also
+Rank 2  skills/bookings/pricing: the discount threshold 5000 also
         appears in reporting/summary. One of them will change alone.
         Fix: export `qualifiesForDiscount` from pricing and call it.
         Skill: hiding-information

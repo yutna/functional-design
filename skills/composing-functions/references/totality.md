@@ -64,7 +64,7 @@ all total:
 ```text
 divide : Integer -> Integer -> Result<Integer, DivideByZero>
 find : Key -> Map<Key, V> -> Option<V>
-save : Order -> AsyncResult<Unit, SaveError>
+save : Booking -> AsyncResult<Unit, SaveError>
 ```
 
 Each says what can happen. A caller that ignores the `Result` is making a

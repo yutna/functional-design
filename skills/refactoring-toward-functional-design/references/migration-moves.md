@@ -124,7 +124,7 @@ part of the interface. Fix the call sites the compiler or tests find.
 **Payoff.** The invariants become enforceable, and the module becomes
 deep.
 
-## Order and pacing
+## Booking and pacing
 
 Moves 1 to 4 are local and can be done in any module at any time. Moves 5
 to 7 need 4 to be useful. Moves 8 to 10 are module-scale and are worth

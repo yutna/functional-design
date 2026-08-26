@@ -6,12 +6,12 @@ Nouns from the domain. Say what a value of the type is, not what it
 contains or how it is stored.
 
 ```text
-Order          not OrderData, OrderObject, OrderModel
+Booking          not BookingData, BookingObject, BookingModel
 EmailAddress   not EmailString
-PricedOrder    not OrderWithPrices
+PricedBooking    not BookingWithPrices
 ```
 
-For phase types, name the guarantee: `ValidatedOrder` says what is true,
+For phase types, name the guarantee: `ValidatedBooking` says what is true,
 not which step produced it.
 
 For choice types, name the concept and give each case a domain word:
@@ -47,8 +47,8 @@ Say what is true, of what.
 
 ```text
 isExpired : Instant -> Quote -> Boolean
-hasUnpaidLines : Order -> Boolean
-canCancel : Order -> Boolean
+hasUnpaidTreatments : Booking -> Boolean
+canCancel : Booking -> Boolean
 ```
 
 Never `check`, `valid`, `flag`, `ok`. A negative name doubles the
@@ -90,7 +90,7 @@ Named for the knowledge they own, as a noun.
 
 ```text
 Pricing        not PricingHelpers
-OrderStore     not OrderDAOImpl
+BookingStore     not BookingDAOImpl
 RowFile        not FileUtils
 ```
 

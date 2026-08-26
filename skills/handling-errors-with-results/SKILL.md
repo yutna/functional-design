@@ -18,8 +18,6 @@ every step, and the first failure diverts to the failure track and skips
 the rest. Once that shape is in place, error handling stops being
 scattered defensive code and becomes part of the pipeline's structure.
 
-Source: Domain Modeling Made Functional, chapter 10 (Wlaschin).
-
 ## When to use
 
 - Designing what a function returns when it can fail
@@ -54,8 +52,8 @@ Not for: failures that can be removed by design, which is
 Exceptions across boundaries:
 
 ```text
-priceOrder : ValidatedOrder -> PricedOrder
--- throws ProductNotFound, throws PriceServiceUnavailable
+priceBooking : ValidatedBooking -> PricedBooking
+-- throws TreatmentNotFound, throws PriceServiceUnavailable
 -- caller must read the implementation to know
 ```
 
@@ -63,11 +61,11 @@ Failures in the type:
 
 ```text
 type PricingError =
-  | ProductNotFound of ProductCode
-  | PriceUnavailable of ProductCode
+  | TreatmentNotFound of TreatmentCode
+  | PriceUnavailable of TreatmentCode
   | TotalTooLarge of Money
 
-priceOrder : ValidatedOrder -> Result<PricedOrder, PricingError>
+priceBooking : ValidatedBooking -> Result<PricedBooking, PricingError>
 ```
 
 Now the failures are visible at every call site, the compiler or the
@@ -131,7 +129,7 @@ Ask what the caller will do with it. That determines the shape.
 | Only logs it              | One case with context              |
 | Fixes a form field        | Case carrying the field name       |
 
-Include the data needed to act or to explain: which product code, which
+Include the data needed to act or to explain: which treatment code, which
 field, which limit. Do not include stack traces, driver codes, or
 sentences meant for end users; the edge renders messages, using the
 reader's language.
@@ -159,7 +157,7 @@ See [error-taxonomy.md](references/error-taxonomy.md).
 - **Losing the cause.** When converting from a library, keep the original
   as opaque context for logs, out of the matchable cases.
 - **Accumulating when steps depend on each other.** Reporting "price
-  missing" for an order that failed validation confuses everyone.
+  missing" for a booking that failed validation confuses everyone.
 
 ## Related skills
 

@@ -17,29 +17,29 @@ module can produce the property by accident.
 ## A branded type with a parser
 
 ```ts
-// product-code.ts
-export type ProductCode = Brand<string, "ProductCode">;
+// treatment-code.ts
+export type TreatmentCode = Brand<string, "TreatmentCode">;
 
-export type ProductCodeError =
+export type TreatmentCodeError =
   | { readonly tag: "WrongLength"; readonly length: number }
   | { readonly tag: "BadPrefix"; readonly prefix: string }
   | { readonly tag: "NotDigits" };
 
 const PATTERN = /^[WG]\d{4}$/;
 
-export const parseProductCode = (
+export const parseTreatmentCode = (
   raw: string,
-): Result<ProductCode, ProductCodeError> => {
+): Result<TreatmentCode, TreatmentCodeError> => {
   const s = raw.trim().toUpperCase();
   if (s.length !== 5) return err({ tag: "WrongLength", length: s.length });
   if (!"WG".includes(s[0] ?? "")) {
     return err({ tag: "BadPrefix", prefix: s[0] ?? "" });
   }
   if (!PATTERN.test(s)) return err({ tag: "NotDigits" });
-  return ok(s as ProductCode);
+  return ok(s as TreatmentCode);
 };
 
-export const productCodeValue = (c: ProductCode): string => c;
+export const treatmentCodeValue = (c: TreatmentCode): string => c;
 ```
 
 Three exports: the type, the parser, and the unwrapper. The `as` cast
@@ -90,12 +90,12 @@ One brand per entity, so identifiers cannot be transposed.
 
 ```ts
 export type CustomerId = Brand<string, "CustomerId">;
-export type OrderId = Brand<string, "OrderId">;
+export type BookingId = Brand<string, "BookingId">;
 
-// transfer(orderId, customerId) is now a compile error
+// transfer(bookingId, customerId) is now a compile error
 export const transfer = (
   customer: CustomerId,
-  order: OrderId,
+  booking: BookingId,
 ): Result<void, TransferError> => { ... };
 ```
 
@@ -107,8 +107,8 @@ constructor internal to the module and name it so nobody reaches for it
 by accident.
 
 ```ts
-/** Only for rows this service wrote. Prefer parseProductCode. */
-export const unsafeProductCodeFromStorage = (s: string) => s as ProductCode;
+/** Only for rows this service wrote. Prefer parseTreatmentCode. */
+export const unsafeTreatmentCodeFromStorage = (s: string) => s as TreatmentCode;
 ```
 
 Storage does drift, so treat this as a measured optimisation, not a
@@ -117,7 +117,7 @@ default.
 ## Where brands do not help
 
 - **Runtime checks.** A brand disappears at compile time; nothing at
-  runtime distinguishes a `ProductCode` from a `string`. The parser is
+  runtime distinguishes a `TreatmentCode` from a `string`. The parser is
   what guarantees the value, not the type.
 - **`JSON.parse` results.** They arrive as `unknown` or `any`. Parse into
   branded types at the boundary. See
@@ -130,12 +130,12 @@ default.
 
 ```ts
 test("round-trips a valid code", () => {
-  const r = parseProductCode(" w1234 ");
-  expect(r.ok && productCodeValue(r.value)).toBe("W1234");
+  const r = parseTreatmentCode(" w1234 ");
+  expect(r.ok && treatmentCodeValue(r.value)).toBe("W1234");
 });
 
 test("rejects each failure case", () => {
-  expect(parseProductCode("W12")).toMatchObject({
+  expect(parseTreatmentCode("W12")).toMatchObject({
     error: { tag: "WrongLength" },
   });
 });

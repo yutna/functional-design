@@ -10,16 +10,16 @@ Two functions must be called in a particular order, and nothing enforces
 it.
 
 ```text
-validate : Order -> Order
-price    : Order -> Order        -- crashes unless validate ran first
+validate : Booking -> Booking
+price    : Booking -> Booking        -- crashes unless validate ran first
 ```
 
 **Remove it** by making the output type of one step the input type of the
 next, so the wrong order will not compile or will fail an obvious test.
 
 ```text
-validate : UnvalidatedOrder -> Result<ValidatedOrder, ValidationError>
-price    : ValidatedOrder -> PricedOrder
+validate : UnvalidatedBooking -> Result<ValidatedBooking, ValidationError>
+price    : ValidatedBooking -> PricedBooking
 ```
 
 Related: [modeling-state-machines](../../modeling-state-machines/SKILL.md).
@@ -52,8 +52,8 @@ other is meant and nothing objects.
 
 ```text
 alias CustomerId = String
-alias OrderId = String
-lookup : CustomerId -> OrderId -> Result<Order, Error>   -- swappable
+alias BookingId = String
+lookup : CustomerId -> BookingId -> Result<Booking, Error>   -- swappable
 ```
 
 **Remove it** with distinct types, even in dynamically typed languages,

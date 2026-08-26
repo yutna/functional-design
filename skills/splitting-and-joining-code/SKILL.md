@@ -19,8 +19,6 @@ together, overlap conceptually, or cannot be understood apart. Split when
 one piece is general and the other is special, or when the two have
 genuinely separate reasons to change.
 
-Source: A Philosophy of Software Design, chapter 9 (Ousterhout).
-
 ## When to use
 
 - A function is "too long" and the urge is to extract parts of it
@@ -63,28 +61,29 @@ Not for: judging whether a module's interface is worth its cost, which is
 The special-general mixture, and its repair.
 
 ```text
--- general text editor primitive, contaminated by one caller's case
-delete : Range -> Editor -> Editor
--- ...and, inside, a branch for "if this is a backspace at line start,
--- join with the previous line and move the cursor"
+-- general calendar primitive, contaminated by one caller's case
+place : Interval -> AppointmentId -> Calendar -> Result<Calendar, Clash>
+-- ...and, inside, a branch for "if this is a follow-up visit, let it
+-- overlap the same clinician's existing appointment"
 ```
 
-Backspace's rule now lives inside the general primitive. Every future
-editing feature must read it, and any change to backspace risks
+The follow-up rule now lives inside the general primitive. Every future
+scheduling feature must read it, and any change to follow-ups risks
 everything else.
 
 ```text
 -- general stays general
-delete : Range -> Editor -> Editor
+place : Interval -> AppointmentId -> Calendar -> Result<Calendar, Clash>
 
 -- special lives with the feature that needs it
-backspace : Editor -> Editor
-backspace e =
-  let r = if atLineStart e then joinRange e else charBefore e
-  in delete r e
+placeFollowUp :
+  Clinician -> Interval -> AppointmentId -> Calendar
+            -> Result<Calendar, Clash>
+placeFollowUp c i a cal =
+  place i a (allowOverlapFor c cal) |> map (restoreRules cal)
 ```
 
-The general primitive knows nothing about backspace. The special case is
+The general primitive knows nothing about follow-ups. The special case is
 one small function next to the feature that owns it.
 
 ## On splitting functions

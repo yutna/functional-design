@@ -27,11 +27,11 @@ everything into it. If any step does I/O, the common shape is
 | `Result<B, E1>`    | `Result<B, E2>`    | Map the error            |
 
 ```text
-placeOrder =
-  validateOrder      -- Result, lifted
+confirmBooking =
+  validateBooking      -- Result, lifted
     |> asyncResult
-    >=> priceOrder   -- AsyncResult, already the common shape
-    >=> (acknowledgeOrder |> pure >> asyncResult)
+    >=> priceBooking   -- AsyncResult, already the common shape
+    >=> (acknowledgeBooking |> pure >> asyncResult)
 ```
 
 The names differ by language; the operations are always these four. The
@@ -46,10 +46,10 @@ the step's own definition.
 
 ```text
 -- good: honest signature, lifted at the call site
-calculateTotal : PricedOrder -> Money
+calculateTotal : PricedBooking -> Money
 
 -- bad: pretends to need the world
-calculateTotal : PricedOrder -> AsyncResult<Money, Never>
+calculateTotal : PricedBooking -> AsyncResult<Money, Never>
 ```
 
 ## Aligning error types
@@ -57,10 +57,10 @@ calculateTotal : PricedOrder -> AsyncResult<Money, Never>
 Steps have narrow error types; the workflow has one. Map at composition.
 
 ```text
-placeOrder =
-  validateOrder |> mapError Validation
-    >=> (priceOrder |> mapError Pricing)
-    >=> (saveOrder |> mapError Storage)
+confirmBooking =
+  validateBooking |> mapError Validation
+    >=> (priceBooking |> mapError Pricing)
+    >=> (saveBooking |> mapError Storage)
 ```
 
 Every step stays honest about what it can produce, and the caller matches

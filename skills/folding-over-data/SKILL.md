@@ -17,8 +17,6 @@ The same operation generalises past lists. Any recursive type has a fold:
 one function per case, applied bottom-up. That is what replaces the
 visitor pattern and most manual tree recursion.
 
-Source: Functional Design, parts I and IV (Martin).
-
 ## When to use
 
 - A loop with an accumulator variable
@@ -59,7 +57,7 @@ for line in lines:
     count = count + 1
 ```
 
-Three mutable variables, an implicit order, and a shape that cannot be
+Three mutable variables, an implicit booking, and a shape that cannot be
 reused or run in parallel.
 
 Fold:

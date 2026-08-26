@@ -8,32 +8,32 @@ works and still ships.
 ## The starting point
 
 ```text
-class OrderService {
+class BookingService {
   constructor(repo, catalogue, mailer) { ... }
 
-  place(dto) {
-    if (!dto.customerId) throw new Error("bad order")
-    if (!dto.lines || dto.lines.length === 0) throw new Error("no lines")
+  confirm(dto) {
+    if (!dto.customerId) throw new Error("bad booking")
+    if (!dto.treatments || dto.treatments.length === 0) throw new Error("no treatments")
 
-    const order = this.repo.load(dto.id) ?? { id: dto.id, lines: [] }
-    if (order.status === "placed") throw new Error("already placed")
+    const booking = this.repo.load(dto.id) ?? { id: dto.id, treatments: [] }
+    if (booking.status === "confirmed") throw new Error("already confirmed")
 
     let total = 0
-    for (const line of dto.lines) {
-      const product = this.catalogue.find(line.code)
-      if (!product) throw new Error("unknown product " + line.code)
-      if (line.qty < 1) throw new Error("bad quantity")
-      total += product.price * line.qty
+    for (const treatment of dto.treatments) {
+      const priced = this.catalogue.find(treatment.code)
+      if (!priced) throw new Error("unknown treatment " + treatment.code)
+      if (treatment.qty < 1) throw new Error("bad quantity")
+      total += priced.price * treatment.qty
     }
 
-    order.status = "placed"
-    order.placedAt = new Date()
-    order.total = total
-    order.cancelReason = null
+    booking.status = "confirmed"
+    booking.confirmedAt = new Date()
+    booking.total = total
+    booking.cancelReason = null
 
-    this.repo.save(order)
-    this.mailer.send(dto.email, "Order placed", render(order))
-    return order
+    this.repo.save(booking)
+    this.mailer.send(dto.email, "Booking confirmed", render(booking))
+    return booking
   }
 }
 ```
@@ -46,17 +46,17 @@ the domain model.
 ## Commit 1 — wrap primitives
 
 ```text
-type OrderId = OrderId of Uuid
-type ProductCode = ProductCode of String   -- "W" or "G" + 4 digits
+type BookingId = BookingId of Uuid
+type TreatmentCode = TreatmentCode of String   -- "W" or "G" + 4 digits
 type Quantity = Quantity of Integer        -- 1..1000
 type Money = Money of { minorUnits: Integer, currency: Currency }
 
-parseProductCode : String -> Result<ProductCode, ProductCodeError>
+parseTreatmentCode : String -> Result<TreatmentCode, TreatmentCodeError>
 quantity : Integer -> Result<Quantity, QuantityError>
 ```
 
 Change one signature, follow the failures outward, and let the
-conversions accumulate at the boundary. The `line.qty < 1` check
+conversions accumulate at the boundary. The `treatment.qty < 1` check
 disappears from the loop: it now lives in `quantity`, once.
 
 **Green when:** the parsers have their own tests and nothing else
@@ -72,12 +72,12 @@ type Lifecycle =
 ```
 
 Add conversions at the storage boundary, then replace comparisons module
-by module. The `order.status === "placed"` guard becomes a match, and the
+by module. The `booking.status === "confirmed"` guard becomes a match, and the
 compiler or a coverage test lists every place still to convert.
 
 ## Commit 3 — collapse the correlated fields
 
-`placedAt`, `total` and `cancelReason` were three nullable fields whose
+`confirmedAt`, `total` and `cancelReason` were three nullable fields whose
 validity depended on the status. They are now inside the cases from
 commit 2, so this commit is deletion: remove the fields, remove the
 `cancelReason = null` line, remove every downstream null check.
@@ -90,12 +90,12 @@ cases. Nothing can now be placed without a total.
 Work outward from the leaves.
 
 ```text
-type PlaceOrderError =
-  | UnknownProduct of ProductCode
-  | AlreadyPlaced of OrderId
+type ConfirmBookingError =
+  | UnknownTreatment of TreatmentCode
+  | AlreadyPlaced of BookingId
   | Invalid of NonEmptyList<ValidationError>
 
-place : ... -> Result<Order, PlaceOrderError>
+confirm : ... -> Result<Booking, ConfirmBookingError>
 ```
 
 Stop at the module boundary and convert once there, so the callers that
@@ -105,7 +105,7 @@ now a named case that the signature admits to.
 ## Commit 5 — pass the clock in
 
 ```text
-place : Instant -> ... -> Result<Order, PlaceOrderError>
+confirm : Instant -> ... -> Result<Booking, ConfirmBookingError>
 ```
 
 Add the parameter, default it at the outermost call site, remove the
@@ -118,12 +118,12 @@ of several samples.
 `catalogue` had eleven methods; two were used.
 
 ```text
-alias FindProduct = ProductCode -> Option<Product>
-alias SaveOrder = Order -> AsyncResult<Unit, SaveError>
+alias FindTreatment = TreatmentCode -> Option<Treatment>
+alias SaveBooking = Booking -> AsyncResult<Unit, SaveError>
 alias SendMail = EmailAddress -> Subject -> Body -> AsyncResult<Unit, MailError>
 
-place :
-  FindProduct -> SaveOrder -> SendMail -> Instant -> ...
+confirm :
+  FindTreatment -> SaveBooking -> SendMail -> Instant -> ...
 ```
 
 The tests replace three mocks with three one-line functions. The domain
@@ -137,14 +137,14 @@ the middle, writes at the bottom; then lift the middle out.
 ```text
 -- pure: no imports, no effects, total
 decidePlacement :
-  Instant -> Catalogue -> Order -> PlaceOrderCommand
-    -> Result<{ order: Order, events: List<OrderEvent> }, PlaceOrderError>
+  Instant -> Catalogue -> Booking -> BookingRequest
+    -> Result<{ booking: Booking, events: List<BookingEvent> }, ConfirmBookingError>
 
 -- shell: sequencing only
-place findProduct saveOrder sendMail now cmd =
-  loadOrder cmd.id
+place findTreatment saveBooking sendMail now cmd =
+  loadBooking cmd.id
     |> map (\o -> decidePlacement now catalogue o cmd)
-    |> bind (\d -> saveOrder d.order |> map (const d.events))
+    |> bind (\d -> saveBooking d.booking |> map (const d.events))
     |> bind dispatch
 ```
 
@@ -155,24 +155,24 @@ decision no longer depends on a mail server being up.
 ## Commit 8 — stage types
 
 ```text
-UnvalidatedOrder -> ValidatedOrder -> PricedOrder -> PlacedOrder
+UnvalidatedBooking -> ValidatedBooking -> PricedBooking -> ConfirmedBooking
 ```
 
 Rename the input type, add each stage as a copy, and change each step's
 signature in turn. The loop that validated and priced in one pass splits
-into two steps that cannot run out of order.
+into two steps that cannot run out of booking.
 
 The re-checks inside `decidePlacement` can now be deleted: a
-`ValidatedOrder` is validated by construction.
+`ValidatedBooking` is validated by construction.
 
 ## Commit 9 — split the DTO
 
-Copy the current type to `OrderDto`, keeping every compromise, and write
+Copy the current type to `BookingDto`, keeping every compromise, and write
 the two mappings.
 
 ```text
-toDto : Order -> OrderDto
-fromDto : OrderDto -> Result<Order, OrderDtoError>
+toDto : Booking -> BookingDto
+fromDto : BookingDto -> Result<Booking, BookingDtoError>
 ```
 
 `fromDto` returns `Result` because the table still holds rows written by
@@ -186,12 +186,12 @@ Serialisation now points at the DTO, which releases the domain type.
 Stop exporting the constructor and the fields; export the operations.
 
 ```text
-module Order
-  type Order                                  -- opaque
-  place : Instant -> PlaceOrderCommand -> Order
-            -> Result<Placed, PlaceOrderError>
-  cancel : Instant -> CancelReason -> Order -> Result<Cancelled, Error>
-  total : Order -> Money
+module Booking
+  type Booking                                  -- opaque
+  confirm : Instant -> BookingRequest -> Booking
+            -> Result<Placed, ConfirmBookingError>
+  cancel : Instant -> CancelReason -> Booking -> Result<Cancelled, Error>
+  total : Booking -> Money
 ```
 
 The compiler finds the call sites that were reaching in. After this, the

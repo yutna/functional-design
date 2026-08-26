@@ -1,6 +1,6 @@
 # Three Strategies, One Example
 
-The task: approve a refund if the order exists, is less than sixty days
+The task: approve a refund if the booking exists, is less than sixty days
 old, and the amount does not exceed the customer's refund allowance for
 the month.
 
@@ -11,8 +11,8 @@ The shell gathers everything, then a pure function decides.
 ```text
 -- pure core: no dependencies at all
 type RefundContext = {
-  order: Order,
-  orderAge: Days,
+  booking: Booking,
+  bookingAge: Days,
   usedThisMonth: Money,
   allowance: Money,
 }
@@ -23,13 +23,13 @@ decideRefund : RefundContext -> Result<RefundApproved, RefundError>
 ```text
 -- shell
 handleRefund request =
-  loadOrder request.orderId
+  loadBooking request.bookingId
     |> combine (loadUsage request.customerId)
     |> map (toContext now)
     |> bind decideRefund
 ```
 
-**Cost:** the shell fetches the usage even when the order is too old.
+**Cost:** the shell fetches the usage even when the booking is too old.
 **Benefit:** the decision is a pure function of plain data. It can be
 tested exhaustively, replayed against historical data, and reviewed by a
 domain expert.
@@ -42,11 +42,11 @@ often than people expect.
 The decision fetches as it goes, through function types it declares.
 
 ```text
-alias LoadOrder = OrderId -> Async<Option<Order>>
+alias LoadBooking = BookingId -> Async<Option<Booking>>
 alias LoadUsage = CustomerId -> Month -> Async<Money>
 
 approveRefund :
-  LoadOrder -> LoadUsage -> Instant -> RefundRequest
+  LoadBooking -> LoadUsage -> Instant -> RefundRequest
     -> AsyncResult<RefundApproved, RefundError>
 ```
 
@@ -103,8 +103,8 @@ All three are dependencies. Treat them exactly the same way.
 isExpired : Instant -> Quote -> Boolean
 
 -- parameterize: pass the source, when many values are needed
-alias NextId = Unit -> OrderId
-createLines : NextId -> List<Draft> -> List<OrderLine>
+alias NextId = Unit -> BookingId
+createTreatments : NextId -> List<Draft> -> List<BookedTreatment>
 ```
 
 Prefer passing the value. A workflow usually needs one timestamp, taken
@@ -121,7 +121,7 @@ startup, parse it into typed values, and pass those.
 loadConfig : Environment -> Result<Config, ConfigError>
 
 -- domain receives typed values, never keys
-priceOrder : PricingPolicy -> Order -> Priced
+priceBooking : PricingPolicy -> Booking -> Priced
 ```
 
 A domain function that reads an environment variable has an invisible
@@ -135,10 +135,10 @@ place that knows about both the domain and the infrastructure.
 ```text
 buildApp pool client clock =
   {
-    placeOrder =
-      placeOrder (checkProduct client) (getPrice client) (saveOrder pool),
+    confirmBooking =
+      confirmBooking (checkTreatment client) (getPrice client) (saveBooking pool),
     approveRefund =
-      approveRefund (loadOrder pool) (loadUsage pool),
+      approveRefund (loadBooking pool) (loadUsage pool),
   }
 ```
 

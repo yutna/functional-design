@@ -1,22 +1,16 @@
 # Functional Design Skills
 
-A portable pack of agent skills that distils three books into executable
-design rules for codebases written in a functional style:
+A portable pack of agent skills carrying executable design rules for
+codebases written in a functional style. It covers:
 
-- **Functional Design: Principles, Patterns, and Practices** —
-  Robert C. Martin
-- **Domain Modeling Made Functional** — Scott Wlaschin
-- **A Philosophy of Software Design, 2nd edition** — John Ousterhout
-
-Three further works fill gaps those three leave, each labelled where it
-appears rather than folded in silently:
-
-- **Refactoring, 2nd edition** — Martin Fowler, for the smell catalogue
-  and the tactical moves
-- **Out of the Tar Pit** — Ben Moseley and Peter Marks, for essential
-  versus accidental complexity
-- **Data-Oriented Programming** — Yehonathan Sharvit, for the data-first
-  school this pack otherwise argues against
+- Diagnosing complexity, and telling what a design costs from what it
+  looks like
+- Modelling a domain in types so illegal values cannot be built
+- Composing workflows out of total functions, with errors as values
+- Module boundaries, information hiding, and interface depth
+- Immutability, state, effects at the edges, and reliability across a
+  process boundary
+- Refactoring imperative or object-oriented code toward all of the above
 
 The skills are language-agnostic. Core skills describe designs in a
 neutral notation; separate language packs translate them into JavaScript,
@@ -144,16 +138,8 @@ See [evals/README.md](evals/README.md) for what the routing check does
 and does not prove, why one of its two measures deliberately does not
 gate, and the scenarios to run against a real agent.
 
-## Attribution
-
-The rules here are restatements and syntheses of ideas from the works
-above, credited at chapter level inside each skill. Material from the
-three supporting sources says so where it appears, and never claims
-chapter provenance in the primary three. No book text is reproduced. Read
-the originals: the skills are a working checklist, not a substitute.
-
-See [AUDIT.md](AUDIT.md) for the coverage matrix against all three books,
-and for what the supporting sources contributed.
+See [AUDIT.md](AUDIT.md) for what the pack covers, how it was verified,
+and what it does not establish.
 
 ## Licence
 
@@ -161,5 +147,5 @@ MIT, in [LICENSE](LICENSE). Copy `skills/` into any project, including
 commercial work; keep the copyright notice.
 
 The licence covers the wording in this repository and nothing else. The
-ideas belong to the authors of the books, who are credited per chapter
-inside each skill, and nothing here licenses their text.
+design principles it states are long-established and belong to nobody
+here.

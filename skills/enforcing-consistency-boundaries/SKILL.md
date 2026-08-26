@@ -7,8 +7,8 @@ description: Use when deciding what one transaction must cover, when two entitie
 
 ## Overview
 
-Some rules must hold at every instant: an order's total equals the sum of
-its lines; a booking never double-books a room. Others may lag: a
+Some rules must hold at every instant: a booking's total equals the sum of
+its treatments; a booking never double-books a room. Others may lag: a
 customer's loyalty points can catch up with their purchases a second
 later. Deciding which is which, and drawing a boundary around each set of
 rules that must hold together, is what makes a system both correct and
@@ -18,8 +18,6 @@ The unit is the **aggregate**: a cluster of data with one entry point,
 whose invariants hold whenever a change to it completes. One aggregate is
 one transaction. Between aggregates, consistency is eventual, and that is
 a design decision to be made explicitly rather than a compromise.
-
-Source: Domain Modeling Made Functional, chapter 6 (Wlaschin).
 
 ## When to use
 
@@ -36,15 +34,15 @@ Not for: drawing boundaries between subsystems, which is
 
 Two different kinds of domain type, with different equality:
 
-| Kind   | Equality                       | Example             |
-| ------ | ------------------------------ | ------------------- |
-| Entity | Same identifier, whatever else | `Order`, `Customer` |
-| Value  | Same contents, no identifier   | `Money`, `Address`  |
+| Kind   | Equality                       | Example               |
+| ------ | ------------------------------ | --------------------- |
+| Entity | Same identifier, whatever else | `Booking`, `Customer` |
+| Value  | Same contents, no identifier   | `Money`, `Address`    |
 
 Consequences worth acting on:
 
-- An entity's identifier is assigned once and never changes. Two orders
-  with the same contents are still two orders.
+- An entity's identifier is assigned once and never changes. Two bookings
+  with the same contents are still two bookings.
 - A value is replaced, never mutated. Changing a customer's address means
   a new `Address` value, not an edit to the old one.
 - Do not give a value an identifier because storage wants a primary key.
@@ -53,7 +51,7 @@ Consequences worth acting on:
 ## Core rules
 
 1. **List the invariants first.** Write each rule as a sentence. "An
-   order's total equals the sum of its lines."
+   booking's total equals the sum of its treatments."
 2. **Group by invariant, not by relationship.** Data that must be
    consistent together lives in the same aggregate. A foreign key is not
    a reason to group.
@@ -76,29 +74,29 @@ Consequences worth acting on:
 Boundary drawn around a relationship:
 
 ```text
--- one aggregate holding a customer and every order they ever placed
+-- one aggregate holding a customer and every booking they ever made
 type Customer = { id: CustomerId, profile: Profile,
-                  orders: List<Order> }
+                  bookings: List<Booking> }
 ```
 
-Placing one order now loads and rewrites every order. Two orders placed
+Confirming one booking now loads and rewrites every booking. Two bookings confirmed
 at once conflict, though they share no rule. Nothing here needs to be
-consistent across orders.
+consistent across bookings.
 
 Boundary drawn around invariants:
 
 ```text
--- aggregate: an order and its lines, because the total rule spans them
-type Order = { id: OrderId, customer: CustomerId,
-               lines: NonEmptyList<OrderLine> }
-total : Order -> Money
+-- aggregate: a booking and its treatments, because the total rule spans them
+type Booking = { id: BookingId, customer: CustomerId,
+               treatments: NonEmptyList<BookedTreatment> }
+total : Booking -> Money
 
 -- separate aggregate: the customer, referenced by identifier
 type Customer = { id: CustomerId, profile: Profile,
                   credit: CreditLimit }
 ```
 
-The order's rule holds inside its own transaction. Concurrent orders do
+The booking's rule holds inside its own transaction. Concurrent bookings do
 not conflict. The credit-limit rule spans both aggregates, so it becomes
 an explicit step in the workflow, with an explicit answer for what
 happens when it is violated after the fact.

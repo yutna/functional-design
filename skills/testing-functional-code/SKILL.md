@@ -17,9 +17,6 @@ That makes test difficulty a design instrument. When a business rule is
 hard to test, the test is not the problem; the rule is entangled with an
 effect, and the fix is in the design.
 
-Source: Functional Design (Martin), with the caution about test-driven
-design from A Philosophy of Software Design, chapter 19 (Ousterhout).
-
 ## When to use
 
 - Writing tests for a workflow, a domain type, or a pipeline
@@ -78,8 +75,8 @@ Testable with values:
 
 ```text
 test "refunds over sixty days are rejected" =
-  let order = orderPlacedOn (daysAgo 61)
-  in expect (decideRefund now order request)
+  let booking = bookingConfirmedOn (daysAgo 61)
+  in expect (decideRefund now booking request)
        toBe (Reject TooOld)
 ```
 
@@ -95,8 +92,8 @@ A capability is a function type, so a stub is a function.
 let stubPrice = \code -> Money 1000
 let stubExists = \_ -> true
 
-test "prices every line" =
-  expect (priceOrder stubPrice validOrder) toBeOk
+test "prices every treatment" =
+  expect (priceBooking stubPrice validBooking) toBeOk
 ```
 
 No framework, no expectations, no verification of calls. If a test needs

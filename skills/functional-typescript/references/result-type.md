@@ -54,7 +54,7 @@ export function pipe(a: unknown, ...fns: Array<(x: unknown) => unknown>) {
 ```
 
 ```ts
-const placeOrder = (raw: UnvalidatedOrder) =>
+const confirmBooking = (raw: UnvalidatedBooking) =>
   pipe(validate(raw), bind(price(catalogue)), bind(acknowledge), map(toEvents));
 ```
 
@@ -66,9 +66,9 @@ that, name intermediate values instead.
 Narrowing makes early return read well, and many teams prefer it.
 
 ```ts
-const placeOrder = (
-  raw: UnvalidatedOrder,
-): Result<readonly OrderEvent[], PlaceOrderError> => {
+const confirmBooking = (
+  raw: UnvalidatedBooking,
+): Result<readonly BookingEvent[], ConfirmBookingError> => {
   const validated = validate(raw);
   if (!validated.ok) return err({ tag: "Validation", cause: validated.error });
 
@@ -131,12 +131,12 @@ problem `Result` exists to solve.
 ## Converting at the boundary
 
 ```ts
-export const saveOrder = async (
+export const saveBooking = async (
   pool: Pool,
-  order: Order,
+  booking: Booking,
 ): AsyncResult<void, SaveError> => {
   try {
-    await pool.query(INSERT, toRow(order));
+    await pool.query(INSERT, toRow(booking));
     return ok(undefined);
   } catch (e: unknown) {
     return err(classify(e));
@@ -160,7 +160,7 @@ on a driver detail. See
 ## Error types
 
 ```ts
-export type PlaceOrderError =
+export type ConfirmBookingError =
   | { readonly tag: "Validation"; readonly cause: ValidationError }
   | { readonly tag: "Pricing"; readonly cause: PricingError }
   | { readonly tag: "Storage"; readonly cause: SaveError };

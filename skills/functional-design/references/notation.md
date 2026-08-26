@@ -8,10 +8,10 @@ translation. Language packs show the same shapes in real syntax.
 
 ```text
 -- record (product type): all fields present at once
-type Order = {
-  id: OrderId,
+type Booking = {
+  id: BookingId,
   customer: CustomerId,
-  lines: NonEmptyList<OrderLine>,
+  treatments: NonEmptyList<BookedTreatment>,
 }
 
 -- choice (sum type): exactly one case at a time
@@ -21,7 +21,7 @@ type PaymentMethod =
   | Transfer of { bank: BankCode, ref: TransferRef }
 
 -- single-case wrapper: a distinct type over a primitive
-type OrderId = OrderId of String
+type BookingId = BookingId of String
 
 -- alias: the same type under another name, no new guarantees
 alias Quantity = Integer
@@ -34,13 +34,13 @@ no payload (`Cash`) carries only the fact that it is that case.
 
 ```text
 -- one argument, one result
-validateOrder : UnvalidatedOrder -> Result<ValidatedOrder, ValidationError>
+validateBooking : UnvalidatedBooking -> Result<ValidatedBooking, ValidationError>
 
 -- several arguments, written curried
-priceOrder : GetProductPrice -> ValidatedOrder -> PricedOrder
+priceBooking : GetTreatmentPrice -> ValidatedBooking -> PricedBooking
 
 -- a function passed as a value
-alias GetProductPrice = ProductCode -> Price
+alias GetTreatmentPrice = TreatmentCode -> Price
 ```
 
 Read `->` right-associatively: `A -> B -> C` is a function from `A` to a
@@ -52,13 +52,13 @@ with no exception and no hidden `null`.
 
 ```text
 -- left-to-right composition: build a new function
-placeOrder = validate >> price >> acknowledge
+confirmBooking = validate >> price >> acknowledge
 
 -- pipe: push a value through functions
-result = order |> validate |> price |> acknowledge
+result = booking |> validate |> price |> acknowledge
 
 -- compose functions that return Result (railway composition)
-placeOrder = validate >=> price >=> acknowledge
+confirmBooking = validate >=> price >=> acknowledge
 ```
 
 `>>` composes plain functions. `>=>` composes functions that each return
@@ -95,10 +95,10 @@ future cases, never a convenience.
 
 ```text
 -- pure: same input, same output, no observable side effect
-calculateTotal : PricedOrder -> Total
+calculateTotal : PricedBooking -> Total
 
 -- effectful: touches the outside world, marked in the type
-saveOrder : Order -> AsyncResult<Unit, DbError>
+saveBooking : Booking -> AsyncResult<Unit, DbError>
 ```
 
 If a signature has no effect type, it does no I/O, reads no clock, and

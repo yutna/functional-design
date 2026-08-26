@@ -35,7 +35,7 @@ this record has five optional fields and only some combinations are legal -> mod
 should this be a record or a union -> modeling-with-algebraic-types
 this record has three booleans and a nullable date -> making-illegal-states-unrepresentable
 the code defends against a state that should never happen -> making-illegal-states-unrepresentable
-customer id and order id are both plain strings -> constraining-primitive-values
+customer id and booking id are both plain strings -> constraining-primitive-values
 the same postcode check appears in three modules -> constraining-primitive-values
 should this be a branded type or just a plain map -> choosing-types-or-plain-data
 the admin screen lets each customer add their own form fields -> choosing-types-or-plain-data
@@ -43,10 +43,10 @@ the field set varies per tenant so one type cannot cover it -> choosing-types-or
 we wrap everything in types and it feels like paperwork now -> choosing-types-or-plain-data
 the report columns are whatever the user picked at request time -> choosing-types-or-plain-data
 the entity has a status column and every function branches on it -> modeling-state-machines
-an order went backwards through its lifecycle somehow -> modeling-state-machines
-should one transaction cover the order and the customer -> enforcing-consistency-boundaries
+a booking went backwards through its lifecycle somehow -> modeling-state-machines
+should one transaction cover the booking and the customer -> enforcing-consistency-boundaries
 two records have to stay in step and sometimes do not -> enforcing-consistency-boundaries
-the logic for placing an order is spread over three services -> designing-workflow-pipelines
+the logic for confirming a booking is spread over three services -> designing-workflow-pipelines
 i am implementing a use case and do not know how to structure it -> designing-workflow-pipelines
 these two functions almost fit together but not quite -> composing-functions
 what order should the parameters go in -> composing-functions
@@ -81,9 +81,9 @@ this design cannot absorb the new requirement without a flag -> refactoring-towa
 is a data class with no methods a smell in functional code -> refactoring-toward-functional-design
 the code smells but the types are fine, what move do i apply -> refactoring-toward-functional-design
 this function does two things in sequence, split the phases -> splitting-and-joining-code
-which fowler refactoring moves still apply without classes -> refactoring-toward-functional-design
+which refactoring moves still apply without classes -> refactoring-toward-functional-design
 a timeout left us unsure whether the payment went through -> making-effects-reliable
-we saved the order but the event was never published -> making-effects-reliable
+we saved the booking but the event was never published -> making-effects-reliable
 the retry charged the customer twice -> making-effects-reliable
 we had an incident and the logs could not tell us why -> designing-what-to-observe
 what should we measure and what should we alert on -> designing-what-to-observe

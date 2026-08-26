@@ -53,9 +53,9 @@ take : Integer -> List<A> -> List<A>
 
 ### Redefinition gone wrong
 
-Defining away a case the business names. "Product code not found" during
-order validation is a real outcome: the customer typed something wrong,
-and silently dropping the line produces a wrong order. The test is
+Defining away a case the business names. "Treatment code not found" during
+booking validation is a real outcome: the customer typed something wrong,
+and silently dropping the treatment produces a wrong booking. The test is
 whether a domain expert would want to know.
 
 ## 2. Mask it
@@ -90,7 +90,7 @@ Let errors travel to one place that handles them uniformly.
 
 ```text
 -- one handler for every workflow error in the service
-toResponse : PlaceOrderError -> Response
+toResponse : ConfirmBookingError -> Response
 toResponse e =
   match e with
   | Validation errs -> badRequest (renderAll errs)
@@ -120,8 +120,8 @@ Some conditions are not worth handling.
 ```text
 -- an invariant broken means the program is wrong
 match quote with
-| IsAccepted a when a.order == null ->
-    fail "accepted quote without an order"
+| IsAccepted a when a.booking == null ->
+    fail "accepted quote without a booking"
 ```
 
 Crash when all of these hold:

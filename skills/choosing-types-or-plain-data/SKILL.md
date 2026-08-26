@@ -27,11 +27,6 @@ for.
 **The default in this pack is type-first.** This skill says when to leave
 it, not that it is optional.
 
-Source: not from the three books. Data-Oriented Programming (Sharvit),
-Out of the Tar Pit (Moseley and Marks), and Rich Hickey's talks on
-complecting are the data-first side; the rest of this pack is the
-type-first side.
-
 ## When to use
 
 - Choosing between a domain type and a plain map for a shape
@@ -199,9 +194,9 @@ Both directions, because both failures are real.
 
 ## Further reading
 
-- [two-schools.md](references/two-schools.md) sets the four principles of
-  data-oriented programming against this pack's rules and marks exactly
-  where they conflict.
+- [two-schools.md](references/two-schools.md) sets the two positions
+  against each other and marks exactly where they conflict, and where
+  they agree.
 - [schema-as-data.md](references/schema-as-data.md) is how to take the
   generic route without losing the guarantees.
 - [decision-worked.md](references/decision-worked.md) works three real

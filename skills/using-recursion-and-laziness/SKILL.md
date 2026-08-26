@@ -18,8 +18,6 @@ produces the two most common runtime failures in functional code: a stack
 that overflows on real data, and a computation repeated a thousand times
 because nobody noticed it was not cached.
 
-Source: Functional Design, part I (Martin).
-
 ## When to use
 
 - Consuming a tree, an expression, or any recursive type

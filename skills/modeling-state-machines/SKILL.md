@@ -18,8 +18,6 @@ carrying exactly the data that exists in that state, and one function per
 legal transition. Illegal states disappear, and so do illegal
 transitions.
 
-Source: Domain Modeling Made Functional, chapters 5 and 7 (Wlaschin).
-
 ## When to use
 
 - A record has a `status`, `state`, `stage` or `phase` field
@@ -57,7 +55,7 @@ type Quote = {
   status: String,             -- "draft" | "sent" | "accepted"
   sentAt: Option<Instant>,
   acceptedBy: Option<CustomerId>,
-  orderId: Option<OrderId>,
+  bookingId: Option<BookingId>,
 }
 
 accept q =
@@ -66,7 +64,7 @@ accept q =
 ```
 
 Every function repeats the guard, and the compiler helps with none of it.
-A draft with an `orderId` is representable, and one will appear.
+A draft with an `bookingId` is representable, and one will appear.
 
 States as cases, transitions as functions:
 
@@ -74,7 +72,7 @@ States as cases, transitions as functions:
 type Draft = { id: QuoteId, lines: List<QuoteLine> }
 type Sent = { id: QuoteId, lines: NonEmptyList<QuoteLine>,
               sentAt: Instant, expires: Instant }
-type Accepted = { id: QuoteId, order: OrderId,
+type Accepted = { id: QuoteId, booking: BookingId,
                   acceptedBy: CustomerId, at: Instant }
 
 type Quote = IsDraft of Draft | IsSent of Sent | IsAccepted of Accepted
@@ -84,7 +82,7 @@ accept : Instant -> CustomerId -> Sent -> Result<Accepted, AcceptError>
 expire : Instant -> Sent -> Result<Expired, NotYetDue>
 ```
 
-`accept` cannot be handed a draft. `Accepted` always has an order
+`accept` cannot be handed a draft. `Accepted` always has a booking
 identifier. The guards that were repeated in every function now exist
 once each, in the transition that owns them.
 

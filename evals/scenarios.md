@@ -20,7 +20,7 @@ checking. Should reach `making-illegal-states-unrepresentable`.
 ## 2. A rule in three places
 
 > The rule that a discount code is four to sixteen upper-case characters
-> is implemented in the orders module, the billing module and the admin
+> is implemented in the bookings module, the billing module and the admin
 > importer. They have drifted.
 
 Must contain: one owner for the rule; a wrapper type built through a
@@ -50,7 +50,7 @@ or an aggregate. Should reach the calibration guidance in
 
 ## 5. A charge that may have happened
 
-> Our checkout calls the payment provider, then writes the order, then
+> Our checkout calls the payment provider, then writes the booking, then
 > publishes an event. Last week a timeout meant we charged a customer and
 > have no order for it.
 
@@ -98,18 +98,18 @@ Should reach `crossing-io-boundaries` and its read-model example.
 
 ## 10. A legacy service
 
-> We have a 300-line `OrderService` class doing validation, pricing,
+> We have a 300-line `BookingService` class doing validation, pricing,
 > saving and emailing. We want to move to a functional style without
 > stopping feature work.
 
 Must contain: incremental moves rather than a rewrite; one move per
-commit with tests green between; an order that starts with types and
+commit with tests green between; a booking that starts with types and
 `Result` before extracting the pure decision. Should reach
 `refactoring-toward-functional-design`.
 
 ## 11. Naming failure
 
-> I have a function that validates an order, prices it and saves it, and
+> I have a function that validates a booking, prices it and saves it, and
 > I cannot think of a name for it.
 
 Must contain: treating the naming difficulty as a design finding, not a
@@ -137,7 +137,7 @@ model. Should reach `capturing-the-domain`.
 
 ## 14. A wide dependency
 
-> Our `placeOrder` takes an `OrderRepository` with twenty-two methods and
+> Our `confirmBooking` takes an `BookingRepository` with twenty-two methods and
 > uses two. Every test needs a mocking framework.
 
 Must contain: narrowing to the function types actually used; naming them
@@ -233,7 +233,7 @@ suggestion to write them before the implementation. Should reach
 
 ## 24. Interchangeable ids in TypeScript
 
-> In TypeScript, how do I stop OrderId and CustomerId being swapped by
+> In TypeScript, how do I stop BookingId and CustomerId being swapped by
 > accident, and how do I make sure a switch handles every case?
 
 Must contain: branded types with a parser as the only constructor;
@@ -336,10 +336,10 @@ failure even if it is otherwise well argued. Should reach
 > we start?
 
 Must contain: ask whether the complexity is necessary before choosing a
-refactor. State the requirement in the domain's words -- an order gets a
+refactor. State the requirement in the domain's words -- a booking gets a
 price before it can be shipped -- and note that none of the three things
 above appears in it. They exist because pricing mutates in place, so
-pricing a validated order into a new priced value deletes the boolean and
+pricing a validated booking into a new priced value deletes the boolean and
 the early return rather than tidying them. The unread timestamp is
 deleted or given a reader.
 
@@ -347,16 +347,16 @@ Must contain the explicit point that extracting the guard into a
 well-named function would preserve the complexity permanently. Should
 reach `diagnosing-complexity`.
 
-## 33. A reviewer called our records a Data Class
+## 33. A reviewer wants behaviour in our records
 
-> Our reviewer flagged our domain records as the Data Class smell -- just
-> fields, no behaviour -- and wants the behaviour moved into them. Is
-> that right?
+> Our reviewer flagged our domain records as a code smell -- just fields,
+> no behaviour -- and wants the behaviour moved into them. Is that right?
 
 Must contain: no, not in a functional design. Data is inert by design and
 behaviour lives in functions over it, so a record of fields is the
-intended shape rather than a defect. Several of Fowler's smells do not
-survive the translation, and this is one of them.
+intended shape rather than a defect. Several symptoms that are real in
+an object-oriented codebase do not survive the translation, and this is
+one of them.
 
 Must contain the redirection to what is worth checking instead: whether
 the record can only be built through a constructor that enforces its

@@ -49,7 +49,7 @@ field can be anything".
 ```ts
 .with({ tag: P.union("Draft", "Sent") }, handler)
 .with({ status: P.not("cancelled") }, handler)
-.with({ lines: P.array({ quantity: P.number }) }, handler)
+.with({ treatments: P.array({ quantity: P.number }) }, handler)
 .with({ note: P.optional(P.string) }, handler)
 ```
 
@@ -60,7 +60,7 @@ array's length or on specific positions, use a tuple pattern or a guard.
 
 ```ts
 .with({ total: P.when((t) => t > LARGE_ORDER) }, handler)
-.when((order) => isAfterCutoff(order.placedAt), handler)
+.when((booking) => isAfterCutoff(booking.confirmedAt), handler)
 ```
 
 Two forms: `P.when` inside a pattern, and `.when` as a whole-value guard.

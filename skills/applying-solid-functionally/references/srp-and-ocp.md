@@ -50,7 +50,7 @@ downstream of the other.
 
 ### What SRP does not mean
 
-It does not mean small. A module that owns "everything about how an order
+It does not mean small. A module that owns "everything about how a booking
 is priced" is one responsibility even if it is six hundred lines. Slicing
 it into one function per file distributes a single decision, which is the
 opposite of what the principle asks for.
@@ -66,7 +66,7 @@ The cheapest extension point in any language.
 ```text
 sortBy : (A -> Key) -> List<A> -> List<A>
 retryWith : RetryPolicy -> Action -> Action
-priceWith : GetRate -> Order -> Priced
+priceWith : GetRate -> Booking -> Priced
 ```
 
 New behaviour is a new function at the call site. Nothing existing is

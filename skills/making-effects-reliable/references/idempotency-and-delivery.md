@@ -7,10 +7,10 @@ something is an identifier the **caller** controls, created before the
 first attempt and reused on every retry.
 
 ```text
-type PlaceOrder = {
+type BookingRequest = {
   key: CommandId,          -- created by the client, stable across retries
   customer: CustomerId,
-  lines: NonEmptyList<OrderLine>,
+  treatments: NonEmptyList<BookedTreatment>,
 }
 ```
 
@@ -66,9 +66,9 @@ do not try.
 the state change, and relay them afterwards.
 
 ```text
-saveOrderAndEvents :
-  Order -> List<OrderEvent> -> AsyncResult<Unit, SaveError>
--- one transaction: the order rows and the outbox rows
+saveBookingAndEvents :
+  Booking -> List<BookingEvent> -> AsyncResult<Unit, SaveError>
+-- one transaction: the booking rows and the outbox rows
 
 relay : Unit -> AsyncResult<Relayed, RelayError>
 -- separate process: read unsent, publish, mark sent
@@ -110,13 +110,13 @@ Prefer naturally idempotent handlers where the domain allows it.
 
 ## Ordering
 
-At-least-once says nothing about order. If a consumer needs it:
+At-least-once says nothing about booking. If a consumer needs it:
 
 - **One writer per stream.** Partition by the entity's identifier so all
-  events for one order are handled in sequence.
+  events for one booking are handled in sequence.
 - **A sequence number per stream.** The consumer ignores anything it has
   already passed, and requests a replay if it sees a gap.
-- **Or make handlers order-independent**, which is usually cheaper.
+- **Or make handlers booking-independent**, which is usually cheaper.
   A handler that folds an event into state by identity does not care.
 
 ## Dead letters

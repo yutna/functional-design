@@ -10,7 +10,7 @@ becomes many edits.
 
 ```text
 -- three modules each know that a code is 4..16 upper-case characters
-parseInOrders  : String -> Option<String>
+parseInBookings  : String -> Option<String>
 parseInBilling : String -> Option<String>
 parseInReports : String -> Option<String>
 ```
@@ -38,20 +38,20 @@ Related: [constraining-primitive-values](../../constraining-primitive-values/SKI
 A caller must know facts that the signature does not state.
 
 ```text
-applyPayment : Order -> Payment -> Order
+applyPayment : Booking -> Payment -> Booking
 ```
 
-What a reader cannot see: the order must already be priced, the payment
+What a reader cannot see: the booking must already be priced, the payment
 must already be authorised, calling it twice double-counts, and it throws
-if the order is cancelled. Four facts, none of them in the type.
+if the booking is cancelled. Four facts, none of them in the type.
 
 ```text
 applyPayment :
-  PricedOrder -> AuthorisedPayment -> Result<PaidOrder, PaymentError>
+  PricedBooking -> AuthorisedPayment -> Result<PaidBooking, PaymentError>
 ```
 
 Three of the four facts are now in the signature. The fourth,
-idempotency, either becomes a property of `PaidOrder` (applying again is
+idempotency, either becomes a property of `PaidBooking` (applying again is
 a type error) or is documented as the one thing the type cannot say.
 
 **Exposing question:** list everything a new developer must be told
@@ -65,7 +65,7 @@ the code you are changing.
 
 ```text
 -- shipping.ts
-calculateShipping : Order -> Money
+calculateShipping : Booking -> Money
 
 -- somewhere else, unrelated by any import
 -- reporting reads shipping cost by re-deriving it with its own copy

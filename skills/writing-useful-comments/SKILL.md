@@ -17,9 +17,6 @@ Comments that restate the code are worthless and go stale; comments that
 carry information not present in the code are the difference between a
 module a stranger can use and one only its author can.
 
-Source: A Philosophy of Software Design, chapters 12, 13 and 15
-(Ousterhout).
-
 ## When to use
 
 - Writing an exported function, type, or module
@@ -118,16 +115,16 @@ See [comment-kinds.md](references/comment-kinds.md).
 For an exported function, in this order:
 
 ```text
--- Prices every line of a validated order using the supplied price
--- source, and returns the order with a total.
+-- Prices every treatment of a validated booking using the supplied price
+-- source, and returns the booking with a total.
 --
--- Requires: every product code in the order exists in the source;
--- callers get that guarantee from validateOrder.
+-- Requires: every treatment code in the booking exists in the source;
+-- callers get that guarantee from validateBooking.
 -- Fails with: PriceUnavailable when the source has no price today;
 -- TotalTooLarge above the ten-million limit set by the finance team.
 -- Does not: apply discounts, which happen later in the pipeline.
-priceOrder : GetProductPrice -> ValidatedOrder
-               -> Result<PricedOrder, PricingError>
+priceBooking : GetTreatmentPrice -> ValidatedBooking
+               -> Result<PricedBooking, PricingError>
 ```
 
 The "does not" line is often the most valuable, because it answers the

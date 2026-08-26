@@ -7,15 +7,14 @@ description: Use when starting design or review, when deciding how much design a
 
 ## Overview
 
-This pack turns three books into executable design rules for functional
-codebases: **A Philosophy of Software Design** (Ousterhout) on complexity
-and modules, **Domain Modeling Made Functional** (Wlaschin) on types and
-workflows, and **Functional Design** (Martin) on immutability, SOLID, and
-patterns.
+This pack is a set of executable design rules for codebases written in a
+functional style. It covers complexity and module boundaries, modelling a
+domain in types, composing workflows, immutability, and where effects
+belong.
 
-One method connects them: make the domain explicit in types, express
-behaviour as composed total functions, push effects to the edges, and hide
-everything else behind deep interfaces.
+One method runs through all of it: make the domain explicit in types,
+express behaviour as composed total functions, push effects to the edges,
+and hide everything else behind deep interfaces.
 
 ## When to use
 
@@ -162,8 +161,6 @@ matches the project and use it alongside the core skill.
   every core skill in this pack.
 - [design-loop.md](references/design-loop.md) is a worked pass through
   the seven steps on one small feature.
-- [book-map.md](references/book-map.md) maps each book to the skills that
-  carry its material.
 - [principles.md](references/principles.md) is every rule in the pack
   compressed onto one page, for when there is no time to read a skill.
 - [calibration.md](references/calibration.md) is how much of the pack a

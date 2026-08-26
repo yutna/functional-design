@@ -11,8 +11,8 @@ continuing; obscurity compounds.
    Fix: put the accepted formats in a type, or list them in the comment.
 
 2. **Does the signature state every way this can fail?**
-   Failure: a function returning `PricedOrder` that throws on a missing
-   product. Fix: return `Result<PricedOrder, PricingError>`.
+   Failure: a function returning `PricedBooking` that throws on a missing
+   treatment. Fix: return `Result<PricedBooking, PricingError>`.
 
 3. **Does the signature state everything it touches?**
    Failure: a "pure-looking" function that writes an audit row.
@@ -39,7 +39,7 @@ continuing; obscurity compounds.
 
 3. **Is the order of these calls enforced by something?**
    Failure: `validate(o); price(o)` where the second silently misbehaves
-   alone. Fix: chain the types so the order is the only thing that
+   alone. Fix: chain the types so the booking is the only thing that
    compiles.
 
 ## Inside the implementation
@@ -66,7 +66,7 @@ continuing; obscurity compounds.
    the boundary.
 
 2. **Do similar things look similar and different things look different?**
-   Failure: `getUser` throws while `fetchOrder` returns `Result`.
+   Failure: `getUser` throws while `fetchBooking` returns `Result`.
    Fix: unify, or rename so the difference is visible.
 
 3. **Could the module's purpose be stated in one sentence without "and"?**

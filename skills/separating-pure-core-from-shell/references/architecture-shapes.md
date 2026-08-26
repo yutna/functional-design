@@ -20,7 +20,7 @@ type is already the port and a function is already the adapter.
 | Composition root       | The wiring function at the edge       |
 
 Nothing on the right needs a class or an interface declaration. A port is
-`alias SaveOrder = Order -> AsyncResult<Unit, SaveError>`.
+`alias SaveBooking = Booking -> AsyncResult<Unit, SaveError>`.
 
 ## The shell is not one thing
 
@@ -44,13 +44,13 @@ above. One function, no logic.
 -- transport
 handlePost req =
   parseCommand req
-    |> bind app.placeOrder
+    |> bind app.confirmBooking
     |> map toResponse
 
 -- composition
 buildApp pool clock =
-  { placeOrder =
-      placeOrder (checkProduct pool) (getPrice pool) (saveOrder pool)
+  { confirmBooking =
+      confirmBooking (checkTreatment pool) (getPrice pool) (saveBooking pool)
         (clock.now) }
 ```
 
@@ -75,9 +75,9 @@ In the shell, wrapping one aggregate's read-decide-write cycle.
 
 ```text
 withTransaction pool (\tx ->
-  loadOrder tx id
+  loadBooking tx id
     |> map (applyDecision decision)
-    |> bind (saveOrder tx))
+    |> bind (saveBooking tx))
 ```
 
 The pure function in the middle knows nothing about the transaction. It

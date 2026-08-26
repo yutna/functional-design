@@ -52,7 +52,7 @@ Booleans that permit impossible screens:
 ```tsx
 const [isLoading, setIsLoading] = useState(false);
 const [error, setError] = useState<string | null>(null);
-const [orders, setOrders] = useState<Order[]>([]);
+const [bookings, setBookings] = useState<Booking[]>([]);
 // loading and error at once? data with an error? empty and not loaded?
 ```
 
@@ -62,7 +62,7 @@ A choice type with one state at a time:
 type ScreenState =
   | { tag: "Loading" }
   | { tag: "Failed"; error: LoadError }
-  | { tag: "Loaded"; orders: readonly Order[] }
+  | { tag: "Loaded"; bookings: readonly Booking[] }
   | { tag: "Empty" };
 
 const view = (s: ScreenState) => {
@@ -72,7 +72,7 @@ const view = (s: ScreenState) => {
     case "Failed":
       return <ErrorPanel error={s.error} />;
     case "Loaded":
-      return <OrderTable orders={s.orders} />;
+      return <BookingTable bookings={s.bookings} />;
     case "Empty":
       return <EmptyState />;
     default:
@@ -122,14 +122,14 @@ the shell performs, and the result is returned as data.
 ```tsx
 "use server";
 
-export async function placeOrder(
+export async function confirmBooking(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const parsed = parseOrderForm(formData);
+  const parsed = parseBookingForm(formData);
   if (!parsed.ok) return { tag: "Invalid", errors: parsed.error };
 
-  const result = await runPlaceOrder(deps)(parsed.value);
+  const result = await runConfirmBooking(deps)(parsed.value);
   return result.ok
     ? { tag: "Placed", ref: result.value.reference }
     : { tag: "Rejected", reason: result.error };

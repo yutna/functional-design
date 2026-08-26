@@ -23,7 +23,7 @@ export const pipe =
 Usage:
 
 ```js
-const placeOrder = (raw) =>
+const confirmBooking = (raw) =>
   pipe(validate, bind(price(catalogue)), bind(acknowledge), map(toEvents))(raw);
 ```
 
@@ -124,9 +124,9 @@ and it is the same two-track model. Use whichever the file already uses.
 Everything outside throws. Convert once, where the call is made.
 
 ```js
-export const saveOrder = async (pool, order) => {
+export const saveBooking = async (pool, booking) => {
   try {
-    await pool.query(INSERT, toRow(order));
+    await pool.query(INSERT, toRow(booking));
     return ok(undefined);
   } catch (e) {
     return err(classify(e));
@@ -134,7 +134,7 @@ export const saveOrder = async (pool, order) => {
 };
 
 const classify = (e) => {
-  if (e.code === "23505") return { tag: "DuplicateOrder" };
+  if (e.code === "23505") return { tag: "DuplicateBooking" };
   if (e.code === "57014") return { tag: "Transient", retryAfterMs: 1000 };
   return { tag: "Unexpected", cause: e };
 };

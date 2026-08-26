@@ -84,7 +84,7 @@ function over a collection, parallelising it is a scheduling decision
 with no correctness consequences.
 
 ```text
-lines |> parallelMap priceLine |> sum
+treatments |> parallelMap priceTreatment |> sum
 ```
 
 Two cautions: the parallel version is only faster when the work per

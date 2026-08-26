@@ -17,8 +17,6 @@ the operation means so that the situation is no longer an error. A great
 many failures exist only because someone defined the interface in a way
 that made them possible.
 
-Source: A Philosophy of Software Design, chapter 10 (Ousterhout).
-
 ## When to use
 
 - Error handling is longer than the logic it protects
@@ -89,7 +87,7 @@ produces damage that is worse and harder to trace.
 5. **Crash on impossible states.** Do not model programmer bugs as
    values.
 6. **Do not define away a failure the business cares about.** Silently
-   returning a default for an unknown product code hides a real problem.
+   returning a default for an unknown treatment code hides a real problem.
 
 ## Pattern
 

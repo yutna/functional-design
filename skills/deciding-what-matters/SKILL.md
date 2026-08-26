@@ -16,8 +16,6 @@ Code is obvious when a reader understands it quickly, correctly, and
 without conscious effort. Obviousness is a property of the reader, not
 the author, so it cannot be judged from the inside.
 
-Source: A Philosophy of Software Design, chapters 18 and 21 (Ousterhout).
-
 ## When to use
 
 - Choosing what a module exports
@@ -54,18 +52,18 @@ The same computation, unfocused and focused.
 ```text
 -- unfocused: nine visible names, no hint which matter
 export parse, normalise, TAX_TABLE, applyTax, roundHalfUp,
-       Currency, convert, DEFAULT_RATE, priceOrder
+       Currency, convert, DEFAULT_RATE, priceBooking
 ```
 
-A reader cannot tell that only `priceOrder` and `Currency` are meant for
+A reader cannot tell that only `priceBooking` and `Currency` are meant for
 them. Every other name is a question they must answer before they dare
 call anything.
 
 ```text
 -- focused: the two facts that matter, the rest hidden
-export priceOrder, Currency
+export priceBooking, Currency
 
-priceOrder : PricedOrderInput -> Result<PricedOrder, PricingError>
+priceBooking : PricedBookingInput -> Result<PricedBooking, PricingError>
 ```
 
 Now the interface states what matters: one entry point, one type in its

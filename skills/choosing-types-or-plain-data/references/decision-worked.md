@@ -3,10 +3,6 @@
 Each case names the fact that settled it. None is settled by how much
 typing it saved.
 
-Source: not from the three books. The decision procedure is this pack's;
-the data-first position it weighs against is Data-Oriented Programming
-(Sharvit).
-
 ## Case 1 — an amount on one endpoint
 
 **Situation.** A new endpoint accepts a refund amount. It is used in one
@@ -114,7 +110,7 @@ reason to be generic.
 ## Case 3 — a report the user configures
 
 **Situation.** A reporting screen where the user picks dimensions to group
-by and measures to aggregate, from a fixed list the product team owns. The
+by and measures to aggregate, from a fixed list the treatment team owns. The
 result is a table.
 
 **Facts that apply — and they point both ways.** The output columns vary
@@ -126,7 +122,7 @@ every one of them, so those are closed cases.
 
 ```text
 -- closed: developers own these lists, code branches on each case
-type Dimension = Region | Channel | Month | ProductLine
+type Dimension = Region | Channel | Month | TreatmentLine
 type Measure = Revenue | Units | Margin
 
 type ReportRequest = {

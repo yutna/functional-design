@@ -26,14 +26,14 @@ languages; the shapes do not.
 alone. Use it when the next step cannot fail.
 
 ```text
-pricedOrder |> map calculateTotal
+pricedBooking |> map calculateTotal
 ```
 
 **bind** applies a function that can itself fail, and flattens. Use it
 when the next step can fail.
 
 ```text
-rawOrder |> bind validate |> bind price
+rawBooking |> bind validate |> bind price
 ```
 
 **mapError** converts a step's narrow error into the workflow's error
@@ -48,7 +48,7 @@ list of results into a result of a list. Use it whenever a step operates
 per element.
 
 ```text
-lines |> traverse validateLine
+treatments |> traverse validateTreatment
 ```
 
 ## Combining independent results
@@ -74,11 +74,11 @@ Order parameters from most stable to least stable:
 4. The data being transformed
 
 ```text
-priceOrder : PricingPolicy -> GetPrice -> Instant -> Order -> Priced
+priceBooking : PricingPolicy -> GetPrice -> Instant -> Booking -> Priced
 ```
 
 Every prefix of that list is a useful partially applied function, and the
-final shape `Order -> Priced` is what a pipeline wants.
+final shape `Booking -> Priced` is what a pipeline wants.
 
 ## When to stop composing
 

@@ -8,9 +8,6 @@ this complexity in the problem, or did we add it? The necessity question
 comes first, because complexity you added should be deleted, and no
 amount of refactoring deletes it.
 
-Source: not from the three books. Out of the Tar Pit (Moseley and Marks),
-building on No Silver Bullet (Brooks).
-
 ## The distinction
 
 **Essential complexity** is inherent in the problem, as stated by the
@@ -63,7 +60,7 @@ acts on from the other direction.
 Two kinds of state, distinguished sharply:
 
 - **Essential state.** The facts the business would still have on paper:
-  the orders that exist, their current status, the stock on hand. This is
+  the bookings that exist, their current status, the stock on hand. This is
   irreducible. Represent it plainly and hold it in one place.
 - **Accidental state.** Everything derived, cached, memoised, flagged,
   or held mid-computation. Every item is a second copy of a fact, and can
@@ -75,13 +72,13 @@ Most state in most systems is accidental. That is where to look first.
 
 Control is the specification of _order_: what runs, when, in what
 sequence. Some order is essential — you cannot ship before you pack. Most
-is not: it is the order our implementation happens to need.
+is not: it is the booking our implementation happens to need.
 
 Accidental control shows up as an initialisation sequence, a setup call
 that must precede a use, a flag consulted to decide whether an earlier
 step already ran. The problem never mentioned any of it.
 
-The functional answer is to make the order either **irrelevant** (pure
+The functional answer is to make the booking either **irrelevant** (pure
 functions over values, composed) or **explicit in the types** (a state
 machine, where the previous step's output type is the next step's input).
 See
@@ -127,53 +124,54 @@ A shipping module has an `isPriced` boolean, a `priceCalculatedAt`
 timestamp, and a `recalculatePricing` method that early-returns when
 `isPriced` is true.
 
-Step 1, in the domain expert's words: "an order gets a price before it
-can be shipped."
+Step 1, in the domain expert's words: "a booking gets a price before it
+can be confirmed."
 
 Step 2, what is in the code but not in that sentence: the boolean, the
 timestamp, the early return, and the implicit rule that pricing must not
 run twice.
 
 Step 3: the boolean and the early return exist only because pricing is
-mutating the order in place. The timestamp is never read.
+mutating the booking in place. The timestamp is never read.
 
 ```text
 -- accidental state and control, removed rather than tidied
-type ValidatedOrder = { ... }
-type PricedOrder = { order: ValidatedOrder, price: Money, at: Instant }
+type ValidatedBooking = { ... }
+type PricedBooking = { booking: ValidatedBooking, price: Money, at: Instant }
 
-priceOrder : Instant -> ValidatedOrder -> PricedOrder
+priceBooking : Instant -> ValidatedBooking -> PricedBooking
 ```
 
 `isPriced` is gone because the type answers it. The early return is gone
-because pricing a `ValidatedOrder` produces a new value and cannot be
+because pricing a `ValidatedBooking` produces a new value and cannot be
 applied to an already-priced one. The timestamp survives, now with a
 reader, because it turned out the finance report wanted it.
 
 A refactor would have renamed `recalculatePricing` and extracted its
 guard. The complexity would still be there.
 
-## The Functional Relational Programming split
+## Taking the distinction into the architecture
 
-Out of the Tar Pit ends with an architecture built entirely from this
-distinction. Four parts:
+An architecture can be built from this distinction alone, by giving each
+of four parts its own compartment:
 
 | Part                         | Contains                              |
 | ---------------------------- | ------------------------------------- |
-| Essential state              | The irreducible facts, as relations   |
+| Essential state              | The irreducible facts                 |
 | Essential logic              | Derivations and constraints over them |
 | Accidental state and control | Caches, indexes, ordering hints       |
-| Feeders and observers        | The edges: input and output           |
+| Edges                        | Input and output                      |
 
 The shape is recognisable: it is this pack's pure core and imperative
 shell, with the extra move of separating _accidental_ state from
-essential and confining it to a labelled compartment. See
+essential and confining it to a labelled compartment where it can be
+found and deleted later. See
 [separating-pure-core-from-shell](../../separating-pure-core-from-shell/SKILL.md).
 
-Its essential state is held as **relations of plain data**, deliberately,
-so that any derivation can read any relation without a per-type wall in
-between. That is the data-first position taken to its architectural
-conclusion; see
+Pushed all the way, the essential state in such a design is held as plain
+relations rather than per-concept types, so any derivation can read any
+fact without a wall in between. That is the data-first position taken to
+its conclusion; see
 [choosing-types-or-plain-data](../../choosing-types-or-plain-data/SKILL.md)
 for when to follow it and when not to.
 

@@ -17,9 +17,6 @@ The rules below all follow from one idea: keep the decision pure and
 idempotent-by-nature, and make each effect separately identifiable, so
 that repeating it is safe and losing it is detectable.
 
-Source: not from the three books. This extends them to systems that
-cross a process boundary, which the books do not cover.
-
 ## When to use
 
 - A workflow calls a payment provider, a queue, or another service
@@ -60,27 +57,27 @@ choosing transaction boundaries, which is
 Unreliable: two systems, two failure points, no identity.
 
 ```text
-placeOrder cmd =
+confirmBooking cmd =
   charge cmd.card cmd.amount       -- may time out after succeeding
-    >=> saveOrder                  -- may fail after the charge
-    >=> publishOrderPlaced         -- may be lost entirely
+    >=> saveBooking                  -- may fail after the charge
+    >=> publishBookingConfirmed         -- may be lost entirely
 ```
 
 A timeout on `charge` leaves nobody knowing whether money moved. A crash
-between `saveOrder` and `publishOrderPlaced` loses the event silently,
+between `saveBooking` and `publishBookingConfirmed` loses the event silently,
 and a retry of the whole workflow charges again.
 
 Reliable: an identity, an idempotent adapter, and one transaction.
 
 ```text
-type PlaceOrder = { key: CommandId, ... }   -- supplied by the caller
+type BookingRequest = { key: CommandId, ... }   -- supplied by the caller
 
 -- the adapter is idempotent, keyed by the command
 charge : CommandId -> Card -> Money -> AsyncResult<Receipt, ChargeError>
 
 -- state and outbox row written together, relayed afterwards
-saveOrderAndEvents :
-  Order -> List<OrderEvent> -> AsyncResult<Unit, SaveError>
+saveBookingAndEvents :
+  Booking -> List<BookingEvent> -> AsyncResult<Unit, SaveError>
 ```
 
 Retrying the workflow with the same `key` is now safe: the charge

@@ -32,8 +32,8 @@ priced |> map addTax
 raw |> bind validate
 
 -- dead-end function made into a switch
-save : Order -> Unit        -- throws
-saveSafely : Order -> Result<Order, SaveError>
+save : Booking -> Unit        -- throws
+saveSafely : Booking -> Result<Booking, SaveError>
 saveSafely o = tryCatch (\_ -> save o; o) toSaveError
 ```
 
@@ -44,7 +44,7 @@ step without breaking the chain.
 ## Composing switches
 
 ```text
-placeOrder = validate >=> price >=> acknowledge
+confirmBooking = validate >=> price >=> acknowledge
 ```
 
 `>=>` is bind in operator form. It is associative, so the grouping never
@@ -57,11 +57,11 @@ Each step has its own narrow error type. Lift each into the workflow's
 type at composition, not inside the step.
 
 ```text
-type PlaceOrderError =
+type ConfirmBookingError =
   | Validation of ValidationError
   | Pricing of PricingError
 
-placeOrder =
+confirmBooking =
   (validate |> mapError Validation)
     >=> (price |> mapError Pricing)
 ```
@@ -72,12 +72,12 @@ type.
 ## Working with collections
 
 ```text
--- one bad line fails the order
-traverse validateLine lines : Result<List<ValidLine>, LineError>
+-- one bad treatment fails the booking
+traverse validateTreatment treatments : Result<List<ValidTreatment>, TreatmentError>
 
--- report every bad line
-traverseAll validateLine lines
-  : Result<List<ValidLine>, NonEmptyList<LineError>>
+-- report every bad treatment
+traverseAll validateTreatment treatments
+  : Result<List<ValidTreatment>, NonEmptyList<TreatmentError>>
 ```
 
 Pick by who reads the errors. A machine-to-machine import usually wants

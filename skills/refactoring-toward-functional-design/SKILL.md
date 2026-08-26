@@ -17,11 +17,6 @@ The second half of the job is keeping a design clean once it is right.
 Designs decay by absorbing requirements they were not shaped for, one
 reasonable-looking patch at a time.
 
-Source: Domain Modeling Made Functional, chapter 13 (Wlaschin), and A
-Philosophy of Software Design, chapter 16 (Ousterhout).
-The tactical moves and the smell catalogue are not from the three books:
-they come from Refactoring, 2nd edition (Fowler).
-
 ## When to use
 
 - Editing imperative or object-oriented code in a project moving to a
@@ -65,18 +60,18 @@ Not for: designing something new, which starts at
 
 Apply in this order. Each one makes the next easier.
 
-| Order | Move                                         |
-| ----- | -------------------------------------------- |
-| 1     | Wrap primitives in domain types              |
-| 2     | Replace status strings with choice types     |
-| 3     | Collapse correlated optionals into cases     |
-| 4     | Return `Result` instead of throwing          |
-| 5     | Pass the clock, random, and identifiers in   |
-| 6     | Turn a service parameter into function types |
-| 7     | Extract the pure decision from the effects   |
-| 8     | Give the workflow stage types                |
-| 9     | Add a boundary mapping, split the DTO        |
-| 10    | Make the aggregate opaque                    |
+| Booking | Move                                         |
+| ------- | -------------------------------------------- |
+| 1       | Wrap primitives in domain types              |
+| 2       | Replace status strings with choice types     |
+| 3       | Collapse correlated optionals into cases     |
+| 4       | Return `Result` instead of throwing          |
+| 5       | Pass the clock, random, and identifiers in   |
+| 6       | Turn a service parameter into function types |
+| 7       | Extract the pure decision from the effects   |
+| 8       | Give the workflow stage types                |
+| 9       | Add a boundary mapping, split the DTO        |
+| 10      | Make the aggregate opaque                    |
 
 Each move, with its mechanics and its verification, is in
 [migration-moves.md](references/migration-moves.md).
@@ -94,29 +89,30 @@ design — what the types are, where effects live, what a module exposes.
 Underneath them sit nineteen **tactical** moves that clean up inside a
 shape that is already right: Split Phase, Replace Loop with Pipeline,
 Remove Flag Argument, and the rest, in
-[fowler-moves.md](references/fowler-moves.md).
+[tactical-moves.md](references/tactical-moves.md).
 
 Get the tier right. Tactical moves applied to a design with the wrong
 types produce tidy code that is still wrong.
 
-To find what needs moving in the first place, the twenty-four smells in
-[smell-catalogue.md](references/smell-catalogue.md) each name a symptom
-and where to go. Read its last two sections before using the list: four
-of Fowler's smells are not smells in functional code, and treating them
-as such makes the design worse.
+To find what needs moving in the first place,
+[spotting-what-to-fix.md](references/spotting-what-to-fix.md) arranges
+symptoms by what each one costs, and names where to go. Read its last two
+sections before using the list: four things that are real defects in
+object-oriented code are not defects here, and treating them as such
+makes the design worse.
 
 ## Pattern
 
 A typical starting point:
 
 ```text
-class OrderService {
-  save(order) {
-    if (!order.customerId) throw new Error("bad order")
-    order.status = "placed"
-    order.placedAt = new Date()
-    this.repo.update(order)
-    this.mailer.send(order.email, "placed")
+class BookingService {
+  save(booking) {
+    if (!booking.customerId) throw new Error("bad booking")
+    booking.status = "confirmed"
+    booking.confirmedAt = new Date()
+    this.repo.update(booking)
+    this.mailer.send(booking.email, "confirmed")
   }
 }
 ```
@@ -125,13 +121,13 @@ After moves 1, 2, 4, 5 and 7, in five separate commits:
 
 ```text
 -- pure
-placeOrder :
-  Instant -> ValidatedOrder -> Result<PlacedOrder, PlaceOrderError>
+confirmBooking :
+  Instant -> ValidatedBooking -> Result<ConfirmedBooking, ConfirmBookingError>
 
 -- shell
-handlePlaceOrder repo mailer now raw =
-  validateOrder raw
-    |> bind (placeOrder now)
+handleConfirmBooking repo mailer now raw =
+  validateBooking raw
+    |> bind (confirmBooking now)
     |> bind (\o -> save repo o |> map (const o))
     |> bind (\o -> notify mailer o)
 ```
@@ -201,9 +197,10 @@ See
 
 - [migration-moves.md](references/migration-moves.md) is each move with
   its mechanics, its verification, and its payoff.
-- [fowler-moves.md](references/fowler-moves.md) is the nineteen tactical
-  moves, with the commit discipline they depend on.
-- [smell-catalogue.md](references/smell-catalogue.md) is the twenty-four
-  smells read functionally, including the four that stop being smells.
+- [tactical-moves.md](references/tactical-moves.md) is the nineteen
+  tactical moves, with the commit discipline they depend on.
+- [spotting-what-to-fix.md](references/spotting-what-to-fix.md) arranges
+  symptoms by what they cost, and names the four that are not defects
+  here at all.
 - [keeping-design-clean.md](references/keeping-design-clean.md) covers
   absorbing new requirements without decay.

@@ -35,27 +35,30 @@ Ask these in order, about the module you are designing.
 
 ## Worked example
 
-Requirement: a text editor must delete the selected text.
+Requirement: a scheduling screen must move an appointment to the next
+free slot.
 
-**Special purpose.** `deleteSelection : Editor -> Editor`. Every new
-editing operation adds another such function, each one knowing about
-selections, cursors, and undo.
+**Special purpose.** `moveToNextFreeSlot : AppointmentId -> Calendar ->
+Calendar`. Every new scheduling action adds another such function, each
+one knowing about slots, working hours, and clashes.
 
-**Too general.** `apply : Editor -> Operation -> Result<Editor, Error>`
-where `Operation` is an open-ended script. Every caller must now build
-operations, and the module cannot say which are valid.
+**Too general.** `apply : Calendar -> Change -> Result<Calendar, Error>`
+where `Change` is an open-ended script. Every caller must now build
+changes, and the module cannot say which are valid.
 
-**Somewhat general.** A small set of primitives over positions:
+**Somewhat general.** A small set of primitives over intervals:
 
 ```text
-insert : Position -> Text -> Editor -> Editor
-delete : Range -> Editor -> Editor
+place     : Interval -> AppointmentId -> Calendar
+                     -> Result<Calendar, Clash>
+remove    : AppointmentId -> Calendar -> Calendar
+freeAfter : Instant -> Duration -> Calendar -> Option<Interval>
 ```
 
-`deleteSelection` becomes one line in the caller, and cut, paste,
-backspace and autocorrect are all expressible without new interface.
-This is the shape to aim for: primitives at the level of the domain, not
-at the level of the current feature.
+`moveToNextFreeSlot` becomes three lines in the caller, and rescheduling,
+cancel-and-refill, and drag-to-move are all expressible without new
+interface. This is the shape to aim for: primitives at the level of the
+domain, not at the level of the current feature.
 
 ## Two failure signatures
 

@@ -10,8 +10,8 @@ solve but a fact to model.
 The boundary is where the language changes. Signals, in order of
 reliability:
 
-1. **A word means different things.** Shipping's "order" is a box with an
-   address; billing's "order" is a set of charges.
+1. **A word means different things.** Shipping's "booking" is a box with an
+   address; billing's "booking" is a set of charges.
 2. **Different people are responsible.** Different departments produce
    different models, and reorganisations follow the same lines.
 3. **Different rates of change.** A pricing engine that changes weekly
@@ -84,7 +84,7 @@ Rules for a border:
 3. It produces this context's own types, fully validated, so nothing
    downstream re-checks.
 4. It does not leak identifiers with foreign semantics; if the upstream
-   `orderId` is not meaningful here, do not store it as this context's
+   `bookingId` is not meaningful here, do not store it as this context's
    identity.
 
 See [crossing-io-boundaries](../../crossing-io-boundaries/SKILL.md) for

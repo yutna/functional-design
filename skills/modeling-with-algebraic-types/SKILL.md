@@ -18,9 +18,6 @@ means OR. A record with four optional fields, three of which are set only
 in particular combinations, is a choice type written badly, and every
 consumer pays for it in checks that the compiler cannot verify.
 
-Source: Domain Modeling Made Functional, chapters 4-5 (Wlaschin), with
-the typing discussion from Functional Design (Martin).
-
 ## When to use
 
 - Designing any domain type
@@ -43,7 +40,7 @@ Not for: enforcing value ranges on a single primitive, which is
 4. **Match exhaustively.** Every case handled, no wildcard, so adding a
    case produces a list of places to think about.
 5. **Compose, do not flatten.** Build big types from small named ones.
-   `Order` holding `CustomerInfo` and `ShippingAddress` reads better and
+   `Booking` holding `CustomerInfo` and `ShippingAddress` reads better and
    changes better than twenty fields in a row.
 6. **Name every case and every field in the domain's words.** The type is
    the documentation; see

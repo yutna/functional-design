@@ -12,7 +12,7 @@ Ask what is true regardless of the input. The recurring answers:
 **Round trip.** Anything with two directions.
 
 ```text
-forAll validOrder $ \o -> fromDto (toDto o) == Ok o
+forAll validBooking $ \o -> fromDto (toDto o) == Ok o
 forAll anyText $ \s -> render (parse s) == normalise s
 ```
 
@@ -24,7 +24,7 @@ rule, and every operation preserves it.
 
 ```text
 forAll anyString $ \s ->
-  match parseProductCode s with
+  match parseTreatmentCode s with
   | Ok c -> length (unwrap c) == 5
   | Error _ -> true
 ```
@@ -47,7 +47,7 @@ commutativity where claimed. See
 [monoids.md](../../folding-over-data/references/monoids.md).
 
 **Metamorphic relations.** How the output must change when the input
-changes: adding a line never decreases the total; filtering then sorting
+changes: adding a treatment never decreases the total; filtering then sorting
 equals sorting then filtering.
 
 ## Generators
@@ -57,8 +57,8 @@ from the smart constructors so every generated value is valid.
 
 ```text
 genQuantity = choose (1, 1000) |> map Quantity
-genOrderLine = map2 makeLine genProductCode genQuantity
-genOrder = genNonEmptyList genOrderLine |> map makeOrder
+genBookedTreatment = map2 makeTreatment genTreatmentCode genQuantity
+genBooking = genNonEmptyList genBookedTreatment |> map makeBooking
 ```
 
 Two extra generators are worth having:

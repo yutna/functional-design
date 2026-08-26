@@ -16,8 +16,6 @@ Discover the domain through what happens, not through what things are. A
 list of nouns produces a database schema; a list of events and the
 commands that cause them produces a design.
 
-Source: Domain Modeling Made Functional, chapters 1-3 (Wlaschin).
-
 ## When to use
 
 - Starting a new feature, service, or bounded context
@@ -36,7 +34,7 @@ which is
    type is `Quote`, not `PricingRequestDto`. Words invented by developers
    are the beginning of two models.
 2. **Discover through events.** Ask what happens, in the past tense:
-   "order placed", "payment declined". Events reveal boundaries that
+   "booking confirmed", "payment declined". Events reveal boundaries that
    nouns hide.
 3. **Every workflow is a command in, events out.** Name the trigger, the
    work, and what the rest of the world learns. That triple is the unit
@@ -58,7 +56,7 @@ which is
 The developer-invented model, taken from the database:
 
 ```text
-type OrderRecord = {
+type BookingRecord = {
   id: Int,
   customerId: Int,
   statusCode: String,
@@ -75,13 +73,13 @@ four modules.
 The domain's model, taken from a conversation:
 
 ```text
--- "A quote becomes an order when the customer accepts it. We can only
+-- "A quote becomes a booking when the customer accepts it. We can only
 --  accept a quote that hasn't expired."
 type Quote = { id: QuoteId, lines: NonEmptyList<QuoteLine>,
                expires: Instant }
 
 type AcceptQuote = { quote: QuoteId, acceptedBy: CustomerId }
-type QuoteAccepted = { order: Order, acceptedAt: Instant }
+type QuoteAccepted = { booking: Booking, acceptedAt: Instant }
 type AcceptQuoteError = QuoteExpired of Instant | QuoteNotFound
 
 acceptQuote :

@@ -8,10 +8,10 @@ its own behaviour depend on the network.
 
 ```text
 -- shell: the adapter is wrapped once
-saveOrderResilient = withRetry policy (saveOrder pool)
+saveBookingResilient = withRetry policy (saveBooking pool)
 
 -- domain: unchanged, and unaware
-placeOrder : SaveOrder -> PlaceOrder -> AsyncResult<Placed, Error>
+confirmBooking : SaveBooking -> BookingRequest -> AsyncResult<Placed, Error>
 ```
 
 ## Retry only what is worth retrying

@@ -9,7 +9,7 @@ naming.
 
 ```text
 sortBy : (A -> A -> Ordering) -> List<A> -> List<A>
-priceOrder : GetProductPrice -> Order -> Priced
+priceBooking : GetTreatmentPrice -> Booking -> Priced
 ```
 
 A parameter. Name the function type when it means something to the
@@ -22,8 +22,8 @@ logged, undone, or sent elsewhere.
 
 ```text
 type Command =
-  | PlaceOrder of PlaceOrderData
-  | CancelOrder of { id: OrderId, reason: Reason }
+  | ConfirmBooking of BookingRequest
+  | CancelBooking of { id: BookingId, reason: Reason }
 
 execute : Command -> AsyncResult<List<Event>, Error>
 ```
@@ -38,7 +38,7 @@ thing it gets.
 
 ```text
 -- factory: a function
-makeOrderId : Unit -> OrderId
+makeBookingId : Unit -> BookingId
 
 -- abstract factory: a record of constructors
 alias Renderer = {
@@ -99,10 +99,10 @@ pattern name adds nothing. See
 
 ```text
 -- the decision returns what happened
-placeOrder : PlaceOrder -> Result<List<OrderEvent>, PlaceOrderError>
+confirmBooking : BookingRequest -> Result<List<BookingEvent>, ConfirmBookingError>
 
 -- the shell decides who hears about it
-dispatch : List<OrderEvent> -> AsyncResult<Unit, DispatchError>
+dispatch : List<BookingEvent> -> AsyncResult<Unit, DispatchError>
 ```
 
 Returning events beats registering callbacks: the decision stays pure,

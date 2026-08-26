@@ -8,8 +8,8 @@ whether a layer is doing work.
 A function or module earns its layer if it does at least one of these:
 
 1. **Translates vocabulary.** Types on the way in differ in meaning from
-   types on the way out: `Request` to `PlaceOrder`, `OrderRow` to
-   `Order`.
+   types on the way out: `Request` to `BookingRequest`, `BookingRow` to
+   `Booking`.
 2. **Narrows an interface.** It exposes less than what it wraps, and the
    narrowing is deliberate: three functions instead of thirty, one error
    type instead of a library's hierarchy.

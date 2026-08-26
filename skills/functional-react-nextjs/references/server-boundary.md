@@ -31,8 +31,8 @@ call them that or not.
 
 ```tsx
 // server component
-const orders = await loadOrders(customerId); // domain values
-return <OrderList orders={orders.map(toListItem)} />;
+const bookings = await loadBookings(customerId); // domain values
+return <BookingList bookings={bookings.map(toListItem)} />;
 ```
 
 `toListItem` is the outward mapping: plain, serialisable, and shaped for
@@ -53,18 +53,18 @@ An action is a workflow with an HTTP shape: a command in, a result out.
 type FormState =
   | { tag: "Idle" }
   | { tag: "Invalid"; errors: readonly FieldError[] }
-  | { tag: "Rejected"; reason: PlaceOrderError }
-  | { tag: "Placed"; reference: OrderRef };
+  | { tag: "Rejected"; reason: ConfirmBookingError }
+  | { tag: "Placed"; reference: BookingRef };
 
-export async function placeOrderAction(
+export async function confirmBookingAction(
   _prev: FormState,
   form: FormData,
 ): Promise<FormState> {
   const session = await requireSession(); // shell
-  const parsed = parseOrderForm(form); // boundary
+  const parsed = parseBookingForm(form); // boundary
   if (!parsed.ok) return { tag: "Invalid", errors: parsed.error };
 
-  const result = await placeOrder(deps)(session.customer, parsed.value);
+  const result = await confirmBooking(deps)(session.customer, parsed.value);
   return result.ok
     ? { tag: "Placed", reference: result.value.reference }
     : { tag: "Rejected", reason: result.error };
@@ -90,13 +90,13 @@ A form should report every problem at once, which is applicative
 validation.
 
 ```tsx
-const parseOrderForm = (
+const parseBookingForm = (
   form: FormData,
-): Result<PlaceOrderCommand, readonly FieldError[]> => {
+): Result<BookingRequest, readonly FieldError[]> => {
   const results = {
     customer: parseCustomerId(form.get("customer")),
     quantity: parseQuantity(form.get("quantity")),
-    code: parseProductCode(form.get("code")),
+    code: parseTreatmentCode(form.get("code")),
   };
   const errors = Object.entries(results)
     .filter(([, r]) => !r.ok)
@@ -116,8 +116,8 @@ decision. Keep the prediction pure and reconcilable.
 
 ```tsx
 const [optimistic, addOptimistic] = useOptimistic(
-  orders,
-  (current, added: Order) => [...current, added],
+  bookings,
+  (current, added: Booking) => [...current, added],
 );
 ```
 

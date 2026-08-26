@@ -35,9 +35,9 @@ sub-kinds, because different people fix them:
 - **Invalid**: correct shape, unacceptable values. The user's business.
 
 ```text
-parseOrder : Json -> Result<UnvalidatedOrder, ParseError>
-validateOrder :
-  UnvalidatedOrder -> Result<ValidatedOrder, NonEmptyList<ValidationError>>
+parseBooking : Json -> Result<UnvalidatedBooking, ParseError>
+validateBooking :
+  UnvalidatedBooking -> Result<ValidatedBooking, NonEmptyList<ValidationError>>
 ```
 
 ### Transient fault
@@ -46,7 +46,7 @@ A timeout, a lost connection, a lock conflict. The caller may retry.
 Distinguish it in the type so retry logic does not have to guess.
 
 ```text
-type ServiceError =
+type TreatmentError =
   | Transient of { retryAfter: Option<Seconds> }
   | Permanent of Text
 ```
@@ -97,13 +97,13 @@ Every library and every remote call is a source of foreign failures.
 Convert once, where the call happens.
 
 ```text
-saveOrder : Pool -> Order -> AsyncResult<Unit, SaveError>
-saveOrder pool order =
-  tryCatch (\_ -> insert pool (toRow order)) classify
+saveBooking : Pool -> Booking -> AsyncResult<Unit, SaveError>
+saveBooking pool booking =
+  tryCatch (\_ -> insert pool (toRow booking)) classify
 
 classify e =
   match e with
-  | UniqueViolation _ -> DuplicateOrder
+  | UniqueViolation _ -> DuplicateBooking
   | Timeout _ -> Transient { retryAfter: Some (Seconds 1) }
   | other -> Unexpected (opaque other)
 ```

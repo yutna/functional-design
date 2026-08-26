@@ -1,152 +1,120 @@
-# Two Schools of Functional Design
+# Two Ways to Represent Data
 
-Where the type-first and data-first schools agree, where they genuinely
+Where the type-first and data-first positions agree, where they genuinely
 conflict, and what each one is actually optimising for.
 
-Source: not from the three books. Data-Oriented Programming (Sharvit),
-Out of the Tar Pit (Moseley and Marks), and Rich Hickey's talks.
+Knowing exactly where the conflict sits is what lets you decide per value
+instead of per doctrine. The conflict is narrower than the rhetoric on
+either side suggests.
 
-## The four principles of data-oriented programming
+## What each side is optimising for
 
-| No. | Principle                                        | This pack |
-| --- | ------------------------------------------------ | --------- |
-| 1   | Separate code from data                          | agrees    |
-| 2   | Represent data with generic structures           | conflicts |
-| 3   | Data is immutable                                | agrees    |
-| 4   | Separate the data schema from its representation | conflicts |
+**Type-first** optimises for the mistake that cannot be made. Give every
+concept a distinct type, put its rules in the constructor, and a whole
+class of error stops compiling. The cost is a wall: generic operations
+stop at each type, and every new operation over "any value" needs
+per-type code.
 
-Two of four agree, and they are not the trivial two. The conflict is
-narrower than the two schools' rhetoric suggests, and knowing exactly
-where it sits is what lets you decide per value instead of per religion.
+**Data-first** optimises for the operation that works on everything. Keep
+data as maps and lists, keep the schema outside the data as a separate
+value, and a projection, a structural diff, a deep merge, a serialiser or
+an audit log is written once and works on every shape. The cost is that
+nothing stops a caller passing the wrong map, and no name in the codebase
+says what a key means.
 
-## Principle 1 — separate code from data
+Both costs are real. This pack defaults to type-first and names the
+exceptions, rather than pretending the wall is free.
 
-Data is inert. Behaviour lives in functions that take data and return
-data. No methods attached to values, no objects that own their own rules.
+## Where they agree
 
-**This pack already requires it.** Every signature in the notation takes
-data and returns data;
+Three things, and they are not the trivial ones.
+
+**Data is inert.** Behaviour lives in functions that take data and return
+data. No methods attached to values, no object that owns its own rules.
+This pack already requires it everywhere: see
 [separating-pure-core-from-shell](../../separating-pure-core-from-shell/SKILL.md)
-separates decisions from effects;
-[parameterizing-dependencies](../../parameterizing-dependencies/SKILL.md)
-passes capabilities in as functions rather than binding them to values.
+and
+[parameterizing-dependencies](../../parameterizing-dependencies/SKILL.md).
 
-A single-case wrapper does not violate this. `OrderId of String` attaches
-no behaviour; it attaches a name. The constructor is a function like any
-other.
+A single-case wrapper does not violate this. `BookingId of String`
+attaches no behaviour; it attaches a name, and its constructor is a
+function like any other.
 
-## Principle 2 — represent data with generic structures
-
-Use maps, lists, and primitives. Do not introduce a distinct type per
-concept, because a distinct type is a wall: generic operations stop at
-it, and every new operation needs a new method.
-
-**This is the real conflict.** It is the direct negation of
-[constraining-primitive-values](../../constraining-primitive-values/SKILL.md).
-
-The argument for it is not laziness. It is that a codebase full of
-distinct types cannot express operations over _any_ value: a generic
-audit log, a structural diff, a projection that selects fields by name, a
-serialiser that needs no per-type code. Every one of those is trivial
-over maps and requires either reflection or per-type boilerplate over
-distinct types. That cost is real and this pack does not otherwise name
-it.
-
-The argument against it is equally real: nothing stops a caller passing
-the customer's map where the order's was expected, and no name in the
-codebase tells a reader what a key means.
-
-## Principle 3 — data is immutable
-
-Values never change in place. Updates produce new values, sharing
-structure with the old.
-
-**This pack already requires it**, in
-[managing-state-immutably](../../managing-state-immutably/SKILL.md).
-Data-oriented programming reaches the same concurrency advice
-independently: one state reference, updated by comparing and swapping on
-a version, with all logic operating on immutable snapshots. That is what
+**Data does not mutate.** Updates produce new values that share
+structure. Both positions insist on it, and they arrive independently at
+the same concurrency advice: one state reference, updated by comparing and
+swapping on a version, with all logic reading immutable snapshots. That is
+what
 [concurrency.md](../../managing-state-immutably/references/concurrency.md)
 already says.
 
-Where a difference remains, it is emphasis. Data-first treats immutability
-as the load-bearing principle, because generic data with no wall around
-it is only safe if nobody can mutate it. Type-first can lean on
-constructors as well.
+**Untrusted input is parsed once, at the edge.** Not checked repeatedly,
+defensively, inward. See
+[crossing-io-boundaries](../../crossing-io-boundaries/SKILL.md).
 
-## Principle 4 — separate schema from representation
+## Where they conflict
 
-The description of a shape lives outside the shape, as its own value: a
-schema you can store in a database row, compose, generate from a
-specification, and hand to a validator at the boundary. The data itself
-stays generic and carries no schema with it.
+Two points, and both are direct contradictions rather than differences of
+emphasis.
 
-**This conflicts hardest** with
+**Whether a concept gets its own type.** Type-first says give it one, so
+the wrong value cannot be passed. Data-first says do not, because the
+type is a wall that stops generic code and forces the reader to accept
+one interpretation of the value before they can read it. This is the
+direct negation of
+[constraining-primitive-values](../../constraining-primitive-values/SKILL.md).
+
+**Whether the rules live in the representation.** Type-first fuses them,
+so the check cannot be skipped. Data-first splits them, so the schema
+becomes a value you can store in a row, compose, generate, and change
+without a deployment. This contradicts
 [making-illegal-states-unrepresentable](../../making-illegal-states-unrepresentable/SKILL.md),
-whose whole method is to fuse the constraint into the representation so
-the constraint cannot be skipped.
+whose whole method is the fusing.
 
 The trade is explicit on both sides:
 
-| Fusing them (type-first)          | Splitting them (data-first)     |
-| --------------------------------- | ------------------------------- |
-| Constraint cannot be bypassed     | Constraint can be forgotten     |
-| Changing a rule is a deployment   | Changing a rule is a row update |
-| One shape per concept             | One validator over many shapes  |
-| Reader learns rules from the type | Reader must find the schema     |
-| Compiler proves exhaustiveness    | Tests stand in for the compiler |
+| Fusing them (type-first)           | Splitting them (data-first)     |
+| ---------------------------------- | ------------------------------- |
+| The check cannot be bypassed       | The check can be forgotten      |
+| Changing a rule is a deployment    | Changing a rule is a row update |
+| One shape per concept              | One validator over many shapes  |
+| The reader learns rules from types | The reader must find the schema |
+| The compiler proves exhaustiveness | Tests stand in for the compiler |
 
-This pack already crosses the line for one case: policies that change
+This pack already crosses that line for one case: a policy that changes
 faster than the code should be data, per
 [when-to-validate-instead.md](../../making-illegal-states-unrepresentable/references/when-to-validate-instead.md).
-Data-oriented programming makes that the general rule rather than the
+The data-first position makes that the general rule rather than the
 exception.
 
-## The lineage
+## The disagreement is mostly about tooling
 
-**Hickey on complecting.** Two things are complected when they are
-braided together such that you cannot have one without the other. His
-charge against types-per-concept is that they complect the value with its
-interpretation: to read the value you must accept the type's view of it.
-The data-first answer is to keep values plainly readable and layer
-interpretation on top, separately, as needed.
+Each position is strongest where the other's tooling is weakest, which is
+why neither generalises.
 
-**Out of the Tar Pit** makes the same move architecturally. It splits a
-system into essential state (relations of plain data), essential logic
-(derivations over those relations), and accidental state and control
-(caches, order, performance work). The relations are generic data on
-purpose: any derivation can read any relation, so logic composes without
-the walls. See
-[essential-and-accidental.md](../../diagnosing-complexity/references/essential-and-accidental.md).
+Where a distinct type is a runtime construct with no checking behind it,
+the wall costs you generic operations and returns almost nothing
+enforceable. Tearing it down is straightforwardly correct there, and the
+schema has to be a runtime value anyway.
 
-## Why the schools disagree about where they are
+Where a distinct type is free to declare, checked at every use, and proves
+exhaustiveness, the wall is nearly free and returns a great deal.
 
-Each school is strongest where the other's tooling is weakest.
-
-Data-first was argued from Clojure and JavaScript, where a distinct type
-buys almost nothing enforceable, and where the schema has to be a runtime
-value anyway. In that setting the wall costs you generic operations and
-returns very little, so tearing it down is straightforwardly correct.
-
-Type-first was argued from F# and its relatives, where a distinct type is
-free to declare, checked everywhere, and proves exhaustiveness. In that
-setting the wall is nearly free and returns a great deal.
-
-Neither is wrong about its own setting. Both are wrong when they
+Neither view is wrong about its own setting. Both are wrong when they
 generalise. That is why this pack keeps one default and one list of
 observable exceptions rather than picking a side per language: real
 projects span both, and the same project has values of both kinds.
 
-## What both schools agree most codebases get wrong
+## What both agree most codebases get wrong
 
-Worth stating, because it is where the agreement is largest and the
-practice is worst:
+Worth stating on its own, because this is where the agreement is largest
+and the practice is worst:
 
 1. Untrusted input is parsed once, at the edge, into something the rest
-   of the code trusts. Not checked repeatedly, defensively, inward.
+   of the code trusts.
 2. Data does not mutate. Not "mostly", not "except for the cache".
-3. Behaviour is not attached to data. Functions take data, return data.
+3. Behaviour is not attached to data.
 4. Optional fields are not a substitute for representing a choice.
 
-A codebase doing those four is well designed under either school. A
-codebase doing none of them is not saved by choosing a school.
+A codebase doing those four is well designed under either view. A codebase
+doing none of them is not saved by choosing one.

@@ -17,7 +17,7 @@ decision are simply written in the same function.
 
 ## Ambiguous cases
 
-**Validation that needs a lookup.** "Does this product code exist?" needs
+**Validation that needs a lookup.** "Does this treatment code exist?" needs
 storage; "is this quantity in range?" does not. Split them: pure field
 validation in the core, existence checks as a capability passed in, or
 fetched first. See

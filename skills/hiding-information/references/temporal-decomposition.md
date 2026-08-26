@@ -52,7 +52,7 @@ module RowEnrichment
 ```
 
 The workflow that runs them in order is one small function, and it is the
-only thing that knows the order:
+only thing that knows the booking:
 
 ```text
 importFile = RowFile.read >=> traverse RowRules.validate
@@ -60,7 +60,7 @@ importFile = RowFile.read >=> traverse RowRules.validate
                >=> RowFile.write outPath
 ```
 
-Change the order, add a step, or run two steps concurrently, and only
+Change the booking, add a step, or run two steps concurrently, and only
 this function changes.
 
 ## Where the pipeline shape still applies
@@ -79,4 +79,4 @@ for how a pipeline is structured once the modules are right.
 - Names with a sequence in them: `preValidate`, `postProcess`
 - Two modules importing the same format constant
 - A change to a field's meaning touching every stage
-- The workflow function contains no logic yet all stages know its order
+- The workflow function contains no logic yet all stages know its booking

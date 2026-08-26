@@ -7,14 +7,14 @@ used to make a decision.
 ## Single-case wrappers
 
 ```text
-type OrderId = OrderId of Uuid
+type BookingId = BookingId of Uuid
 
 -- out
 toDto o = { id: uuidToString (unwrap o.id), ... }
 
 -- in
 fromDto d =
-  parseUuid d.id |> mapError BadOrderId |> map OrderId
+  parseUuid d.id |> mapError BadBookingId |> map BookingId
 ```
 
 The wrapper vanishes on the wire and is rebuilt on the way in, through
@@ -50,12 +50,12 @@ pick one and be consistent. See
 
 ```text
 -- domain
-lines: NonEmptyList<OrderLine>
+treatments: NonEmptyList<BookedTreatment>
 
 -- transfer: a plain array
 -- inward: reject an empty array with a named error
 fromDto d =
-  NonEmptyList.fromList d.lines |> toResult EmptyOrder
+  NonEmptyList.fromList d.treatments |> toResult EmptyBooking
 ```
 
 The constraint is checked exactly once, here.
@@ -107,14 +107,14 @@ One module per boundary, holding both directions and the transfer types.
 It imports the domain; the domain does not import it.
 
 ```text
-module OrderApi
-  type OrderDto
-  toDto : Order -> OrderDto
-  fromDto : OrderDto -> Result<Order, OrderDtoError>
+module BookingApi
+  type BookingDto
+  toDto : Booking -> BookingDto
+  fromDto : BookingDto -> Result<Booking, BookingDtoError>
 ```
 
 If two boundaries need different shapes, they get different modules and
-different DTOs. An `OrderDto` shared between the public API and the
+different DTOs. An `BookingDto` shared between the public API and the
 storage layer will end up satisfying neither.
 
 ## Versioning
@@ -127,8 +127,8 @@ The transfer type is the thing with versions; the domain type is not.
 4. Retire the old one when telemetry says nobody uses it.
 
 ```text
-fromDtoV1 : OrderDtoV1 -> Result<Order, OrderDtoError>
-fromDtoV2 : OrderDtoV2 -> Result<Order, OrderDtoError>
+fromDtoV1 : OrderDtoV1 -> Result<Booking, BookingDtoError>
+fromDtoV2 : OrderDtoV2 -> Result<Booking, BookingDtoError>
 ```
 
 The domain evolves without a version number, because nothing outside

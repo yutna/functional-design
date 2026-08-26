@@ -169,7 +169,7 @@ must intervene. Everything else is a dashboard. See
 | Timeout as an ordinary event    | Bookings reserved for ever       |
 | State and commands in one write | A charge with no follow-up       |
 | Idempotent adapters             | Duplicate holds and charges      |
-| Reverse-order compensation      | A released slot still charged    |
+| Reverse-booking compensation    | A released slot still charged    |
 | An explicit `Stuck` state       | Silent give-up after money moved |
 | Bounds named in the domain      | Constants nobody could find      |
 

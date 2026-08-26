@@ -6,12 +6,12 @@ A function type is a promise. Any function used where that type is
 expected must keep the whole promise, not just the shape.
 
 ```text
-alias GetProductPrice = ProductCode -> Price
+alias GetTreatmentPrice = TreatmentCode -> Price
 ```
 
 A substitute violates the contract if it:
 
-- **Throws** where the type promises a `Price` for every `ProductCode`
+- **Throws** where the type promises a `Price` for every `TreatmentCode`
 - **Demands more** of its input than the type states, such as requiring
   the code to be upper case
 - **Promises less** about its output, such as returning zero for unknown
@@ -24,8 +24,8 @@ If any of those is unavoidable, the type is wrong, not the
 implementation. Widen it until it is honest:
 
 ```text
-alias GetProductPrice =
-  ProductCode -> AsyncResult<Price, PriceLookupError>
+alias GetTreatmentPrice =
+  TreatmentCode -> AsyncResult<Price, PriceLookupError>
 ```
 
 An honest type is worth more than a convenient one, because every caller
@@ -34,11 +34,11 @@ is written against it.
 ### Substitutability for choice types
 
 The same rule applies to the cases of a sum type. If callers assume that
-every `Order` has at least one line, then every case that constructs an
-`Order` must guarantee it, or the assumption belongs in the type.
+every `Booking` has at least one treatment, then every case that constructs an
+`Booking` must guarantee it, or the assumption belongs in the type.
 
 ```text
-type Order = { lines: NonEmptyList<OrderLine>, ... }
+type Booking = { treatments: NonEmptyList<BookedTreatment>, ... }
 ```
 
 ### Detecting violations
@@ -56,10 +56,10 @@ smallest thing is a single function type.
 
 ```text
 -- wide: 22 operations, two of them used
-placeOrder : OrderRepository -> ...
+confirmBooking : BookingRepository -> ...
 
 -- narrow: exactly what is used, named in the domain's words
-placeOrder : CheckProductExists -> SaveOrder -> ...
+confirmBooking : CheckTreatmentExists -> SaveBooking -> ...
 ```
 
 Benefits that follow immediately:
@@ -74,7 +74,7 @@ Benefits that follow immediately:
 If a parameter's type has members the function never calls, the parameter
 is too wide. Split it into the function types actually used, and name
 each one for what it means to the domain, not for where it comes from.
-`SaveOrder`, not `OrderRepositoryPort`.
+`SaveBooking`, not `BookingRepositoryPort`.
 
 ### When a record is right
 
@@ -92,11 +92,12 @@ transport, or framework code.
 -- domain module: declares needs, imports nothing external
 alias LoadCustomer = CustomerId -> AsyncResult<Customer, LoadError>
 
-placeOrder : LoadCustomer -> SaveOrder -> PlaceOrder
-               -> AsyncResult<OrderPlaced, PlaceOrderError>
+confirmBooking : LoadCustomer -> SaveBooking -> BookingRequest
+               -> AsyncResult<BookingConfirmed, ConfirmBookingError>
 
 -- shell module: imports the driver, the domain, and connects them
-placeOrderWired = placeOrder (loadCustomerFromDb pool) (saveOrderToDb pool)
+confirmBookingWired =
+  confirmBooking (loadCustomerFromDb pool) (saveBookingToDb pool)
 ```
 
 The arrow points from the shell to the domain. That is the inversion: the

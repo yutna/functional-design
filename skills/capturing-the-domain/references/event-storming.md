@@ -16,7 +16,7 @@ Ask: what happens in this business? Write each answer as a past-tense
 event.
 
 ```text
-Order placed
+Booking confirmed
 Payment declined
 Shipment dispatched
 Quote expired
@@ -46,7 +46,7 @@ and each maps to a different design:
 | Another event        | A reaction: one workflow feeds another |
 | Time passed          | A scheduled process at the edge        |
 
-Write the command for the first case, in the imperative: "Place order",
+Write the command for the first case, in the imperative: "Confirm booking",
 "Approve refund".
 
 ## Step 4: group into workflows
@@ -55,7 +55,7 @@ A workflow is one command, one unit of work, and the events it produces.
 Draw the box.
 
 ```text
-Place order  ->  [ place order ]  ->  Order placed
+Confirm booking  ->  [ confirm booking ]  ->  Booking confirmed
                                       Acknowledgement sent
 ```
 
@@ -81,18 +81,18 @@ Convert directly, without an intermediate document.
 
 ```text
 -- from the wall
-type PlaceOrder = { customer: CustomerId,
-                    lines: NonEmptyList<OrderLine> }
+type BookingRequest = { customer: CustomerId,
+                    treatments: NonEmptyList<BookedTreatment> }
 
-type OrderPlaced = { order: Order, placedAt: Instant }
-type OrderRejected = { reason: RejectionReason }
+type BookingConfirmed = { booking: Booking, confirmedAt: Instant }
+type BookingRejected = { reason: RejectionReason }
 
-placeOrder :
-  PlaceOrder -> Result<OrderPlaced, PlaceOrderError>
+confirmBooking :
+  BookingRequest -> Result<BookingConfirmed, ConfirmBookingError>
 ```
 
-Then read the types back to the room, in English: "placing an order takes
-a customer and at least one line, and either places the order or fails
+Then read the types back to the room, in English: "confirming a booking takes
+a customer and at least one treatment, and either places the booking or fails
 with one of these reasons". Every correction at this point costs nothing.
 
 ## What to do with the output

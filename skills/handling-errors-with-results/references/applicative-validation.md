@@ -48,10 +48,10 @@ The common shape is accumulation inside a step, short-circuiting between
 steps.
 
 ```text
-placeOrder =
-  validateOrder          -- accumulates field errors inside
-    >=> priceOrder       -- short-circuits: needs a valid order
-    >=> acknowledgeOrder
+confirmBooking =
+  validateBooking          -- accumulates field errors inside
+    >=> priceBooking       -- short-circuits: needs a valid booking
+    >=> acknowledgeBooking
 ```
 
 Validation gathers everything wrong with the input in one pass; the rest
@@ -75,7 +75,7 @@ type Problem =
   | OutOfRange of { min: Decimal, max: Decimal }
 ```
 
-`FieldPath` handles nesting: `lines[2].quantity`. Structured problems let
+`FieldPath` handles nesting: `treatments[2].quantity`. Structured problems let
 the edge translate messages, and let a client highlight the right input.
 
 ## Errors that depend on several fields

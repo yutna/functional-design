@@ -97,9 +97,9 @@ prefer a lazy sequence, where the traversal genuinely stops. See
 ## Folding events into state
 
 ```text
-applyEvent : Order -> OrderEvent -> Order
-current : List<OrderEvent> -> Order
-current = fold applyEvent emptyOrder
+applyEvent : Booking -> BookingEvent -> Booking
+current : List<BookingEvent> -> Booking
+current = fold applyEvent emptyBooking
 ```
 
 `applyEvent` is the whole business logic of the projection, and it is a
@@ -108,7 +108,7 @@ a new event type is one new case.
 
 ## Building a structure
 
-To build a list in original order without repeated appending:
+To build a list in original booking without repeated appending:
 
 ```text
 -- prepend then reverse: two linear passes, no quadratic append

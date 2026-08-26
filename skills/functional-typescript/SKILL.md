@@ -63,7 +63,7 @@ runtime undefined in otherwise well-typed code.
 ## Core rules
 
 1. **`readonly` everywhere in domain types**, including array fields:
-   `readonly OrderLine[]`.
+   `readonly BookedTreatment[]`.
 2. **Brand every domain primitive**, and export only the parser.
 3. **Discriminate unions on a literal field**, one field name across the
    codebase.
@@ -151,14 +151,14 @@ produces.
 
 ```ts
 // the schema's inferred type is the DTO, not the domain type
-const OrderDto = z.object({
+const BookingDto = z.object({
   id: z.string().uuid(),
-  lines: z.array(OrderLineDto).nonempty(),
+  treatments: z.array(BookedTreatmentDto).nonempty(),
   status: z.enum(["draft", "placed", "cancelled"]),
 });
 
 // one mapping into the domain, where the guarantees live
-const toOrder = (dto: z.infer<typeof OrderDto>): Result<Order, MapError> =>
+const toBooking = (dto: z.infer<typeof BookingDto>): Result<Booking, MapError> =>
   ...;
 ```
 
@@ -205,8 +205,8 @@ customer has ever added.
   type immediately.
 - **Structural typing collisions.** Two unbranded types with the same
   shape are the same type to the compiler.
-- **`readonly` only at the top level.** `readonly lines: OrderLine[]`
-  still allows `lines.push`.
+- **`readonly` only at the top level.** `readonly treatments: BookedTreatment[]`
+  still allows `treatments.push`.
 - **Using exceptions for expected failures**, then catching `unknown` and
   guessing.
 

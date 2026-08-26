@@ -7,7 +7,7 @@ description: Use when domain values are raw strings or numbers, when the same fo
 
 ## Overview
 
-A domain value is almost never "a string" or "a number". It is an order
+A domain value is almost never "a string" or "a number". It is a booking
 identifier, a percentage between zero and one hundred, a quantity of at
 least one, an email address. When those are represented by primitives,
 three things follow: the constraints live in prose, any value can be
@@ -17,8 +17,6 @@ someone remembered it.
 Wrapping each domain value in its own type, built only through a function
 that can fail, fixes all three at once. This is the cheapest structural
 improvement available in most codebases.
-
-Source: Domain Modeling Made Functional, chapters 5-6 (Wlaschin).
 
 ## When to use
 
@@ -33,7 +31,7 @@ Not for: values that genuinely are unconstrained free text with no rules.
 ## Core rules
 
 1. **One type per domain concept**, even when the underlying primitive is
-   the same. `CustomerId` and `OrderId` are different types.
+   the same. `CustomerId` and `BookingId` are different types.
 2. **Constructors can fail; return `Result`.** The constructor is the
    only place the rule lives.
 3. **No public raw construction.** If the wrapper can be built directly
@@ -53,8 +51,8 @@ Primitive obsession:
 
 ```text
 -- what is legal? nothing here says.
-placeOrder : String -> String -> Integer -> Decimal -> Result<...>
--- callers pass (customerId, productCode, quantity, unitPrice)
+confirmBooking : String -> String -> Integer -> Decimal -> Result<...>
+-- callers pass (customerId, treatmentCode, quantity, unitPrice)
 -- and eventually pass them in the wrong order
 ```
 
@@ -62,16 +60,16 @@ Constrained values:
 
 ```text
 type CustomerId = CustomerId of Uuid
-type ProductCode = ProductCode of String     -- "W" or "G" + 4 digits
+type TreatmentCode = TreatmentCode of String     -- "W" or "G" + 4 digits
 type Quantity = Quantity of Integer          -- 1..1000
 type UnitPrice = UnitPrice of Decimal        -- 0..100000, 2 dp
 
-parseProductCode : String -> Result<ProductCode, ProductCodeError>
+parseTreatmentCode : String -> Result<TreatmentCode, TreatmentCodeError>
 quantity : Integer -> Result<Quantity, QuantityError>
 
-placeOrder :
-  CustomerId -> ProductCode -> Quantity -> UnitPrice
-    -> Result<OrderPlaced, PlaceOrderError>
+confirmBooking :
+  CustomerId -> TreatmentCode -> Quantity -> UnitPrice
+    -> Result<BookingConfirmed, ConfirmBookingError>
 ```
 
 Transposed arguments no longer compile. The legal values are in the
@@ -126,7 +124,7 @@ for which side of that line a value falls on.
 - **Unwrapping early for convenience.** Once a raw string escapes into
   the domain, everything downstream is back to primitives.
 - **Encoding constraints nobody asked for.** A maximum length invented by
-  the developer becomes a production incident when the business changes.
+  the developer becomes a treatmention incident when the business changes.
 - **Making equality do too much.** If `EmailAddress` compares
   case-insensitively, normalise at construction instead, so equality
   stays obvious.

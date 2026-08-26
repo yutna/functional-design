@@ -87,7 +87,7 @@ fromRow : QuoteRow -> Result<Quote, RowError>
 ```
 
 `fromRow` returns `Result` because storage can hold rows the domain
-cannot accept: a row with status "accepted" and no order identifier, most
+cannot accept: a row with status "accepted" and no booking identifier, most
 likely written by an older version of the code. That failure is real, and
 hiding it behind a default produces the illegal state you removed.
 

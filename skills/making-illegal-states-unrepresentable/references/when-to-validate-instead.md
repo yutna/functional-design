@@ -9,32 +9,32 @@ Data from outside arrives in whatever shape the sender chose. There is
 nothing to design away: the check is the conversion.
 
 ```text
-parseOrder : Json -> Result<UnvalidatedOrder, ParseError>
-validateOrder :
-  UnvalidatedOrder -> Result<ValidatedOrder, ValidationError>
+parseBooking : Json -> Result<UnvalidatedBooking, ParseError>
+validateBooking :
+  UnvalidatedBooking -> Result<ValidatedBooking, ValidationError>
 ```
 
 Two steps, because they fail for different reasons and different people
 need to hear about them: parsing failures are the sender's bug,
 validation failures are the user's business.
 
-Everything past `validateOrder` is written against types that cannot be
+Everything past `validateBooking` is written against types that cannot be
 wrong, so nothing downstream re-checks.
 
 ## Drafts and work in progress
 
-A half-filled form is not a broken `Order`. It is a real business
+A half-filled form is not a broken `Booking`. It is a real business
 concept, and it has its own rules: a draft may be saved, resumed, and
-abandoned; an order may not.
+abandoned; a booking may not.
 
 ```text
-type DraftOrder = {
+type DraftBooking = {
   customer: Option<CustomerId>,
-  lines: List<DraftLine>,
+  treatments: List<DraftTreatment>,
   updatedAt: Instant,
 }
 
-submit : DraftOrder -> Result<UnvalidatedOrder, IncompleteDraft>
+submit : DraftBooking -> Result<UnvalidatedBooking, IncompleteDraft>
 ```
 
 The optional fields are legal here, because incompleteness is the point.
@@ -42,7 +42,7 @@ The conversion to the domain type is one function, and it is where the
 completeness rule lives.
 
 Do not reuse the domain type with everything optional. That destroys the
-guarantees for the ninety per cent of code that deals with real orders.
+guarantees for the ninety per cent of code that deals with real bookings.
 
 ## Rules that depend on the outside world
 
@@ -50,9 +50,9 @@ Some rules cannot be checked at construction because the answer is not in
 the value.
 
 ```text
--- cannot be a type: it depends on stock levels right now
+-- cannot be a type: it depends on availability right now
 checkAvailability :
-  GetStock -> Order -> AsyncResult<Order, OutOfStock>
+  GetAvailability -> Booking -> AsyncResult<Booking, Unavailable>
 ```
 
 These are workflow steps returning `Result`, not type invariants. The
@@ -68,7 +68,7 @@ Represent the rule as data, and the check as a function over it.
 ```text
 type CreditPolicy = { limit: Money, requiresApprovalAbove: Money }
 checkCredit :
-  CreditPolicy -> Customer -> Order -> Result<Order, CreditError>
+  CreditPolicy -> Customer -> Booking -> Result<Booking, CreditError>
 ```
 
 The type still prevents the structural mistakes: `Money` is not a float,

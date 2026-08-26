@@ -18,8 +18,6 @@ the outside expects. Everything between those two functions can then
 assume its values are correct, and everything outside can evolve on its
 own schedule.
 
-Source: Domain Modeling Made Functional, chapters 11-12 (Wlaschin).
-
 ## When to use
 
 - Designing an API payload, message, or database schema
@@ -54,10 +52,10 @@ Not for: deciding what the domain types should be, which is
 Domain type doing both jobs:
 
 ```text
-type Order = {
+type Booking = {
   id: String,                  -- because JSON has no Uuid
   status: String,              -- because the column is varchar
-  lines: List<OrderLine>,      -- may be empty, because the join may
+  treatments: List<BookedTreatment>,      -- may be empty, because the join may
   cancelledAt: Option<Instant>, -- return nothing
   version: Integer,            -- because the ORM needs it
 }
@@ -69,22 +67,22 @@ Two families and a mapping:
 
 ```text
 -- domain: designed for rules
-type Order = {
-  id: OrderId,
-  lines: NonEmptyList<OrderLine>,
+type Booking = {
+  id: BookingId,
+  treatments: NonEmptyList<BookedTreatment>,
   lifecycle: Lifecycle,
 }
 
 -- transfer: designed for the wire
-type OrderDto = {
+type BookingDto = {
   id: String,
-  lines: List<OrderLineDto>,
+  treatments: List<BookedTreatmentDto>,
   status: String,
   cancelledAt: String?,
 }
 
-toDto : Order -> OrderDto
-fromDto : OrderDto -> Result<Order, OrderDtoError>
+toDto : Booking -> BookingDto
+fromDto : BookingDto -> Result<Booking, BookingDtoError>
 ```
 
 The domain regains `NonEmptyList` and a real lifecycle. The wire keeps
@@ -121,7 +119,7 @@ Storage is a boundary like any other, with three extra concerns:
 transactions, identity, and concurrency.
 
 - **The domain does not know it is stored.** No repository interface
-  inside the domain; the workflow takes `LoadOrder` and `SaveOrder`
+  inside the domain; the workflow takes `LoadBooking` and `SaveBooking`
   function types. See
   [parameterizing-dependencies](../parameterizing-dependencies/SKILL.md).
 - **One aggregate per transaction.** See

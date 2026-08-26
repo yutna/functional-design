@@ -59,24 +59,24 @@ arrives already carrying its guarantee.
 
 ```ts
 // Zod
-const ProductCode = z
+const TreatmentCode = z
   .string()
   .trim()
   .toUpperCase()
   .regex(/^[WG]\d{4}$/)
-  .brand<"ProductCode">();
+  .brand<"TreatmentCode">();
 
-type ProductCode = z.infer<typeof ProductCode>;
+type TreatmentCode = z.infer<typeof TreatmentCode>;
 ```
 
 ```ts
 // Valibot
-const ProductCode = v.pipe(
+const TreatmentCode = v.pipe(
   v.string(),
   v.trim(),
   v.toUpperCase(),
   v.regex(/^[WG]\d{4}$/),
-  v.brand("ProductCode"),
+  v.brand("TreatmentCode"),
 );
 ```
 
@@ -95,7 +95,7 @@ will fix, and abort early only where a later check cannot run without an
 earlier one.
 
 ```ts
-const parsed = OrderDto.safeParse(input);
+const parsed = BookingDto.safeParse(input);
 if (!parsed.success) {
   return err(
     parsed.error.issues.map((i) => ({
@@ -116,16 +116,16 @@ The single rule this reference exists for.
 
 ```ts
 // the DTO: nullable, string enums, plain arrays
-type OrderDto = z.infer<typeof OrderDtoSchema>;
+type BookingDto = z.infer<typeof BookingDtoSchema>;
 
 // the domain type: separate, with the guarantees
-type Order = {
-  readonly id: OrderId;
-  readonly lines: NonEmptyArray<OrderLine>;
+type Booking = {
+  readonly id: BookingId;
+  readonly treatments: NonEmptyArray<BookedTreatment>;
   readonly lifecycle: Lifecycle;
 };
 
-const toOrder = (dto: OrderDto): Result<Order, MapError> => ...;
+const toBooking = (dto: BookingDto): Result<Booking, MapError> => ...;
 ```
 
 A schema rich enough to brand and constrain closes much of the gap, and

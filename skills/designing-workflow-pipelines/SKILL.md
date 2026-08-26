@@ -18,8 +18,6 @@ the ends of the pipeline mark exactly where effects are allowed; and the
 whole use case can be read in one place instead of being assembled in a
 reader's head from four services.
 
-Source: Domain Modeling Made Functional, chapters 7 and 9 (Wlaschin).
-
 ## When to use
 
 - Implementing a use case, endpoint handler, job, or message consumer
@@ -65,31 +63,32 @@ validation rule now has two homes.
 As a pipeline:
 
 ```text
-type PlaceOrder =
-  UnvalidatedOrder -> AsyncResult<List<PlaceOrderEvent>, PlaceOrderError>
+type ConfirmBookingWorkflow =
+  UnvalidatedBooking
+    -> AsyncResult<List<ConfirmBookingEvent>, ConfirmBookingError>
 
-placeOrder checkProduct getPrice =
-  validateOrder checkProduct
-    >=> priceOrder getPrice
-    >=> acknowledgeOrder
+confirmBooking checkTreatment getPrice =
+  validateBooking checkTreatment
+    >=> priceBooking getPrice
+    >=> acknowledgeBooking
     >=> createEvents
 ```
 
 Four steps, each with its own types:
 
 ```text
-validateOrder :
-  CheckProductExists -> UnvalidatedOrder
-    -> Result<ValidatedOrder, ValidationError>
+validateBooking :
+  CheckTreatmentExists -> UnvalidatedBooking
+    -> Result<ValidatedBooking, ValidationError>
 
-priceOrder :
-  GetProductPrice -> ValidatedOrder -> Result<PricedOrder, PricingError>
+priceBooking :
+  GetTreatmentPrice -> ValidatedBooking -> Result<PricedBooking, PricingError>
 
-acknowledgeOrder : PricedOrder -> AcknowledgedOrder
-createEvents : AcknowledgedOrder -> List<PlaceOrderEvent>
+acknowledgeBooking : PricedBooking -> AcknowledgedBooking
+createEvents : AcknowledgedBooking -> List<ConfirmBookingEvent>
 ```
 
-The signature of `placeOrder` states the whole contract. The steps state
+The signature of `confirmBooking` states the whole contract. The steps state
 the process. Nothing else in the system needs to know the order of them.
 
 ## Anatomy
@@ -133,9 +132,9 @@ handle it, in order of preference:
 effect is a parameter.
 
 ```text
-validateOrder :
-  CheckProductExists -> UnvalidatedOrder
-    -> AsyncResult<ValidatedOrder, ValidationError>
+validateBooking :
+  CheckTreatmentExists -> UnvalidatedBooking
+    -> AsyncResult<ValidatedBooking, ValidationError>
 ```
 
 **Split around the effect.** Fetch first in the shell, then run a pure
@@ -144,7 +143,7 @@ whole workflow needs.
 
 ```text
 -- shell fetches, core decides
-priceOrder : PriceList -> ValidatedOrder -> Result<PricedOrder, Error>
+priceBooking : PriceList -> ValidatedBooking -> Result<PricedBooking, Error>
 ```
 
 See [effect-alignment.md](references/effect-alignment.md) for how to keep

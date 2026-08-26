@@ -19,13 +19,13 @@
 Two functions look nearly identical:
 
 ```text
-priceOrder   : Catalogue -> Order -> Priced
+priceBooking   : Catalogue -> Booking -> Priced
 priceQuote   : Catalogue -> Quote -> Priced
 ```
 
 The bodies are ninety per cent the same. The instinct is to join them
 behind a flag or a shared generic. Apply step 4: what would change each?
-Orders are priced with customer contract rates; quotes are priced at list
+Bookings are priced with customer contract rates; quotes are priced at list
 price and must stay stable for thirty days. Those rules will diverge, and
 they answer to different parts of the business.
 
@@ -33,7 +33,7 @@ Verdict: keep apart. Extract only the genuinely shared part, if it is a
 meaningful abstraction on its own:
 
 ```text
-applyLineRates : Rates -> List<Line> -> Priced
+applyTreatmentRates : Rates -> List<BookedTreatment> -> Priced
 ```
 
 Now each function is a short expression of its own rule over a shared

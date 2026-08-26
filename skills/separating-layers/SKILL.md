@@ -8,7 +8,7 @@ description: Use when adjacent layers repeat the same abstraction, when a functi
 ## Overview
 
 In a well-structured system each layer speaks a different language. The
-layer above talks about orders and customers; the layer below talks about
+layer above talks about bookings and customers; the layer below talks about
 rows and bytes; a layer between talks about neither at once. When two
 adjacent layers have the same abstraction, the boundary between them is
 not earning anything, and the code is longer for no gain.
@@ -16,8 +16,6 @@ not earning anything, and the code is longer for no gain.
 The companion rule is direction: when complexity has to live somewhere,
 it belongs in the lower layer, absorbed once, rather than in every caller
 above.
-
-Source: A Philosophy of Software Design, chapters 7 and 8 (Ousterhout).
 
 ## When to use
 
@@ -55,13 +53,13 @@ Layers with the same abstraction: three hops, no translation.
 
 ```text
 -- api layer
-getOrder id = service.getOrder id
+getBooking id = service.getBooking id
 
 -- service layer
-getOrder id = repo.getOrder id
+getBooking id = repo.getBooking id
 
 -- repo layer
-getOrder id = db.query "select ..." id
+getBooking id = db.query "select ..." id
 ```
 
 Two of these three functions exist only to be called. Every change to a
@@ -72,16 +70,16 @@ Layers that each translate:
 
 ```text
 -- api layer: HTTP words in, HTTP words out
-handleGetOrder : Request -> Async<Response>
+handleGetBooking : Request -> Async<Response>
 -- translates path parameters and status codes
 
--- domain layer: order words only
-loadOrder : OrderId -> AsyncResult<Order, LoadError>
+-- domain layer: booking words only
+loadBooking : BookingId -> AsyncResult<Booking, LoadError>
 -- knows nothing about HTTP or SQL
 
 -- storage layer: row words only
-selectOrder : OrderId -> AsyncResult<Option<OrderRow>, DbError>
--- knows nothing about orders as the business means them
+selectBooking : BookingId -> AsyncResult<Option<BookingRow>, DbError>
+-- knows nothing about bookings as the business means them
 ```
 
 Each layer now has a reason to exist: it converts one vocabulary into

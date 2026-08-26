@@ -6,10 +6,10 @@
 put inside.
 
 ```js
-const orderLine = (code, quantity) => Object.freeze({ code, quantity });
+const bookedTreatment = (code, quantity) => Object.freeze({ code, quantity });
 
-const order = (id, lines) =>
-  Object.freeze({ id, lines: Object.freeze([...lines]) });
+const booking = (id, treatments) =>
+  Object.freeze({ id, treatments: Object.freeze([...treatments]) });
 ```
 
 In strict mode, and in every module, assignment to a frozen property
@@ -25,13 +25,13 @@ skip it for short-lived locals in hot code, with a measurement.
 
 ```js
 // records
-const withStatus = (order, status) => Object.freeze({ ...order, status });
+const withStatus = (booking, status) => Object.freeze({ ...booking, status });
 
 // arrays
-const added = Object.freeze([...order.lines, line]);
-const removed = order.lines.filter((l) => l.id !== id);
-const sorted = [...order.lines].sort(byCode);
-const reversed = [...order.lines].reverse();
+const added = Object.freeze([...booking.treatments, treatment]);
+const removed = booking.treatments.filter((l) => l.id !== id);
+const sorted = [...booking.treatments].sort(byCode);
+const reversed = [...booking.treatments].reverse();
 ```
 
 The methods that mutate in place, and must always be preceded by a copy:
@@ -49,10 +49,10 @@ Spreading deeply gets unreadable fast.
 ```js
 // three levels: already too much
 const updated = {
-  ...order,
+  ...booking,
   customer: {
-    ...order.customer,
-    address: { ...order.customer.address, city },
+    ...booking.customer,
+    address: { ...booking.customer.address, city },
   },
 };
 ```
@@ -84,11 +84,11 @@ Building a large structure inside one function, where the mutable value
 never escapes, is acceptable.
 
 ```js
-const groupByCode = (lines) => {
+const groupByCode = (treatments) => {
   const acc = new Map(); // never escapes
-  for (const line of lines) {
-    const existing = acc.get(line.code) ?? [];
-    acc.set(line.code, [...existing, line]);
+  for (const treatment of treatments) {
+    const existing = acc.get(treatment.code) ?? [];
+    acc.set(treatment.code, [...existing, treatment]);
   }
   return Object.freeze(
     Object.fromEntries([...acc].map(([k, v]) => [k, Object.freeze(v)])),

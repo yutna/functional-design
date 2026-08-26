@@ -18,8 +18,6 @@ The best modules are deep. Getting depth wrong is the most common
 structural mistake in otherwise clean functional code, because splitting
 feels virtuous and each split adds an interface.
 
-Source: A Philosophy of Software Design, chapters 4 and 6 (Ousterhout).
-
 ## When to use
 
 - Deciding what a new module or file exports
@@ -39,8 +37,8 @@ everything a caller must know, formal and informal:
 
 | Part of the interface | Formal? | Example                       |
 | --------------------- | ------- | ----------------------------- |
-| Exported signatures   | Yes     | `price : Order -> Priced`     |
-| Types in signatures   | Yes     | the fields of `Order`         |
+| Exported signatures   | Yes     | `price : Booking -> Priced`   |
+| Types in signatures   | Yes     | the fields of `Booking`       |
 | Failure cases         | Yes     | the `E` in `Result<T, E>`     |
 | Effects               | Yes     | `Async`, `IO` in the type     |
 | Required call order   | No      | "validate before price"       |
@@ -76,10 +74,10 @@ contract as possible, and to reduce the rest to nothing.
 A shallow module: the interface restates the implementation.
 
 ```text
--- OrderStore: five exported functions, each one line of real work
-insertOrderRow : OrderRow -> AsyncResult<Unit, DbError>
-selectOrderRow : OrderId -> AsyncResult<Option<OrderRow>, DbError>
-updateOrderRow : OrderRow -> AsyncResult<Unit, DbError>
+-- BookingStore: five exported functions, each one line of real work
+insertBookingRow : BookingRow -> AsyncResult<Unit, DbError>
+selectBookingRow : BookingId -> AsyncResult<Option<BookingRow>, DbError>
+updateBookingRow : BookingRow -> AsyncResult<Unit, DbError>
 beginTx        : Unit -> AsyncResult<Tx, DbError>
 commitTx       : Tx -> AsyncResult<Unit, DbError>
 ```
@@ -91,12 +89,12 @@ carry the complexity.
 A deep module: the same functionality, one thing to know.
 
 ```text
--- OrderStore
-saveOrder : Order -> AsyncResult<Unit, SaveError>
-loadOrder : OrderId -> AsyncResult<Option<Order>, LoadError>
+-- BookingStore
+saveBooking : Booking -> AsyncResult<Unit, SaveError>
+loadBooking : BookingId -> AsyncResult<Option<Booking>, LoadError>
 ```
 
-Transactions, rows, retries, and the mapping between `Order` and storage
+Transactions, rows, retries, and the mapping between `Booking` and storage
 are now implementation. The interface is two functions and two error
 types, and a change to the schema cannot reach a caller.
 

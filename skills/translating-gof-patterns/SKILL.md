@@ -17,10 +17,6 @@ Knowing the translation matters for two reasons: it stops a familiar name
 dragging a heavy implementation into a functional codebase, and it makes
 object-oriented code readable when porting it.
 
-Source: Functional Design, part IV (Martin), with the caution about
-pattern overuse from A Philosophy of Software Design, chapter 19
-(Ousterhout).
-
 ## When to use
 
 - About to name something `...Factory`, `...Strategy`, or `...Manager`
@@ -66,7 +62,7 @@ registry.
 ```text
 -- before: an interface and three classes
 -- after:
-priceOrder : (Order -> Money) -> Order -> Priced
+priceBooking : (Booking -> Money) -> Booking -> Priced
 ```
 
 **Visitor becomes a fold or a match.** The double-dispatch machinery
@@ -87,7 +83,7 @@ deliver it. The decision stays pure and testable, and the set of
 listeners becomes visible in one place.
 
 ```text
-placeOrder : PlaceOrder -> Result<List<OrderEvent>, PlaceOrderError>
+confirmBooking : BookingRequest -> Result<List<BookingEvent>, ConfirmBookingError>
 ```
 
 ## Patterns that stay useful

@@ -16,8 +16,6 @@ Naming is also a design tool. A name that is hard to choose is telling
 you the thing has no clear purpose, and that is a design problem
 discovered cheaply.
 
-Source: A Philosophy of Software Design, chapter 14 (Ousterhout).
-
 ## When to use
 
 - Naming anything: a function, a type, a field, a parameter
@@ -37,11 +35,11 @@ Not for: deciding what to comment, which is
    `invoiceList`. The reader can see it is a list.
 3. **One word per concept, everywhere.** Pick `fetch` or `get` or `load`,
    and never use the other two for the same operation.
-4. **Do not encode the type or the module.** `orderService.orderSave` is
-   three redundancies; `Order.save` says it once.
+4. **Do not encode the type or the module.** `bookingService.bookingSave` is
+   three redundancies; `Booking.save` says it once.
 5. **Name what it returns, not what it does inside.** `total`, not
    `calculateAndCacheTotal`.
-6. **Say what a boolean is true of.** `isExpired`, `hasUnpaidLines`.
+6. **Say what a boolean is true of.** `isExpired`, `hasUnpaidTreatments`.
    Never `flag`, `check`, `status` for a boolean.
 7. **Treat difficulty as a signal.** If no good name exists, the thing is
    doing two jobs or has no clear identity. Fix that instead of settling.
@@ -59,8 +57,8 @@ check (x, y)
 Precise names, readable at the call site:
 
 ```text
-priceOrder : ValidatedOrder -> Result<PricedOrder, PricingError>
-isEligibleForRefund : OrderLine -> Boolean
+priceBooking : ValidatedBooking -> Result<PricedBooking, PricingError>
+isEligibleForRefund : BookedTreatment -> Boolean
 assertWithinCreditLimit (used, limit)
 ```
 
@@ -129,7 +127,7 @@ feedback available, and ignoring it is throwing it away.
 - **Short names for wide scopes.** A one-letter name is fine in a
   three-line lambda and wrong for an exported function's parameter.
 - **Long names as a substitute for design.**
-  `validateAndNormaliseAndSaveOrder` names three jobs; split them.
+  `validateAndNormaliseAndSaveBooking` names three jobs; split them.
 - **Domain words used loosely.** If the business distinguishes "quote"
   from "estimate", the code must too.
 - **Renaming without changing the concept.** A rename that does not make

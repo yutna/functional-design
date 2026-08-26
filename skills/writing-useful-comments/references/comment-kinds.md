@@ -42,8 +42,8 @@ Worth writing:
 
 ```text
 -- Two passes: the first collects the codes so the price source is
--- called once for the whole order. Calling it per line took the
--- p99 from 40ms to 900ms on large orders.
+-- called once for the whole booking. Calling it per treatment took the
+-- p99 from 40ms to 900ms on large bookings.
 ```
 
 Not worth writing: a summary of the next five lines, or a marker for
@@ -57,8 +57,8 @@ comments that prevent the worst class of bug.
 ```text
 -- The mobile client matches on these exact strings. Adding a case is
 -- safe; renaming one is a breaking API change and needs a version
--- bump in OrderApi.
-type OrderStatusTag = "new" | "paid" | "cancelled"
+-- bump in BookingApi.
+type BookingStatusTag = "new" | "paid" | "cancelled"
 ```
 
 Placement: put it where an edit would break the assumption. If two places
@@ -71,7 +71,7 @@ undoing a deliberate choice.
 
 ```text
 -- Stored, not derived. The invoice total must not change when a
--- product's price changes, so this is a snapshot at issue time,
+-- treatment's price changes, so this is a snapshot at issue time,
 -- deliberately duplicating what lines would compute today.
 invoicedTotal: Money
 ```
@@ -105,7 +105,7 @@ At the top of a module, three things:
 3. How to use it, if the entry point is not obvious
 
 ```text
--- Owns everything about how an order is priced: rate selection,
+-- Owns everything about how a booking is priced: rate selection,
 -- rounding, and limits. Does not own discounts, which are applied
 -- afterwards by the Discounts module, nor tax, which is Billing's.
 ```

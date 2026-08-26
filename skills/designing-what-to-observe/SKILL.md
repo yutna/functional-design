@@ -19,9 +19,6 @@ domain's own words, at exactly the moments that matter. That stream is
 the observability primitive; logs, traces, and metrics are projections
 of it.
 
-Source: not from the three books. This applies their idea of deciding
-what matters to what a running system reveals.
-
 ## When to use
 
 - Designing a workflow, and deciding what it must reveal
@@ -36,7 +33,7 @@ Not for: choosing what an interface exposes to callers, which is
 ## Core rules
 
 1. **Write the questions first.** "Why did this booking fail?", "How many
-   orders are stuck?", "Is checkout slower than yesterday?" The fields
+   bookings are stuck?", "Is checkout slower than yesterday?" The fields
    follow from the questions; the reverse produces data nobody uses.
 2. **Emit domain events, not log lines.** The workflow already returns
    what happened. The shell projects those into whatever the platform
@@ -60,11 +57,11 @@ Not for: choosing what an interface exposes to callers, which is
 Observability bolted on inside the domain:
 
 ```text
-priceOrder catalogue order =
-  log "pricing order " + order.id                -- impure now
+priceBooking catalogue booking =
+  log "pricing booking " + booking.id                -- impure now
   let priced = ...
   log "priced " + show priced.total
-  metrics.increment "orders.priced"
+  metrics.increment "bookings.priced"
   priced
 ```
 
@@ -75,14 +72,14 @@ Observability as a projection of events:
 
 ```text
 -- core: unchanged, pure, returns what happened
-priceOrder : Catalogue -> ValidatedOrder -> Result<PricedOrder, Error>
+priceBooking : Catalogue -> ValidatedBooking -> Result<PricedBooking, Error>
 
-type OrderEvent =
-  | OrderPriced of { order: OrderId, total: Money, lines: Integer }
-  | PricingRejected of { order: OrderId, reason: PricingError }
+type BookingEvent =
+  | BookingPriced of { booking: BookingId, total: Money, treatments: Integer }
+  | PricingRejected of { booking: BookingId, reason: PricingError }
 
 -- shell: one projection, in one place
-record : CorrelationId -> OrderEvent -> Async<Unit>
+record : CorrelationId -> BookingEvent -> Async<Unit>
 ```
 
 Every record now has the same shape, the same identifiers, and the same
@@ -99,7 +96,7 @@ the compiler lists the projections that must handle it.
 | Event  | What the business did            | Unbounded    |
 
 Put identifiers in logs and traces, never in metric labels: a metric
-labelled by order identifier becomes a new time series per order and will
+labelled by booking identifier becomes a new time series per booking and will
 break the collector.
 
 ## The three questions per workflow

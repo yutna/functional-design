@@ -17,9 +17,9 @@ reasoning.
 6. Ask whether the complexity is in the problem or in your solution.
    Complexity you added should be deleted, not refactored — a domain
    expert describing the requirement would not mention a flag, a cache,
-   or a required call order. (Extends the books.)
+   or a required call order.
 7. Almost all added complexity is state, then ordering, then sheer
-   volume of code, in that order of harm. (Extends the books.)
+   volume of code, in that order of harm.
 
 Skills: `diagnosing-complexity`, `programming-strategically`.
 
@@ -31,7 +31,7 @@ Skills: `diagnosing-complexity`, `programming-strategically`.
    rules no type states.
 3. Each module owns knowledge no other module has. Two owners of one
    fact is leakage.
-4. Decompose by knowledge, never by the order things happen.
+4. Decompose by knowledge, never by the booking things happen.
 5. Each layer changes the abstraction. A function whose body is one call
    is not a layer.
 6. Given a choice, make the implementation harder and the interface
@@ -67,8 +67,8 @@ Skills: `capturing-the-domain`, `modeling-with-algebraic-types`,
 
 ## Representation
 
-Extends the books. The rules above assume a shape is worth modelling.
-These say when it is not.
+The rules above assume a shape is worth modelling. These say when it is
+not.
 
 1. Model the shape. Default, not preference; "this is verbose" is not a
    reason to leave it.
@@ -141,7 +141,8 @@ Skills: `folding-over-data`, `using-recursion-and-laziness`,
 
 ## Reliability, once effects cross a process
 
-Extends the books; none of them covers this ground.
+Design rules stop being enough once an effect can be retried,
+duplicated, or lost.
 
 1. Give every command an identity the caller controls, and carry it into
    every effect.
@@ -157,8 +158,8 @@ Skill: `making-effects-reliable`.
 
 ## Observability, as a design decision
 
-Extends the books; the same idea as deciding what matters, applied to
-what a running system reveals.
+The same idea as deciding what matters, applied to what a running system
+reveals.
 
 1. Write the questions the system must answer before choosing fields.
 2. The events a workflow returns are the observability primitive.

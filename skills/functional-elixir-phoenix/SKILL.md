@@ -151,7 +151,7 @@ Elixir idiom sits closer to plain maps than most of this pack assumes,
 and that is often right — but decide it per value, not by habit.
 
 A struct is the modelled route: it gives the value a name, makes
-`%Order{}` pattern matches fail loudly on the wrong type, and gives
+`%Booking{}` pattern matches fail loudly on the wrong type, and gives
 Dialyzer something to check. A bare map is the generic route, and it is
 correct when the keys come from config, from a tenant, or from an admin,
 or when the map is only stored and forwarded.

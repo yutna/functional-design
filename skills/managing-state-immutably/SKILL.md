@@ -18,8 +18,6 @@ pure functions, held in exactly one place, and replaced under a
 controlled swap. That is what makes concurrency safe by construction
 rather than by discipline.
 
-Source: Functional Design, parts I and II (Martin).
-
 ## When to use
 
 - Data is mutated in place and read from several places

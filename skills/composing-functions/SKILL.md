@@ -18,9 +18,6 @@ The rest is mechanics: composition, pipes, currying, and partial
 application. They are worth knowing precisely, because they are how
 dependencies are supplied and how pipelines are assembled.
 
-Source: Domain Modeling Made Functional, chapter 8 (Wlaschin), and
-Functional Design, part I (Martin).
-
 ## When to use
 
 - Two functions almost fit but not quite
@@ -89,7 +86,7 @@ transforming a value at hand. Composition of fallible functions needs a
 different operator, because `Result<B, E>` does not fit an input of `B`:
 
 ```text
-placeOrder = validate >=> price >=> acknowledge
+confirmBooking = validate >=> price >=> acknowledge
 ```
 
 See
@@ -102,10 +99,10 @@ functions. That is what makes partial application possible, and partial
 application is how dependencies are supplied.
 
 ```text
-priceOrder : GetProductPrice -> ValidatedOrder -> PricedOrder
+priceBooking : GetTreatmentPrice -> ValidatedBooking -> PricedBooking
 
 -- apply the dependency once, at wiring time
-priceWithCatalogue = priceOrder (lookupIn catalogue)
+priceWithCatalogue = priceBooking (lookupIn catalogue)
 
 -- the result is exactly the shape the pipeline wants
 pipeline = validate >=> priceWithCatalogue >=> acknowledge
@@ -121,12 +118,12 @@ A function type is the smallest possible interface, and passing one is
 the simplest way to make behaviour vary.
 
 ```text
-alias Comparator = Product -> Product -> Ordering
-sortProducts : Comparator -> List<Product> -> List<Product>
+alias Comparator = Treatment -> Treatment -> Ordering
+sortTreatments : Comparator -> List<Treatment> -> List<Treatment>
 ```
 
 Name the function type when it means something in the domain
-(`GetProductPrice`), and leave it inline when it is generic
+(`GetTreatmentPrice`), and leave it inline when it is generic
 (`A -> Boolean`).
 
 ## Red flags

@@ -1,18 +1,18 @@
 # The Design Loop, Worked
 
 One small feature walked through the seven steps: **apply a discount code
-when placing an order**. The point is the order of the steps, not the
+when confirming a booking**. The point is the order of the steps, not the
 domain.
 
 ## 1. Say it in the domain's words
 
 The business says: "a customer enters a code; if it is valid and not
-expired we take a percentage off the order total; the receipt has to show
+expired we take a percentage off the booking total; the receipt has to show
 the discount." That yields one command and one event.
 
 ```text
-type ApplyDiscount = { order: PricedOrder, code: String }
-type DiscountApplied = { order: DiscountedOrder, saved: Money }
+type ApplyDiscount = { booking: PricedBooking, code: String }
+type DiscountApplied = { booking: DiscountedBooking, saved: Money }
 ```
 
 Ask which words are the business's own. "Code", "expired", "saved" are.

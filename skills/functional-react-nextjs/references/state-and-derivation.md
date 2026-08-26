@@ -46,13 +46,13 @@ type State =
   | { tag: "Idle" }
   | { tag: "Editing"; draft: Draft; errors: readonly FieldError[] }
   | { tag: "Submitting"; draft: Draft }
-  | { tag: "Done"; reference: OrderRef };
+  | { tag: "Done"; reference: BookingRef };
 
 type Event =
   | { tag: "Started"; draft: Draft }
   | { tag: "Changed"; field: FieldName; value: string }
   | { tag: "Submitted" }
-  | { tag: "Succeeded"; reference: OrderRef }
+  | { tag: "Succeeded"; reference: BookingRef }
   | { tag: "Failed"; errors: readonly FieldError[] };
 
 const reduce = (state: State, event: Event): State => { ... };
@@ -109,11 +109,11 @@ subtree untestable. See
 ```tsx
 // rules in the handler: untestable, unreusable
 const onSubmit = () => {
-  if (order.total > 5000 && !customer.isVerified) { ... }
+  if (booking.total > 5000 && !customer.isVerified) { ... }
 };
 
 // rules in a pure module, tested without React
-const decision = decideCheckout(customer, order);
+const decision = decideCheckout(customer, booking);
 const onSubmit = () => dispatch({ tag: "Submitted", decision });
 ```
 
@@ -127,14 +127,14 @@ A component's props are its interface, and the same depth rule applies.
 
 ```tsx
 // shallow: the caller assembles everything
-<OrderTable
+<BookingTable
   rows={rows} columns={columns} sortKey={sortKey} sortDir={sortDir}
   onSort={onSort} page={page} pageSize={pageSize} onPage={onPage}
   isLoading={isLoading} error={error} emptyText={emptyText}
 />
 
 // deep: one thing to know
-<OrderTable orders={orders} onSelect={onSelect} />
+<BookingTable bookings={bookings} onSelect={onSelect} />
 ```
 
 Sorting, paging, and empty handling are the table's job. Pull that
@@ -148,7 +148,7 @@ breaks the design rules and breaks rendering.
 
 ```tsx
 setItems((xs) => [...xs, item]); // not xs.push
-setOrder((o) => ({ ...o, status })); // not o.status = ...
+setBooking((o) => ({ ...o, status })); // not o.status = ...
 const sorted = [...items].sort(byDate); // sort mutates
 ```
 

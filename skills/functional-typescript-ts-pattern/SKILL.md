@@ -33,7 +33,7 @@ Not for: designing the union itself, which is
 1. **End every match with `.exhaustive()`.** That is the whole point;
    `.otherwise()` throws the guarantee away.
 2. **Match on the discriminant first**, then on nested structure, so the
-   patterns read in the order a person would ask the questions.
+   patterns read in the booking a person would ask the questions.
 3. **Use `P.when` for guards**, not for business rules that deserve a
    name. A guard should fit on a line.
 4. **Select what you use.** `P.select()` names the parts a handler needs
@@ -69,8 +69,8 @@ Where plain narrowing needs several nested conditions, one pattern says
 it directly:
 
 ```ts
-const routing = (order: Order) =>
-  match(order)
+const routing = (booking: Booking) =>
+  match(booking)
     .with({ lifecycle: { tag: "Cancelled" } }, () => "archive")
     .with(
       { shipping: { method: "express" }, total: P.when((t) => t > 500_00) },
@@ -81,7 +81,7 @@ const routing = (order: Order) =>
     .exhaustive();
 ```
 
-Order matters: patterns are tried top to bottom, so the more specific
+Booking matters: patterns are tried top to bottom, so the more specific
 case goes first.
 
 ## State transitions
@@ -129,9 +129,9 @@ source state and keep the match only for dispatching commands.
 ## Handling Result
 
 ```ts
-const render = (r: Result<PricedOrder, PlaceOrderError>) =>
+const render = (r: Result<PricedBooking, ConfirmBookingError>) =>
   match(r)
-    .with({ ok: true }, ({ value }) => renderOrder(value))
+    .with({ ok: true }, ({ value }) => renderBooking(value))
     .with({ ok: false, error: { tag: "Validation" } }, ({ error }) =>
       renderFieldErrors(error.cause),
     )
@@ -163,7 +163,7 @@ at the edge, with the compiler proving every case is covered.
   than the code it replaces; destructure and match on the part.
 - **Using `P.when` for the main dispatch.** Guards are for conditions,
   not for the primary branch; the structure should carry that.
-- **Forgetting pattern order.** A general pattern above a specific one
+- **Forgetting pattern booking.** A general pattern above a specific one
   silently shadows it.
 
 ## Related skills

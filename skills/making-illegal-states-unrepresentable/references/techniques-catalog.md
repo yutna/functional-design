@@ -5,28 +5,28 @@ that does not.
 
 ## Correlated optional fields
 
-Permits a cancelled order with no reason, and a live order with one.
+Permits a cancelled booking with no reason, and a live booking with one.
 
 ```text
-type Order = { ..., cancelled: Boolean, cancelReason: Option<Text> }
+type Booking = { ..., cancelled: Boolean, cancelReason: Option<Text> }
 ```
 
 ```text
-type Order = { ..., lifecycle: Lifecycle }
+type Booking = { ..., lifecycle: Lifecycle }
 type Lifecycle = Active | Cancelled of { reason: CancelReason,
                                          at: Instant }
 ```
 
 ## Empty collection where one is required
 
-Permits an order with no lines, which every consumer then checks for.
+Permits a booking with no treatments, which every consumer then checks for.
 
 ```text
-type Order = { lines: List<OrderLine> }
+type Booking = { treatments: List<BookedTreatment> }
 ```
 
 ```text
-type Order = { lines: NonEmptyList<OrderLine> }
+type Booking = { treatments: NonEmptyList<BookedTreatment> }
 ```
 
 `NonEmptyList` is a record of a head and a tail, or a list with a
@@ -37,13 +37,13 @@ constructor that rejects empty. Build it once, use it everywhere.
 Permits a negative quantity and a percentage of 400.
 
 ```text
-type OrderLine = { quantity: Integer, discountPercent: Decimal }
+type BookedTreatment = { quantity: Integer, discountPercent: Decimal }
 ```
 
 ```text
 type Quantity = Quantity of Integer        -- 1..1000
 type Percent = Percent of Decimal          -- 0..100
-type OrderLine = { quantity: Quantity, discount: Percent }
+type BookedTreatment = { quantity: Quantity, discount: Percent }
 
 quantity : Integer -> Result<Quantity, RangeError>
 ```
@@ -67,7 +67,7 @@ type Customer = { email: EmailAddress }
 
 ## Two identifiers swapped
 
-Permits `transfer(orderId, customerId)` when the parameters are the other
+Permits `transfer(bookingId, customerId)` when the parameters are the other
 way round.
 
 ```text
@@ -76,22 +76,22 @@ transfer : String -> String -> Result<Unit, Error>
 
 ```text
 type CustomerId = CustomerId of Uuid
-type OrderId = OrderId of Uuid
-transfer : CustomerId -> OrderId -> Result<Unit, Error>
+type BookingId = BookingId of Uuid
+transfer : CustomerId -> BookingId -> Result<Unit, Error>
 ```
 
 ## Wrong pipeline phase
 
-Permits pricing an order that was never validated.
+Permits pricing a booking that was never validated.
 
 ```text
-validate : Order -> Result<Order, ValidationError>
-price : Order -> PricedOrder
+validate : Booking -> Result<Booking, ValidationError>
+price : Booking -> PricedBooking
 ```
 
 ```text
-validate : UnvalidatedOrder -> Result<ValidatedOrder, ValidationError>
-price : ValidatedOrder -> PricedOrder
+validate : UnvalidatedBooking -> Result<ValidatedBooking, ValidationError>
+price : ValidatedBooking -> PricedBooking
 ```
 
 The phases are separate types even when their fields are identical. That
@@ -99,7 +99,7 @@ identity is a coincidence, and it will end.
 
 ## Missing required field filled by a default
 
-Permits an order with a silently chosen currency.
+Permits a booking with a silently chosen currency.
 
 ```text
 type Money = { amount: Decimal, currency: Currency }   -- default USD
@@ -110,15 +110,15 @@ is not ready to build `Money`, and a default hides that.
 
 ## Two fields that must agree
 
-Permits `total` disagreeing with the sum of the lines.
+Permits `total` disagreeing with the sum of the treatments.
 
 ```text
-type Order = { lines: NonEmptyList<Line>, total: Money }
+type Booking = { treatments: NonEmptyList<BookedTreatment>, total: Money }
 ```
 
 ```text
-type Order = { lines: NonEmptyList<Line> }
-total : Order -> Money            -- derived, never stored
+type Booking = { treatments: NonEmptyList<BookedTreatment> }
+total : Booking -> Money            -- derived, never stored
 ```
 
 Store a derived value only when there is a reason it must be frozen, such

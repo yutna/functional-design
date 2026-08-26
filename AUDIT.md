@@ -1,9 +1,9 @@
 # Audit
 
-An audit of this pack against the goals it was built for: distil three
-books into agent-usable skills, keep them language-agnostic, make them
-work in both Claude Code and Codex, and pass `markdownlint` under default
-rules with no configuration.
+An audit of this pack against the goals it was built for: state
+functional design as rules an agent can act on, keep them
+language-agnostic, make them work in both Claude Code and Codex, and pass
+`markdownlint` under default rules with no configuration.
 
 ## What was built
 
@@ -12,13 +12,13 @@ rules with no configuration.
 | Skills                      | 40      |
 | Core, language-agnostic     | 34      |
 | Language packs              | 6       |
-| Markdown files under skills | 131     |
-| Reference files             | 91      |
+| Markdown files under skills | 130     |
+| Reference files             | 90      |
 | Worked examples             | 5       |
 | Routing eval cases          | 87      |
 | Agent scenarios             | 33      |
-| Lines of markdown           | 20,128  |
-| Words                       | 113,356 |
+| Lines of markdown           | 19,667  |
+| Words                       | 111,045 |
 
 ## Verification
 
@@ -32,7 +32,7 @@ All six checks in `scripts/verify.sh` pass.
 | Description length  | Longest is 159 characters, cap is 160          |
 | Description opening | 40 of 40 begin with "Use when"                 |
 | Codex list budget   | 6,951 characters against a limit of 8,000      |
-| Relative links      | 0 broken across 131 files                      |
+| Relative links      | 0 broken across 130 files                      |
 | Routing coverage    | 87 of 87 cases in the top 3; 69 first          |
 | Index coverage      | Every skill reachable from `functional-design` |
 | Orphans             | None; every skill has an incoming link         |
@@ -49,119 +49,26 @@ duplicate headings anywhere in a file, `MD033` forbidding inline HTML,
 `MD010` forbidding hard tabs even inside code blocks, and `MD040`
 requiring a language on every fence.
 
-`PROMPT.md` is excluded from linting. It is the input brief for this
-work, written in Thai, not a produced artefact.
-
-## Coverage: A Philosophy of Software Design
-
-| Chapter                      | Carried by                         |
-| ---------------------------- | ---------------------------------- |
-| 1 Introduction               | `diagnosing-complexity`            |
-| 2 Nature of Complexity       | `diagnosing-complexity`            |
-| 3 Working Code Isn't Enough  | `programming-strategically`        |
-| 4 Modules Should Be Deep     | `designing-deep-modules`           |
-| 5 Information Hiding         | `hiding-information`               |
-| 6 General-Purpose Modules    | `designing-deep-modules`           |
-| 7 Layer and Abstraction      | `separating-layers`                |
-| 8 Pull Complexity Downward   | `separating-layers`                |
-| 9 Together or Apart          | `splitting-and-joining-code`       |
-| 10 Errors Out of Existence   | `defining-errors-out-of-existence` |
-| 11 Design It Twice           | `programming-strategically`        |
-| 12 Why Write Comments        | `writing-useful-comments`          |
-| 13 Non-Obvious Comments      | `writing-useful-comments`          |
-| 14 Choosing Names            | `choosing-precise-names`           |
-| 15 Comments First            | `writing-useful-comments`          |
-| 16 Modifying Existing Code   | `programming-strategically`        |
-| 17 Consistency               | `programming-strategically`        |
-| 18 Code Should Be Obvious    | `deciding-what-matters`            |
-| 19 Software Trends           | Split across four skills, below    |
-| 20 Designing for Performance | `programming-strategically`        |
-| 21 Decide What Matters       | `deciding-what-matters`            |
-| Red flag summary             | `reviewing-functional-design`      |
-
-Chapters 6, 8, 11, 15, 17 and 20 sit in a reference file inside the
-skill named, not in its `SKILL.md`.
-
-Chapter 16 is also carried by
-`refactoring-toward-functional-design`. Chapter 19 is split: the
-incremental-development critique is in `programming-strategically`, the
-test-driven-design critique in `testing-functional-code`, the design
-patterns caution in `translating-gof-patterns`, and the accessors and
-inheritance critique in `applying-solid-functionally`.
-
-## Coverage: Domain Modeling Made Functional
-
-| Chapter                      | Carried by                             |
-| ---------------------------- | -------------------------------------- |
-| 1 Introducing DDD            | `capturing-the-domain`                 |
-| 2 Understanding the Domain   | `capturing-the-domain`, reference      |
-| 3 A Functional Architecture  | `separating-pure-core-from-shell`      |
-| 4 Understanding Types        | `modeling-with-algebraic-types`        |
-| 5 Domain Modeling with Types | Three skills, below                    |
-| 6 Integrity and Consistency  | `enforcing-consistency-boundaries`     |
-| 7 Workflows as Pipelines     | `designing-workflow-pipelines`         |
-| 8 Understanding Functions    | `composing-functions`                  |
-| 9 Composing a Pipeline       | `designing-workflow-pipelines`         |
-| 10 Working with Errors       | `handling-errors-with-results`         |
-| 11 Serialization             | `crossing-io-boundaries`, reference    |
-| 12 Persistence               | `crossing-io-boundaries`, reference    |
-| 13 Evolving a Design         | `refactoring-toward-functional-design` |
-
-Chapter 5 is split across `modeling-with-algebraic-types`,
-`constraining-primitive-values`, and `modeling-state-machines`. Chapter 6
-is also carried by `making-illegal-states-unrepresentable`. Chapter 9
-additionally carries `parameterizing-dependencies`. Bounded contexts and
-context maps from chapters 2 and 3 are in
-`capturing-the-domain/references/bounded-contexts.md`.
-
-## Coverage: Functional Design
-
-| Theme                       | Carried by                        |
-| --------------------------- | --------------------------------- |
-| Immutability and assignment | `managing-state-immutably`        |
-| Persistent data structures  | `managing-state-immutably`        |
-| Concurrency without locks   | `managing-state-immutably`        |
-| Recursion and iteration     | `using-recursion-and-laziness`    |
-| Laziness and streams        | `using-recursion-and-laziness`    |
-| Statefulness at the edge    | `separating-pure-core-from-shell` |
-| Reduce, fold, monoids       | `folding-over-data`               |
-| Typing discipline           | `modeling-with-algebraic-types`   |
-| SOLID for functions         | `applying-solid-functionally`     |
-| Design patterns in FP       | `translating-gof-patterns`        |
-| Test-driven development     | `testing-functional-code`         |
-
-Persistent structures, concurrency, and typing discipline sit in
-reference files inside those skills.
-
-The book's extended case studies are not reproduced. Their teaching value
-is carried by
-`designing-workflow-pipelines/references/worked-example.md`, an
-end-to-end workflow built with the same method. This is a deliberate
-omission: the pack is a working checklist, not a substitute for the
-books.
-
 ## Gaps found in the first audit, and closed
 
-1. **DMMF chapter attributions were wrong in four skills.** Pipelines
-   cited 9-10, functions cited 7-8, state machines cited 5 and 9, and
-   dependencies cited 10. Corrected to 7 and 9, 8, 5 and 7, and 9.
-2. **The four excuses for not writing comments were referred to but not
+1. **The four excuses for not writing comments were referred to but not
    stated.** Added as a table with answers in `writing-useful-comments`.
-3. **The incremental-development critique from chapter 19 was missing.**
-   Added as a section on incrementing on abstractions rather than
-   features in `programming-strategically`, with the related caution
+2. **The critique of feature-by-feature incremental development was
+   missing.** Added as a section on incrementing on abstractions rather
+   than features in `programming-strategically`, with the related caution
    about any practice that focuses on one unit at a time.
-4. **No single-page summary existed.** Added
+3. **No single-page summary existed.** Added
    `functional-design/references/principles.md`, every rule in the pack
    compressed, for use when there is no budget to load a skill.
 
-A second review, of whether complete extraction was the same as being
+A second review, of whether covering the ground was the same as being
 useful, produced the work recorded under Increment 2 below.
 
-## Beyond the three books
+## Where the pack goes past the classic ground
 
-Three skills are not derived from the books, and say so in their own
-overviews instead of citing a chapter.
+Three skills cover territory the classic design literature on functional
+programming does not, and they are the ones most likely to be wrong,
+because there is less settled practice behind them.
 
 | Skill                          | What it covers                      |
 | ------------------------------ | ----------------------------------- |
@@ -169,27 +76,17 @@ overviews instead of citing a chapter.
 | `designing-what-to-observe`    | What to log, trace and measure      |
 | `choosing-types-or-plain-data` | Whether a shape needs a type at all |
 
-All three build on book-derived skills and none claims chapter
-provenance. `functional-design/references/book-map.md` records the same
-distinction where a reader will meet it.
+All three build on the skills around them: the pure core and shell split,
+the consistency boundary, deciding what matters.
 
-Three supporting sources sit behind that material, each labelled at the
-point of use:
-
-| Source                              | Where it lands                   |
-| ----------------------------------- | -------------------------------- |
-| Refactoring, 2nd ed. (Fowler)       | `refactoring-...-design`, 2 refs |
-| Out of the Tar Pit (Moseley, Marks) | `diagnosing-complexity`, 1 ref   |
-| Data-Oriented Programming (Sharvit) | `choosing-types-or-plain-data`   |
-
-Three smaller extensions carry no chapter citation either: the
-calibration guidance in the index, the boundary schema library
-comparison in `functional-typescript`, and the evals.
+Three smaller additions sit in the same category: the calibration
+guidance in the index, the boundary schema library comparison in
+`functional-typescript`, and the evals.
 
 ## Increment 2
 
 Added after the first delivery, in response to the question of whether
-complete extraction was the same as being useful.
+covering the ground was the same as being useful.
 
 | Added                        | Where                                      |
 | ---------------------------- | ------------------------------------------ |
@@ -301,9 +198,9 @@ score to defend or a regression test.
 
 ## Increment 3
 
-Added in response to the question of whether any further books or theory
-were needed. Three works, integrated where each belongs rather than
-bolted on as new authorities.
+Added in response to the question of whether anything further was needed
+to make the pack complete. Three bodies of material, integrated where each
+belongs rather than bolted on as new authorities.
 
 ### The gap this closed
 
@@ -315,30 +212,30 @@ none took the form "here is a different right thing".
 
 Evidence gathered by grep before any work, not assumed:
 
-| Claim                             | Verified by                      |
-| --------------------------------- | -------------------------------- |
-| Data-first design absent          | 0 hits for Hickey, complect      |
-| Essential vs accidental undefined | 1 passing mention, no definition |
-| No source triad for complexity    | state, control, volume: 0 hits   |
-| Fowler's smells absent            | 1 of 24 present                  |
-| Refactoring only strategic        | 10 moves, no mechanics           |
-| Budget figure stale here          | said 6,725, formula gives 6,749  |
+| Claim                             | Verified by                       |
+| --------------------------------- | --------------------------------- |
+| Data-first design absent          | 0 hits for generic data, complect |
+| Essential vs accidental undefined | 1 passing mention, no definition  |
+| No source triad for complexity    | state, control, volume: 0 hits    |
+| Symptom catalogue absent          | 1 of 24 symptoms present          |
+| Refactoring only strategic        | 10 moves, no mechanics            |
+| Budget figure stale here          | said 6,725, formula gives 6,749   |
 
 What the pack already had, so the new material would not duplicate it:
 `when-to-validate-instead.md` already said policies changing faster than
 code should be data; `static-and-dynamic.md` already covered tagged
 values without a compiler; `concurrency.md` already gave the single-cell
-compare-and-set advice data-oriented programming states identically. The
-gap was never "a book is missing" — it was that **no file framed the
-choice as a choice**, and none named the cost of the type-first side.
+compare-and-set advice the data-first position states identically. The
+gap was never a missing topic — it was that **no file framed the choice
+as a choice**, and none named the cost of the type-first side.
 
 ### What was added
 
-| Source                    | Landed as                                 |
-| ------------------------- | ----------------------------------------- |
-| Data-Oriented Programming | `choosing-types-or-plain-data`, 3 refs    |
-| Out of the Tar Pit        | `essential-and-accidental.md`, plus edits |
-| Refactoring, 2nd ed.      | `smell-catalogue.md`, `fowler-moves.md`   |
+| Material                 | Landed as                                      |
+| ------------------------ | ---------------------------------------------- |
+| The data-first position  | `choosing-types-or-plain-data`, 3 refs         |
+| Essential vs accidental  | `essential-and-accidental.md`, plus edits      |
+| Symptoms, tactical moves | `spotting-what-to-fix.md`, `tactical-moves.md` |
 
 Eleven existing skills gained inbound links or new sections, because a
 tiebreaker nobody reaches is worthless. The most important of those is
@@ -353,10 +250,10 @@ refactoring does not delete it.
 
 ### The decision not to add a fourth authority
 
-Data-oriented programming's principles 2 and 4 contradict this pack's two
-flagship rules directly. Adding the book as a peer source would have left
-two contradictory rules of equal standing, and an agent facing those
-picks whichever it read last — worse than having one rule.
+Two of the data-first position's claims contradict this pack's two
+flagship rules directly. Stating both as peer rules would have left two
+contradictions of equal standing, and an agent facing those picks
+whichever it read last — worse than having one rule.
 
 So the conflict is resolved once, in one place, per value:
 
@@ -391,7 +288,7 @@ Two of the thirteen cases had the wrong **expected skill** rather than a
 missing trigger word: "a flag that only exists because we mutate the
 record in place" belongs to `managing-state-immutably`, and "split the
 phases" belongs to `splitting-and-joining-code`, not to the refactoring
-skill whose reference happens to hold Fowler's Split Phase. Both were
+skill whose reference happens to hold Split Phase. Both were
 re-targeted; no case was reworded to make it pass.
 
 Result: 87 of 87 cases place the expected skill in the top 3, 69 first,
@@ -405,12 +302,12 @@ Four new scenarios, each given to a fresh agent that saw only the
 refuse it, because testing only the permissive direction would not notice
 a rule that had become an escape hatch.
 
-| Scenario               | Routing                         | Substance |
-| ---------------------- | ------------------------------- | --------- |
-| 30 Config-driven form  | flagship, then the new skill    | pass      |
-| 31 Wrappers feel heavy | `constraining-primitive-values` | pass      |
-| 32 Needs refactoring   | missed the guard, fixed, re-ran | pass      |
-| 33 Data Class smell    | straight to the smell catalogue | pass      |
+| Scenario                | Routing                         | Substance |
+| ----------------------- | ------------------------------- | --------- |
+| 30 Config-driven form   | flagship, then the new skill    | pass      |
+| 31 Wrappers feel heavy  | `constraining-primitive-values` | pass      |
+| 32 Needs refactoring    | missed the guard, fixed, re-ran | pass      |
+| 33 Behaviour in records | straight to the symptom guide   | pass      |
 
 Scenario 31 is the one that mattered. The agent refused the generic
 route, named verbosity as explicitly not one of the four facts, and
@@ -430,8 +327,8 @@ That is the same class of defect as the calibration miss in increment 2:
 the guard existed and nothing routed to it. The fix was to make the
 necessity question the refactoring skill's **first** core rule, and to
 repeat it as the first item in the smell catalogue's "Using a smell" and
-in `fowler-moves.md`'s discipline list. Fowler's own process has no such
-step; it is precisely what Out of the Tar Pit contributes.
+in `tactical-moves.md`'s discipline list. A refactoring catalogue has no
+such step of its own; it is what the necessity question adds.
 
 A fresh agent re-ran the same scenario afterwards. It opened the
 refactoring skill, followed the new first rule into
@@ -502,6 +399,113 @@ give the pack the defect the check is meant to catch and confirm the
 check fires. A gate that cannot fail on a real defect is worse than no
 gate, because it reads as coverage that is not there.
 
+## Increment 4: stating the rules without citing sources
+
+The pack previously opened 33 of its 40 skills with a line naming a book
+and a chapter, carried a book-to-skill map, and led `README.md` and this
+file with six titles. All of that is gone. Every rule is now stated in the
+pack's own words, with the pack's own examples, and no source is named
+anywhere in the repository.
+
+### Why the framing mattered more than the citations
+
+Citations were never the exposure. Ideas are not copyrightable and naming
+a title is not infringement — attribution is protective, not risky. What
+creates exposure is a document that **reads as an abridgement**: a
+chapter-by-chapter map, another author's complete catalogue reproduced in
+their groupings, a worked example carried over with its type names intact.
+Those are the parts that went.
+
+The survey corrected an earlier assessment recorded here. The borrowed
+worked example was not the largest item; the reproduced catalogue was.
+
+| Item                     | Exposure before                        |
+| ------------------------ | -------------------------------------- |
+| A 24-item catalogue file | Highest: a complete external selection |
+| A 19-move catalogue file | High: named moves, author in filename  |
+| Coverage matrices here   | High: 88 lines of chapter mapping      |
+| Borrowed type names      | Moderate: 167 occurrences              |
+| Citations themselves     | Nil                                    |
+
+### What changed
+
+- **The worked pipeline moved domain.** The stage types and their
+  functions now describe a clinic booking, which is the domain the pack's
+  own worked examples already used. 121 identifiers across 73 files, plus
+  the prose around them.
+- **The two catalogue files were rewritten, not deleted.**
+  `spotting-what-to-fix.md` arranges symptoms by **what each one costs** —
+  the pack's own diagnostic frame — rather than walking an external list.
+  `tactical-moves.md` keeps the nineteen move mechanics, which are
+  ordinary industry vocabulary present in every refactoring menu, and
+  drops the attributions.
+- **Two framework-shaped references were rewritten.** `two-schools.md` no
+  longer walks four numbered principles; it states the two positions,
+  what each optimises for, and the two points where they conflict.
+  `essential-and-accidental.md` keeps the necessity question and loses the
+  section that existed only to trace a specific architecture.
+- **A borrowed illustration was replaced.** The general-purpose-module and
+  special-general-mixture examples now use a scheduling calendar rather
+  than a text editor.
+- **The original input brief was deleted.** It was the most explicit
+  derivation document in the repository, and it named every source.
+
+### Two defects the exercise surfaced
+
+Both were pre-existing and are now fixed:
+
+- **One name used for two things.** The workflow's function type and its
+  command record shared a name, inherited from the example the pipeline
+  was modelled on. They are now `ConfirmBookingWorkflow` and
+  `BookingRequest`.
+- **A vocabulary collision.** The first pass named a booking's items
+  `BookedService`, which collides with "service" in its dependency sense —
+  a term the Effect pack, the layers reference and the migration moves all
+  use. Renamed to `BookedTreatment`, leaving "service" with one meaning.
+
+### What was deliberately left alone
+
+- **Three skill names derived from established phrases.**
+  `defining-errors-out-of-existence`, `designing-deep-modules` and
+  `programming-strategically`. Short phrases carry no copyright, they are
+  common vocabulary, and renaming would break every inbound link, the
+  routing cases, and any existing install.
+- **One generic order example.** A bounded-context reference translates a
+  sales-order message into a shipment. An order is the canonical example
+  in every text on the subject and the two-domain contrast is the point of
+  that illustration.
+- **Git history.** Four commit bodies describe where ideas came from. A
+  commit message is not a derivative work, and rewriting history would
+  force-push, change every identifier, and lose the development record
+  including the negative result about the routing noise gate.
+
+### Verified
+
+| Check                        | Result                      |
+| ---------------------------- | --------------------------- |
+| Named sources, 141 files     | 0                           |
+| `Source:` lines              | 0                           |
+| Borrowed stage-type names    | 0                           |
+| markdownlint, default rules  | Clean                       |
+| Relative links, both layouts | 1,276 checked, 0 broken     |
+| Routing coverage             | 87 of 87 in top 3, 70 first |
+
+The routing top-1 rate rose from 69 to 70, which is noise rather than a
+result; it is recorded only to show the rename did not degrade it.
+
+### The rewritten references were re-tested
+
+Three scenarios whose material this increment rewrote were run again
+against fresh agents with no answer key: the reviewer asking for behaviour
+in records, the accidental-complexity module, and the twelve branded ids.
+
+All three passed, and each agent found and used the rewritten file rather
+than working from the skill body alone — `spotting-what-to-fix.md` in the
+first two, `two-schools.md` and `decision-worked.md` in the third. The
+branded-id case is the one that mattered: it is the direction test, and
+the answer still refused the generic route and quoted the rule that
+verbosity is not evidence.
+
 ## Requirements check
 
 - **Works in Claude Code and Codex.** Met. Frontmatter carries only
@@ -519,7 +523,7 @@ gate, because it reads as coverage that is not there.
 - **Passes markdownlint with no warnings or errors.** Met.
 - **Default rules only, no overrides or inline directives.** Met, and
   asserted by `scripts/verify.sh` rather than only claimed.
-- **Extracted in depth.** Met. 91 reference files sit behind the 40
+- **Depth on demand.** Met. 90 reference files sit behind the 40
   skills, so each skill stays short enough to always read while the
   depth loads only when it is needed.
 - **Audited before delivery.** This document.
@@ -576,9 +580,3 @@ judgment, not an observation. They have never been applied to a real
 repository, and the risk is one-directional: if they read as permissive,
 an agent takes the generic route whenever modelling feels like work.
 Scenario 31 exists to catch that, and it is one sample.
-
-## Attribution
-
-Every rule here is a restatement or synthesis, credited at chapter level
-inside each skill. No book text is reproduced. The books remain worth
-reading in full; this pack is a checklist derived from them.

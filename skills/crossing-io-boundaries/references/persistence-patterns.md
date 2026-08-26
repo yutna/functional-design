@@ -7,11 +7,11 @@ identity, and concurrency. The domain stays ignorant of all three.
 
 ```text
 -- declared by the domain, in the domain's words
-alias LoadOrder = OrderId -> AsyncResult<Option<Order>, LoadError>
-alias SaveOrder = Order -> AsyncResult<Unit, SaveError>
+alias LoadBooking = BookingId -> AsyncResult<Option<Booking>, LoadError>
+alias SaveBooking = Booking -> AsyncResult<Unit, SaveError>
 
 -- implemented in the shell, over rows
-loadOrderFromDb pool id =
+loadBookingFromDb pool id =
   selectRow pool id
     |> map (map fromRow)          -- Result, because rows can be wrong
 ```
@@ -27,10 +27,10 @@ middle:
 ```text
 handleCancel pool now id reason =
   withTransaction pool (\tx ->
-    loadOrder tx id
-      |> bind (toResult OrderNotFound)
-      |> bind (cancelOrder now reason)     -- pure
-      |> bind (saveOrder tx))
+    loadBooking tx id
+      |> bind (toResult BookingNotFound)
+      |> bind (cancelBooking now reason)     -- pure
+      |> bind (saveBooking tx))
 ```
 
 The pure function cannot start a transaction, commit one, or be affected
@@ -63,9 +63,9 @@ couples the screen to the domain's shape. Query a purpose-built view
 type instead:
 
 ```text
-type OrderListItem = { id: String, customer: String,
+type BookingListItem = { id: String, customer: String,
                        total: Money, status: String }
-listOrders : Filter -> Async<List<OrderListItem>>
+listBookings : Filter -> Async<List<BookingListItem>>
 ```
 
 This is not a violation of the model; it is the recognition that reading
@@ -93,8 +93,8 @@ When history is part of the domain, store what happened and fold to get
 the current state.
 
 ```text
-current : List<OrderEvent> -> Order
-current = fold applyEvent emptyOrder
+current : List<BookingEvent> -> Booking
+current = fold applyEvent emptyBooking
 ```
 
 Gains: complete audit, replay, and the ability to answer questions nobody

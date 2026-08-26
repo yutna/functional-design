@@ -17,10 +17,6 @@ at a real problem. You do not need to understand a system to notice that
 a function's body is one call, that two modules share a string literal,
 or that a name could apply to anything.
 
-Source: A Philosophy of Software Design (Ousterhout), with the modelling
-smells from Domain Modeling Made Functional (Wlaschin) and the dependency
-smells from Functional Design (Martin).
-
 ## When to use
 
 - Reviewing a pull request or a design document

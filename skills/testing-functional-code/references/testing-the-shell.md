@@ -33,8 +33,8 @@ each capability with an in-memory implementation.
 
 ```text
 -- an in-memory store, thirty lines, shared by every workflow test
-makeFakeStore : Unit -> { save: SaveOrder, load: LoadOrder,
-                          contents: Unit -> List<Order> }
+makeFakeStore : Unit -> { save: SaveBooking, load: LoadBooking,
+                          contents: Unit -> List<Booking> }
 ```
 
 A fake behaves like the real thing for the operations used, so tests read
@@ -46,7 +46,7 @@ with a **contract test**: one suite of assertions run against both the
 fake and the real adapter.
 
 ```text
-storeContract : SaveOrder -> LoadOrder -> TestSuite
+storeContract : SaveBooking -> LoadBooking -> TestSuite
 -- run against the fake in unit tests, against the database in CI
 ```
 

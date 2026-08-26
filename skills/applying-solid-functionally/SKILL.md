@@ -13,10 +13,6 @@ and data, and in functional code most of them get simpler: the
 abstraction that other principles reach for with interfaces and
 inheritance is, here, just a function type.
 
-Source: Functional Design, part III (Martin), with the critique of
-accessors and inheritance from A Philosophy of Software Design, chapter
-19 (Ousterhout).
-
 ## When to use
 
 - Deciding what a function should take as parameters
@@ -52,7 +48,7 @@ Not for: naming, or judging interface size in isolation.
    throws where the type says `Result`, or that demands more of its
    input than the type states, breaks every caller written against the
    type.
-5. **Pass functions, not modules.** `GetPrice = ProductCode -> Price` is
+5. **Pass functions, not modules.** `GetPrice = TreatmentCode -> Price` is
    an interface with one member. A repository record with twenty members
    forces every consumer to depend on all twenty.
 6. **Point dependencies at the domain.** The domain defines the function
@@ -98,8 +94,8 @@ opposite of the OCP failure mode, where a missed site fails silently.
 Wide dependency, violating ISP and DIP at once:
 
 ```text
-placeOrder : OrderRepository -> Order -> AsyncResult<Unit, Error>
--- OrderRepository has 22 functions; placeOrder uses two of them,
+confirmBooking : BookingRepository -> Booking -> AsyncResult<Unit, Error>
+-- BookingRepository has 22 functions; confirmBooking uses two of them,
 -- and the domain module now imports the storage module
 ```
 
@@ -107,12 +103,12 @@ Narrow dependencies, defined by the domain:
 
 ```text
 -- declared by the domain, in the domain's words
-alias CheckProductExists = ProductCode -> Boolean
-alias SaveOrder = Order -> AsyncResult<Unit, SaveError>
+alias CheckTreatmentExists = TreatmentCode -> Boolean
+alias SaveBooking = Booking -> AsyncResult<Unit, SaveError>
 
-placeOrder :
-  CheckProductExists -> SaveOrder -> Order
-    -> AsyncResult<OrderPlaced, PlaceOrderError>
+confirmBooking :
+  CheckTreatmentExists -> SaveBooking -> Booking
+    -> AsyncResult<BookingConfirmed, ConfirmBookingError>
 ```
 
 Now the domain states its needs, the shell satisfies them, tests supply

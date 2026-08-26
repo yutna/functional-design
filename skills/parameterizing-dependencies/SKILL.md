@@ -18,8 +18,6 @@ and the shell supplies the real implementation once, at the edge. Where
 possible the dependency is removed entirely, by fetching first and
 deciding afterwards.
 
-Source: Domain Modeling Made Functional, chapter 9 (Wlaschin).
-
 ## When to use
 
 - A domain function needs data it does not have
@@ -39,10 +37,10 @@ the decision be pure.
 
 ```text
 -- before: the decision needs a lookup
-priceOrder : GetProductPrice -> Order -> PricedOrder
+priceBooking : GetTreatmentPrice -> Booking -> PricedBooking
 
 -- after: the shell looked everything up first
-priceOrder : PriceList -> Order -> PricedOrder
+priceBooking : PriceList -> Booking -> PricedBooking
 ```
 
 Best when the set of needed data is known before the decision. It leaves
@@ -52,8 +50,8 @@ the core completely pure, and the test needs no stubs at all.
 type, applied once at wiring time.
 
 ```text
-alias GetProductPrice = ProductCode -> Price
-priceOrder : GetProductPrice -> ValidatedOrder -> PricedOrder
+alias GetTreatmentPrice = TreatmentCode -> Price
+priceBooking : GetTreatmentPrice -> ValidatedBooking -> PricedBooking
 ```
 
 Best when what to fetch depends on the decision, so a prior fetch is not
@@ -64,7 +62,7 @@ perform, and the shell executes them.
 
 ```text
 type Instruction = Charge of Money | Notify of EmailAddress
-decide : Order -> List<Instruction>
+decide : Booking -> List<Instruction>
 ```
 
 Best when the effect sequence is itself a business decision worth
@@ -76,8 +74,8 @@ where that payoff is real.
 1. **Prefer rejection, then parameterization, then interpretation.**
    Reach for the heaviest only when the lighter ones do not fit.
 2. **Declare the function type in the domain**, in the domain's words.
-   `GetProductPrice`, not `IProductRepository`.
-3. **One function type per capability used**, not one record per service.
+   `GetTreatmentPrice`, not `ITreatmentRepository`.
+3. **One function type per capability used**, not one record per treatment.
    See
    [applying-solid-functionally](../applying-solid-functionally/SKILL.md).
 4. **Dependencies first, data last**, so partial application produces the
