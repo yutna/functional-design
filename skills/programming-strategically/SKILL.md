@@ -42,8 +42,12 @@ Not for: throwaway spikes whose output is an answer, not code.
 5. **Take the extra step.** When you have found the right design, apply
    it to the neighbouring code that has the same problem, if that is a
    small step and not a project.
-6. **Match the existing style, then improve it.** Consistency beats your
-   personal preference. See [consistency.md](references/consistency.md).
+6. **Match the stated convention first, the surrounding code second.**
+   Consistency beats your personal preference. But where a project writes
+   its conventions down -- an instructions file, a rule file, a lint rule
+   -- those are the convention, and surrounding code that contradicts one
+   is debt rather than a standard to match. See
+   [consistency.md](references/consistency.md).
 7. **Measure before optimising.** Performance work is a design activity
    only on the critical path, and only with numbers. See
    [designing-for-performance.md](references/designing-for-performance.md).

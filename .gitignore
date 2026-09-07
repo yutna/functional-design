@@ -20,3 +20,11 @@ npm-debug.log*
 # The published repository deliberately names no source, so this record
 # is kept out of git rather than lost.
 SOURCES.md
+
+# Local-only: PRIVATE-NOTES.md holds the detail behind increment 5,
+# which came from a client project. The published repository names no
+# installation, so this record is kept out of git rather than lost.
+PRIVATE-NOTES.md
+
+# Python bytecode from importing scripts/ in a REPL
+__pycache__/

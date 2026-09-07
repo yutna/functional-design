@@ -149,6 +149,10 @@ matches the project and use it alongside the core skill.
 
 ## Red flags
 
+Each is a place to look, not a verdict. Where this codebase states a rule
+of its own, that rule is the answer; elsewhere a flag becomes a finding
+only with evidence -- a measurement, a reproduced bug, or a failing test.
+
 - A design decision was made before anyone named the domain concept
 - A type can represent a state the business forbids
 - A function's signature does not say what it can fail with

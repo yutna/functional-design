@@ -34,6 +34,7 @@ customer means something different in billing and in shipping -> capturing-the-d
 this record has five optional fields and only some combinations are legal -> modeling-with-algebraic-types
 should this be a record or a union -> modeling-with-algebraic-types
 this record has three booleans and a nullable date -> making-illegal-states-unrepresentable
+we have four nullable fields that only make sense in some combinations -> making-illegal-states-unrepresentable
 the code defends against a state that should never happen -> making-illegal-states-unrepresentable
 customer id and booking id are both plain strings -> constraining-primitive-values
 the same postcode check appears in three modules -> constraining-primitive-values

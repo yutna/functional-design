@@ -69,8 +69,25 @@ the author knows what to act on.
 
 ## The red flags
 
-Each is a symptom you can see without understanding the system. The full
-catalogue, with detection and repair for each, is in
+Each is a symptom you can see without understanding the system. That is
+what makes them cheap to spot, and it is also their limit: **a red flag
+is a place to look, not a finding.** A deliberate convention and a defect
+look identical from outside.
+
+So where the codebase states a rule -- in its instructions file, its own
+rule files, or a lint rule -- that rule is the answer and the flag is
+already settled. Read the reason it gives before doubting it. Everywhere
+else, what turns a flag into a finding is evidence: a measurement, a
+reproduced bug, or a failing test. Reporting the flag itself spends the
+author's time relitigating a decision the team already made, and a review
+that does it twice stops being read.
+
+When a stated convention still looks wrong after you have read its
+reason, measure the claim and take the numbers to whoever owns the
+convention. That is a separate conversation, not a finding in this
+review.
+
+The full catalogue, with detection and repair for each, is in
 [red-flags.md](references/red-flags.md).
 
 | Flag                    | One-line test                                |

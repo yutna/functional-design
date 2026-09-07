@@ -75,7 +75,7 @@ no gate, because it reads as coverage that is not there.
 
 ## 2. Scenarios — manual, against a real agent
 
-[scenarios.md](scenarios.md) holds thirty-three fuller problems, each a
+[scenarios.md](scenarios.md) holds thirty-five fuller problems, each a
 paragraph of realistic context with the response a correct answer must
 contain. Run them by hand in an agent session with the pack installed:
 

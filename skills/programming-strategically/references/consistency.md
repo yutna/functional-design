@@ -22,6 +22,10 @@ nothing to maintain and everything to restore once lost.
 
 1. **Match the surrounding code before expressing a preference.** A worse
    convention applied uniformly beats a better one applied in patches.
+   Where the project states its conventions, those are what "uniformly"
+   means: code contradicting a written rule is debt, not a second
+   convention, and a codebase carrying grandfathered lint findings holds
+   both at once.
 2. **When a convention is wrong, change it everywhere or nowhere.** Two
    conventions in one codebase are worse than either alone.
 3. **Enforce mechanically where possible.** A formatter or lint rule

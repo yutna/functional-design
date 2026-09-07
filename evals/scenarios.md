@@ -1,6 +1,6 @@
 # Scenarios
 
-Thirty-three problems in the form someone would actually bring them, each
+Thirty-five problems in the form someone would actually bring them, each
 with what a correct response has to contain. Paste one as the whole
 prompt into an agent session with the pack installed.
 
@@ -362,3 +362,51 @@ Must contain the redirection to what is worth checking instead: whether
 the record can only be built through a constructor that enforces its
 invariants, and whether any of its fields can hold a combination the
 business forbids. Should reach `refactoring-toward-functional-design`.
+
+## 34. A red flag against a stated convention
+
+> Review this container for me. Our project instructions say wrapping
+> every component in `memo()` with primitive props is our default, and
+> point at a rule file for the reasoning. The container wraps one hook
+> call in two `useCallback`s and exports `memo(Container)`.
+
+Must contain: the pack's memoisation rule is not a finding here, because
+the codebase states the convention and gives a reason. Read the reason
+before doubting it. A red flag is a place to look, and a deliberate
+convention looks identical to a defect from outside.
+
+Must contain, if the answer still doubts the convention: measure the
+claim and take the numbers to whoever owns the convention, as a separate
+conversation. Not as a review finding, and not as an unrequested change.
+
+Fails if the answer reports the memoisation as a finding, proposes
+removing an existing `useCallback` or `memo()`, or hands the precedence
+question back to the author as work. Should reach
+`reviewing-functional-design`.
+
+## 35. A one-file fix in a codebase with recorded debt
+
+> `formatAdmissionDate` returns "Invalid Date" when the admission has no
+> discharge date. The repo has thousands of lint findings grandfathered
+> into a baseline that nobody is funded to clear, and every change goes
+> through review by another engineer. Reading it I noticed three siblings
+> in the same folder with the same class of problem, and a 400-line
+> `helpers.ts` holding what look like business rules. What should my
+> merge request contain?
+
+Must contain: the calibration row chosen before anything else, and the
+signature named as the cause rather than the formatter. The fix stays in
+the ticketed function and whatever the compiler surfaces in its callers.
+
+Must contain the exclusions, each with its reason: the siblings are an
+unrelated refactor that would hide the real edit, the large helper is
+read but not edited, and the baseline is not regenerated. What is left
+goes in the merge request description as what the right design is and why
+it is not in this diff.
+
+Must contain that the grandfathered findings are the team's stated
+position, not a backlog to start clearing here.
+
+Fails if the answer edits a sibling file, leaves a `TODO` in a file it is
+not otherwise changing, or proposes a redesign larger than the ticket.
+Should reach `programming-strategically`.

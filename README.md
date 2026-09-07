@@ -148,7 +148,7 @@ the agent will read a deliberate convention as a defect.
 Start a session in the target project and ask one question whose right
 answer names a skill:
 
-> our status string plus nullable date fields keep breaking reports
+> we have four nullable fields that only make sense in some combinations
 
 Expect the agent to reach `making-illegal-states-unrepresentable`. If it
 answers from general knowledge without naming a skill, the files are in

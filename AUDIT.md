@@ -506,6 +506,150 @@ branded-id case is the one that mattered: it is the direction test, and
 the answer still refused the generic route and quoted the rule that
 verbosity is not evidence.
 
+## Increment 5: precedence, and a change cut by its own test
+
+Where the evidence for this round came from is deliberately not recorded
+here. What it established is below.
+
+### The gap: nothing said what outranks the pack
+
+A project that installs the pack already has conventions of its own, in
+its instructions file, its rule files and its lint rules, and some of
+them will be things the pack calls a red flag -- decided on purpose, for
+a reason, and written down. Nothing in the pack said which of the two
+wins.
+
+The failure that follows is specific and expensive. An agent reads a
+deliberate convention as a defect and proposes undoing it; the proposal
+is withdrawn once someone measures the claim; the time spent is the
+author's. Then it happens again on the next change, because the pack
+states the flag and says nothing about the order.
+
+Two additions close it.
+
+- `reviewing-functional-design` and the index now say that a red flag is
+  a place to look, not a finding, with the predicate that decides it:
+  where the codebase states a rule, the rule is the answer and the flag
+  is settled, and elsewhere a flag becomes a finding only with evidence
+  -- a measurement, a reproduced bug, or a failing test. When a stated
+  convention still looks wrong after its reason has been read, the move
+  is to measure and take the numbers to whoever owns the convention, as
+  a separate conversation rather than a review finding.
+- The README's snippet, which is where a project declares the pack, now
+  opens by saying that the project's own conventions win and that the
+  pack decides what they leave open.
+
+The second is the load-bearing one. The gap was never inside a skill. It
+was that nothing told the agent the order, so whoever integrated the pack
+had to decide it, and deciding it wrong is the default outcome.
+
+### What is deliberately not in the pack
+
+An exception per red flag. A project that has settled on unconditional
+memoisation, on a screen that composes a single container, on
+one-function utility modules, on a mutable draft confined to a recipe, or
+on a coverage floor is overriding a default, and overriding a default is
+what the precedence rule is for. Writing a clause into each rule to cover
+those cases would be the nuance-clause failure this document already
+records: a rule with an appended exception stops being a rule, and the
+list is unbounded because it is a list of other people's decisions.
+
+### Neither baseline failed, and one planned change was cut
+
+The round was planned to rewrite `programming-strategically` rules 4 to
+6, on the reasoning that "every change makes at least one structural
+improvement" and "match the existing style" misfire in a codebase that
+carries lint findings recorded as debt: read literally, the first invites
+edits nobody asked for and the second perpetuates the debt.
+
+Two scenarios were written to test that, and the rule applied was this
+pack's own -- give it the defect the change is meant to catch, and
+confirm the defect fires.
+
+The timing was not clean, and it matters. Scenario 34 ran against the
+unmodified pack. Scenario 35 started before the red-flag addition landed
+and finished after it, and the agent cited that addition for one of its
+exclusions, so that part of its pass is attributable to a change made
+during the run. The scoping behaviour below came from files that had not
+been touched.
+
+**Scenario 34, a red flag against a stated convention.** The agent did
+not fail. It took the stated convention as given, said it could not read
+the file holding the reasoning, and hedged its one adjacent finding on a
+measurement it asked for rather than assumed. It did close by asking
+which document wins, which is the gap in the agent's own words and what
+the addition answers.
+
+**Scenario 35, the campsite scope.** The agent passed. Given a one-file
+fix in a repository whose lint findings are recorded as debt nobody is
+funded to clear, it chose the calibration row before anything else,
+excluded each sibling file by name and cited the unrelated-refactor trap
+in `working-in-existing-code.md`, read the large helper without editing
+it, refused to regenerate the baseline, and put everything it excluded in
+the merge-request description with the reason it was excluded.
+
+So the rewrite of rules 4 and 5 was dropped. An agent that reaches
+`working-in-existing-code.md` already scopes correctly, and the reference
+carries the trap the rewrite would have duplicated in the rule.
+
+One predicate survived, because it is the one thing the reference does
+not carry. Rule 6 said "match the existing style" with nothing about a
+codebase whose written rules and actual code disagree on purpose, and
+`consistency.md` said a worse convention applied uniformly beats a better
+one applied in patches without saying what "uniformly" means when
+findings are recorded as debt. Both now say that a written rule is the
+convention and code contradicting one is debt rather than a second
+convention. Rules 4 and 5 are unchanged.
+
+Both scenarios stay as regression guards. They pass today, and they are
+what says so if that stops being true.
+
+### The list budget is a threshold, not a reassurance
+
+The 40 descriptions total 6,951 characters against a truncation point of
+roughly 8,000, and the earlier record of that read as headroom. It is
+not: the figure is what the pack alone consumes, so all 40 fit only if
+the installing project's own skills stay under about 1,050 characters,
+which is around ten skills. The README now states it that way, with a
+table of what each install profile costs.
+
+Shortening the pack's own descriptions is not the answer. Increment 3
+established that reducing overlap that way regresses routing coverage,
+which is the measure that works.
+
+### Two upgrade hazards now in the README
+
+- **`cp -R` does not delete.** A skill removed upstream survives in the
+  target project until someone removes it by hand, so an update needs a
+  look at what the copy did not touch.
+- **`diff -rq` is the check that a copy is still a copy.** It works on a
+  selective install as well as a whole one, and it is the reason to keep
+  project-specific decisions outside the pack rather than editing skills
+  in place.
+
+The README's update section carries both, along with a provenance block
+to copy so a project records what it installed.
+
+### The install check is now guarded
+
+The README told adopters to confirm the install with one question. The
+original wording tied two skills on the scorer and won only on
+alphabetical order, which is no promise at all. The wording it carries
+now wins outright and is case 88 in `routing-cases.md`, so `verify.sh`
+fails if a future description stops answering the question the README
+asks.
+
+### Rename casualties
+
+The increment 4 record claims the order-to-booking rename was verified.
+Reading every occurrence of the word in `evals/` found three casualties
+in the sequence sense of "order": two converted that should not have
+been, in `evals/README.md` and `evals/scenarios.md`, and one missed that
+should have been. All three are fixed. `skills/` was clean. A single
+regular expression could not have caught both directions, which is why
+the original pass used a sentinel-protected phrase list and still missed
+these.
+
 ## Requirements check
 
 - **Works in Claude Code and Codex.** Met. Frontmatter carries only
@@ -513,7 +657,8 @@ verbosity is not evidence.
   resolve under both `.claude/skills/` and `.agents/skills/`; and no
   instruction names a runtime-specific tool.
 - **Copied into a target project.** Met. A flat `skills/` directory,
-  with the two copy commands documented in the README.
+  with a selective copy command per runtime in the README, and the
+  update hazards a copy carries stated beside it.
 - **Language-agnostic core.** Met. The 34 core skills use a neutral
   notation defined once in `functional-design/references/notation.md`.
 - **Extra skills for the named stacks.** Met. JavaScript, TypeScript,
@@ -532,8 +677,9 @@ verbosity is not evidence.
   `functional-design/references/calibration.md` for the failure modes
   in both directions.
 - **Routing is checked, not assumed.** Met. 87 keyword cases run in
-  `verify.sh`, and 33 agent scenarios were run once, reaching all 40
-  skills at least once; see below.
+  `verify.sh`, and 35 agent scenarios exist: 33 were run once in
+  increment 2, reaching all 40 skills at least once, and two more in
+  increment 5. See below.
 - **Contradictory advice is resolved, not stacked.** Met. Where a
   supporting source contradicts a flagship rule, the conflict is settled
   in one place by observable facts about the value, and the default is
@@ -574,9 +720,10 @@ The language packs carry runnable syntax.
 **One domain across the worked examples.** Four of the five use a clinic
 or an order domain. A reader unfamiliar with either has to translate.
 
-**The representation thresholds are unvalidated.** The four facts that
-open the generic route in `choosing-types-or-plain-data` are this pack's
-judgment, not an observation. They have never been applied to a real
-repository, and the risk is one-directional: if they read as permissive,
-an agent takes the generic route whenever modelling feels like work.
+**The representation thresholds are still unvalidated.** The four facts
+that open the generic route in `choosing-types-or-plain-data` are this
+pack's judgment, not an observation. They have still never decided
+anything outside this document. The risk is one-directional: if they
+read as permissive, an agent takes the generic route whenever modelling
+feels like work.
 Scenario 31 exists to catch that, and it is one sample.
