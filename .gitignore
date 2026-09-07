@@ -15,3 +15,8 @@ npm-debug.log*
 # The brief forbids overriding markdownlint's defaults, and
 # scripts/verify.sh fails the build if such a file exists. Ignoring
 # them here would hide an accidental config instead of catching it.
+
+# Local-only: SOURCES.md records the books this pack was built from.
+# The published repository deliberately names no source, so this record
+# is kept out of git rather than lost.
+SOURCES.md
