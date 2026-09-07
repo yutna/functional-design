@@ -97,7 +97,7 @@ a regression test. Do not record a score from it as though it were one.
 
 Add a routing case whenever you catch yourself describing a problem in
 words the pack does not contain. Add a scenario when a real task needed
-more than one skill and the booking mattered.
+more than one skill and the order mattered.
 
 Keep case wording as it was actually said. A case rewritten until it
 passes tests nothing. If a case fails, either the description is missing

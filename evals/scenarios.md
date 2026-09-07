@@ -52,7 +52,7 @@ or an aggregate. Should reach the calibration guidance in
 
 > Our checkout calls the payment provider, then writes the booking, then
 > publishes an event. Last week a timeout meant we charged a customer and
-> have no order for it.
+> have no booking for it.
 
 Must contain: a client-supplied command identity; an idempotent charge
 adapter; state and event written in one transaction and relayed
@@ -103,7 +103,7 @@ Should reach `crossing-io-boundaries` and its read-model example.
 > stopping feature work.
 
 Must contain: incremental moves rather than a rewrite; one move per
-commit with tests green between; a booking that starts with types and
+commit with tests green between; an order that starts with types and
 `Result` before extracting the pure decision. Should reach
 `refactoring-toward-functional-design`.
 
