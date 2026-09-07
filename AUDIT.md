@@ -554,7 +554,7 @@ those cases would be the nuance-clause failure this document already
 records: a rule with an appended exception stops being a rule, and the
 list is unbounded because it is a list of other people's decisions.
 
-### Neither baseline failed, and one planned change was cut
+### No baseline failed, and one planned change was cut
 
 The round was planned to rewrite `programming-strategically` rules 4 to
 6, on the reasoning that "every change makes at least one structural
@@ -603,6 +603,53 @@ convention. Rules 4 and 5 are unchanged.
 
 Both scenarios stay as regression guards. They pass today, and they are
 what says so if that stops being true.
+
+### The snippet rewrite is a clarity fix, not a defect fix
+
+The README's `CLAUDE.md` snippet said "before finishing a change of any
+size, run the checklist", which contradicts the calibration table's two
+lightest rows. Instructions in a project's own file outrank skill text,
+so the reading was that a project following the README had asked for a
+design audit on throwaway scripts.
+
+Scenario 4, the one-off script, was run against fresh agents in both
+arms: the old snippet and the rewritten one. Both passed. Both answered
+"do not structure it", refused a `Result` type, branded values, a module
+split and injected dependencies by name, and neither ran the checklist.
+
+The control arm is the informative one. It read the instruction, and
+declined it in writing: it did not run the checklist because the
+instruction gates that on finishing a change to code that stays, and this
+is code that leaves. That is the agent narrowing "any size" on its own,
+using the calibration table against the sloppier sentence above it.
+
+So the rewrite stands as a clarity fix. The snippet now says what it
+means instead of relying on an agent to reinterpret it, and it carries
+the precedence line, which is the part that was missing rather than
+wrong. But the claim that the old wording caused over-application is not
+supported by a test, and this document should not imply otherwise.
+
+### Three planned changes, no reproduced failure
+
+Worth recording as a pattern rather than three separate notes. This round
+identified three defects by reading the pack's own text, and wrote a test
+for each:
+
+| Planned change                        | Test result                   |
+| ------------------------------------- | ----------------------------- |
+| `programming-strategically` rules 4-5 | Passed; change dropped        |
+| The red-flag frame                    | Passed; kept on other grounds |
+| The snippet's "any size"              | Passed in both arms           |
+
+None of the three reproduced. What the runs show is that an agent that
+reaches the references and the calibration table is more robust than a
+close reading of any single rule predicts -- it uses one part of the pack
+to correct another. That is a property worth knowing, and it is also the
+warning: a defect found by reading text is a hypothesis, and this pack's
+own rule is to make it fire before acting on it.
+
+Two changes survived that test and one did not, which is the ratio to
+expect.
 
 ### The list budget is a threshold, not a reassurance
 
