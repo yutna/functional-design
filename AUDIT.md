@@ -15,10 +15,10 @@ language-agnostic, make them work in both Claude Code and Codex, and pass
 | Markdown files under skills | 130     |
 | Reference files             | 90      |
 | Worked examples             | 5       |
-| Routing eval cases          | 87      |
-| Agent scenarios             | 33      |
-| Lines of markdown           | 19,667  |
-| Words                       | 111,045 |
+| Routing eval cases          | 88      |
+| Agent scenarios             | 35      |
+| Lines of markdown           | 20,207  |
+| Words                       | 115,273 |
 
 ## Verification
 
@@ -33,7 +33,7 @@ All six checks in `scripts/verify.sh` pass.
 | Description opening | 40 of 40 begin with "Use when"                 |
 | Codex list budget   | 6,951 characters against a limit of 8,000      |
 | Relative links      | 0 broken across 130 files                      |
-| Routing coverage    | 87 of 87 cases in the top 3; 69 first          |
+| Routing coverage    | 88 of 88 cases in the top 3; 71 first          |
 | Index coverage      | Every skill reachable from `functional-design` |
 | Orphans             | None; every skill has an incoming link         |
 
@@ -699,10 +699,15 @@ these.
 
 ## Requirements check
 
-- **Works in Claude Code and Codex.** Met. Frontmatter carries only
-  `name` and `description`; cross-links are sibling-relative, so they
-  resolve under both `.claude/skills/` and `.agents/skills/`; and no
-  instruction names a runtime-specific tool.
+- **Works in Claude Code and Codex.** Met for Claude Code, which the
+  scenario runs used. For Codex the evidence is structural, not a run:
+  frontmatter carries only `name` and `description`; the install command
+  was executed into `.agents/skills` and 539 of 548 relative links
+  resolve there, the nine that do not being the language packs a
+  selective install leaves out by design; and no instruction names a
+  runtime-specific tool. Codex itself has never been run against the
+  pack, and the 8,000-character truncation point is taken from its
+  documentation rather than measured here.
 - **Copied into a target project.** Met. A flat `skills/` directory,
   with a selective copy command per runtime in the README, and the
   update hazards a copy carries stated beside it.
@@ -723,7 +728,7 @@ these.
   keyed to observable facts about the task, plus
   `functional-design/references/calibration.md` for the failure modes
   in both directions.
-- **Routing is checked, not assumed.** Met. 87 keyword cases run in
+- **Routing is checked, not assumed.** Met. 88 keyword cases run in
   `verify.sh`, and 35 agent scenarios exist: 33 were run once in
   increment 2, reaching all 40 skills at least once, and two more in
   increment 5. See below.
